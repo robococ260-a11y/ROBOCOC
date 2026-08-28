@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ROBO-COC | Smart Robotic Car</title>
+
+<style>
+
+/* =====================================================
+   CONFIGURACIÓN
+===================================================== */
+
+:root{
+    --azul:#061a2f;
+    --azul2:#0b2d4d;
+    --azul3:#0879bd;
+    --gris:#8d9aaa;
+    --gris2:#dce2e8;
+    --blanco:#ffffff;
+    --negro:#030b14;
+    --card:#0c1d30;
+    --borde:#24415d;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:var(--negro);
+    color:white;
+    line-height:1.6;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
+
+header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:1000;
+    background:rgba(6,26,47,.96);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+nav{
+    max-width:1250px;
+    margin:auto;
+    padding:17px 25px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.intecap{
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:1px;
+    color:#0879bd;
+}
+
+.brand-name{
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.brand-name span{
+    color:#91a7ba;
+}
+
+nav ul{
+    display:flex;
+    gap:22px;
+    list-style:none;
+}
+
+nav ul li a{
+    color:#bdc9d5;
+    font-size:13px;
+    font-weight:600;
+    transition:.3s;
+}
+
+nav ul li a:hover{
+    color:white;
+}
+
+
+/* =====================================================
+   PORTADA
+===================================================== */
+
+.hero{
+    min-height:100vh;
+    padding:145px 25px 80px;
+
+    display:flex;
+    align-items:center;
+
+    background:
+    radial-gradient(
+        circle at 15% 35%,
+        rgba(0,117,190,.28),
+        transparent 32%
+    ),
+    linear-gradient(
+        135deg,
+        #041325,
+        #0b243e
+    );
+}
+
+.container{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.hero-grid{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:60px;
+    align-items:center;
+}
+
+.badge{
+    display:inline-block;
+    padding:7px 14px;
+    border:1px solid #38546e;
+    border-radius:20px;
+    color:#b8c7d5;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:1.5px;
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:clamp(60px,9vw,105px);
+    line-height:.9;
+    letter-spacing:-5px;
+}
+
+.hero h1 span{
+    color:#86a0b8;
+}
+
+.hero h2{
+    font-size:27px;
+    font-weight:400;
+    color:#d8e1e9;
+    margin:20px 0 15px;
+}
+
+.hero-text{
+    max-width:650px;
+    color:#9eafc0;
+    font-size:17px;
+}
+
+
+/* =====================================================
+   ESPECIALIDADES
+   AHORA VAN DEBAJO DEL NOMBRE DEL PROYECTO
+===================================================== */
+
+.specialties{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:22px;
+}
+
+.specialty-card{
+
+    min-width:145px;
+
+    padding:13px 18px;
+
+    background:rgba(12,29,48,.8);
+
+    border:1px solid #2b4a65;
+
+    border-radius:10px;
+
+    transition:.3s;
+}
+
+.specialty-card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:#4f7695;
+
+    background:#102943;
+}
+
+.specialty-icon{
+
+    font-size:21px;
+
+    margin-bottom:3px;
+}
+
+.specialty-title{
+
+    font-size:13px;
+
+    font-weight:800;
+
+    letter-spacing:.5px;
+}
+
+.specialty-description{
+
+    color:#8195a9;
+
+    font-size:10px;
+
+    margin-top:2px;
+}
+
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+.buttons{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+
+.btn{
+    padding:13px 22px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+.btn-primary{
+    background:white;
+    color:#061a2f;
+}
+
+.btn-secondary{
+    border:1px solid #4b657d;
+    color:white;
+}
+
+
+/* =====================================================
+   REPRESENTACIÓN DEL CARRO
+===================================================== */
+
+.robot-box{
+
+    width:360px;
+    height:360px;
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+    radial-gradient(
+        circle,
+        #17405f,
+        #091c30 68%
+    );
+
+    border:1px solid #35536d;
+
+    box-shadow:
+    0 0 90px
+    rgba(0,117,190,.18);
+}
+
+.robot{
+    font-size:135px;
+
+    filter:
+    drop-shadow(
+        0 20px 25px
+        rgba(0,0,0,.5)
+    );
+}
+
+
+/* =====================================================
+   SECCIONES
+===================================================== */
+
+section{
+    padding:100px 25px;
+}
+
+.section-title{
+    text-align:center;
+    max-width:750px;
+    margin:0 auto 50px;
+}
+
+.section-title small{
+    color:#7894ac;
+    font-weight:bold;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+.section-title h2{
+    font-size:42px;
+    line-height:1.2;
+    margin:10px 0;
+}
+
+.section-title p{
+    color:#8fa0b2;
+}
+
+
+/* =====================================================
+   PROYECTO
+===================================================== */
+
+.two-columns{
+
+    display:grid;
+
+    grid-template-columns:
+    1fr 1fr;
+
+    gap:20px;
+}
+
+.card{
+
+    background:var(--card);
+
+    border:1px solid var(--borde);
+
+    border-radius:16px;
+
+    padding:30px;
+}
+
+.card h3{
+
+    font-size:21px;
+
+    margin-bottom:14px;
+}
+
+.card p{
+
+    color:#95a6b7;
+}
+
+.objectives{
+
+    list-style:none;
+}
+
+.objectives li{
+
+    color:#b8c5d1;
+
+    padding:9px 0;
+
+    border-bottom:
+    1px solid
+    rgba(255,255,255,.06);
+}
+
+.objectives li::before{
+
+    content:"✓";
+
+    margin-right:10px;
+}
+
+
+/* =====================================================
+   TECNOLOGÍA
+===================================================== */
+
+#tecnologia{
+    background:#091827;
+}
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:18px;
+}
+
+.tech{
+    transition:.3s;
+}
+
+.tech:hover{
+
+    transform:translateY(-5px);
+
+    border-color:#4a6882;
+}
+
+.icon{
+
+    font-size:38px;
+
+    margin-bottom:10px;
+}
+
+.tech p{
+
+    font-size:14px;
+}
+
+
+/* =====================================================
+   INTEGRANTES
+   SIN CONTROL / OPERACIÓN / CONDUCCIÓN
+===================================================== */
+
+.team{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:18px;
+}
+
+.member{
+
+    background:var(--card);
+
+    border:1px solid var(--borde);
+
+    border-radius:16px;
+
+    padding:25px 18px;
+
+    text-align:center;
+
+    transition:.3s;
+}
+
+.member:hover{
+
+    transform:translateY(-6px);
+
+    background:#112943;
+
+    border-color:#41617c;
+}
+
+.number{
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    background:#173653;
+
+    margin:0 auto 14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#dce5ed;
+
+    font-size:12px;
+
+    font-weight:bold;
+}
+
+.member h3{
+
+    font-size:15px;
+
+    margin-bottom:9px;
+}
+
+.role{
+
+    display:inline-block;
+
+    color:#9eb0c0;
+
+    font-size:12px;
+
+    font-weight:600;
+}
+
+
+/* =====================================================
+   CONTROL
+===================================================== */
+
+#control{
+
+    background:
+    linear-gradient(
+        #071321,
+        #0b1b2d
+    );
+}
+
+.control-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    1fr .8fr;
+
+    gap:20px;
+}
+
+.control-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding-bottom:18px;
+
+    margin-bottom:25px;
+
+    border-bottom:
+    1px solid var(--borde);
+}
+
+.status{
+
+    color:#91a4b6;
+
+    font-size:10px;
+
+    font-weight:bold;
+}
+
+.status-dot{
+
+    width:8px;
+
+    height:8px;
+
+    display:inline-block;
+
+    border-radius:50%;
+
+    background:#8998a5;
+
+    margin-right:5px;
+}
+
+.direction{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+}
+
+.row{
+
+    display:flex;
+
+    gap:11px;
+
+    margin:5px;
+}
+
+.control-btn{
+
+    width:80px;
+
+    height:65px;
+
+    border-radius:12px;
+
+    border:1px solid #36536d;
+
+    background:#142b43;
+
+    color:white;
+
+    font-size:25px;
+
+    cursor:pointer;
+
+    transition:.15s;
+}
+
+.control-btn:hover{
+
+    background:#1c3b59;
+}
+
+.control-btn:active{
+
+    transform:scale(.91);
+}
+
+.stop{
+
+    background:#3a2028;
+
+    border-color:#70414c;
+}
+
+.speed{
+
+    margin-top:25px;
+
+    background:#091827;
+
+    padding:18px;
+
+    border-radius:12px;
+}
+
+.speed-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:8px;
+
+    color:#b8c5d1;
+}
+
+input[type=range]{
+
+    width:100%;
+
+    accent-color:#8da6bc;
+}
+
+
+/* =====================================================
+   FUNCIONES
+===================================================== */
+
+.functions{
+
+    display:grid;
+
+    grid-template-columns:
+    1fr 1fr;
+
+    gap:11px;
+}
+
+.function{
+
+    min-height:60px;
+
+    border:1px solid #304b65;
+
+    border-radius:11px;
+
+    background:#142b43;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.function:hover{
+
+    background:#1c3b59;
+}
+
+.function.active{
+
+    background:#24506f;
+
+    border-color:#7d9ab2;
+}
+
+
+/* =====================================================
+   SENSORES
+===================================================== */
+
+.sensors{
+
+    display:grid;
+
+    grid-template-columns:
+    1fr 1fr;
+
+    gap:20px;
+}
+
+.sensor{
+
+    text-align:center;
+}
+
+.distance{
+
+    font-size:55px;
+
+    font-weight:800;
+
+    margin:12px 0;
+}
+
+.distance small{
+
+    font-size:17px;
+
+    color:#8295a8;
+}
+
+.sensor-status{
+
+    display:inline-block;
+
+    background:#172b40;
+
+    color:#a7b7c6;
+
+    padding:6px 13px;
+
+    border-radius:20px;
+
+    font-size:10px;
+
+    font-weight:bold;
+}
+
+
+/* =====================================================
+   FUTURAS FUNCIONES
+===================================================== */
+
+.future{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:15px;
+}
+
+.future .card{
+
+    text-align:center;
+
+    min-height:170px;
+
+    border-style:dashed;
+}
+
+
+/* =====================================================
+   INFORMACIÓN
+===================================================== */
+
+.info{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:18px;
+}
+
+.info-card{
+
+    text-align:center;
+}
+
+.info-card strong{
+
+    display:block;
+
+    color:#8195a9;
+
+    font-size:11px;
+
+    margin-bottom:5px;
+}
+
+.info-card span{
+
+    font-size:17px;
+
+    font-weight:bold;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+
+    background:#030b14;
+
+    border-top:1px solid var(--borde);
+
+    text-align:center;
+
+    padding:55px 25px;
+}
+
+.footer-logo{
+
+    font-size:28px;
+
+    font-weight:800;
+}
+
+.footer-logo span{
+
+    color:#8da5ba;
+}
+
+.footer-intecap{
+
+    font-size:30px;
+
+    font-weight:900;
+
+    color:#0879bd;
+
+    margin:20px 0;
+}
+
+footer p{
+
+    color:#708398;
+
+    font-size:13px;
+
+    margin:5px;
+}
+
+
+/* =====================================================
+   MENSAJE
+===================================================== */
+
+.toast{
+
+    position:fixed;
+
+    bottom:25px;
+
+    left:50%;
+
+    transform:
+    translate(-50%,120px);
+
+    background:#172f48;
+
+    border:1px solid #49657e;
+
+    padding:13px 20px;
+
+    border-radius:9px;
+
+    font-size:13px;
+
+    transition:.3s;
+
+    z-index:5000;
+}
+
+.toast.show{
+
+    transform:
+    translate(-50%,0);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:950px){
+
+    nav ul{
+        display:none;
+    }
+
+    .hero-grid{
+
+        grid-template-columns:1fr;
+
+        text-align:center;
+    }
+
+    .hero-text{
+
+        margin:auto;
+    }
+
+    .specialties{
+
+        justify-content:center;
+    }
+
+    .buttons{
+
+        justify-content:center;
+    }
+
+    .two-columns,
+    .control-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .grid{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .team{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .future{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+}
+
+
+@media(max-width:600px){
+
+    section{
+
+        padding:70px 18px;
+    }
+
+    nav{
+
+        padding:12px 18px;
+    }
+
+    .brand-name{
+
+        display:none;
+    }
+
+    .hero{
+
+        padding:
+        125px 18px 70px;
+    }
+
+    .hero h1{
+
+        font-size:62px;
+    }
+
+    .robot-box{
+
+        width:270px;
+
+        height:270px;
+    }
+
+    .robot{
+
+        font-size:100px;
+    }
+
+    .specialties{
+
+        display:grid;
+
+        grid-template-columns:1fr;
+    }
+
+    .specialty-card{
+
+        width:100%;
+    }
+
+    .grid,
+    .sensors,
+    .info{
+
+        grid-template-columns:1fr;
+    }
+
+    .team,
+    .future{
+
+        grid-template-columns:
+        1fr 1fr;
+    }
+
+    .section-title h2{
+
+        font-size:32px;
+    }
+
+    .control-btn{
+
+        width:70px;
+
+        height:60px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVEGACIÓN
+===================================================== -->
+
+<header>
+
+<nav>
+
+    <div class="brand">
+
+        <div class="intecap">
+            INTECAP
+        </div>
+
+        <div class="brand-name">
+            ROBO-<span>COC</span>
+        </div>
+
+    </div>
+
+
+    <ul>
+
+        <li>
+            <a href="#inicio">
+                Inicio
+            </a>
+        </li>
+
+        <li>
+            <a href="#proyecto">
+                Proyecto
+            </a>
+        </li>
+
+        <li>
+            <a href="#tecnologia">
+                Tecnología
+            </a>
+        </li>
+
+        <li>
+            <a href="#integrantes">
+                Integrantes
+            </a>
+        </li>
+
+        <li>
+            <a href="#control">
+                Control
+            </a>
+        </li>
+
+        <li>
+            <a href="#sensores">
+                Sensores
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+</header>
+
+
+
+<!-- =====================================================
+     PORTADA
+===================================================== -->
+
+<section class="hero" id="inicio">
+
+<div class="container hero-grid">
+
+
+    <div>
+
+
+        <div class="badge">
+
+            PROYECTO DE ROBÓTICA · INTECAP
+
+        </div>
+
+
+        <h1>
+
+            ROBO-<span>COC</span>
+
+        </h1>
+
+
+        <h2>
+
+            Smart Robotic Car
+
+        </h2>
+
+
+        <p class="hero-text">
+
+            Proyecto de robótica y electrónica enfocado
+            en el desarrollo de un carrito inteligente
+            controlado mediante una interfaz web y un ESP32.
+
+            Integra movimiento, sensores de aproximación,
+            luces, bocina y funciones de seguridad.
+
+        </p>
+
+
+        <!-- =================================================
+             ESPECIALIDADES DEL PROYECTO
+        ================================================== -->
+
+        <div class="specialties">
+
+
+            <div class="specialty-card">
+
+                <div class="specialty-icon">
+                    ⚙️
+                </div>
+
+                <div class="specialty-title">
+                    CONTROL
+                </div>
+
+                <div class="specialty-description">
+                    Programación y control del sistema
+                </div>
+
+            </div>
+
+
+
+            <div class="specialty-card">
+
+                <div class="specialty-icon">
+                    🔧
+                </div>
+
+                <div class="specialty-title">
+                    OPERACIÓN
+                </div>
+
+                <div class="specialty-description">
+                    Circuitos y funcionamiento
+                </div>
+
+            </div>
+
+
+
+            <div class="specialty-card">
+
+                <div class="specialty-icon">
+                    🚗
+                </div>
+
+                <div class="specialty-title">
+                    CONDUCCIÓN
+                </div>
+
+                <div class="specialty-description">
+                    Manejo y pruebas del carrito
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="buttons">
+
+
+            <a
+                href="#control"
+                class="btn btn-primary">
+
+                🎮 PANEL DE CONTROL
+
+            </a>
+
+
+            <a
+                href="#proyecto"
+                class="btn btn-secondary">
+
+                📖 CONOCER EL PROYECTO
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div>
+
+        <div class="robot-box">
+
+            <div class="robot">
+
+                🚗
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PROYECTO
+===================================================== -->
+
+<section id="proyecto">
+
+<div class="container">
+
+
+    <div class="section-title">
+
+        <small>
+            ROBO-COC
+        </small>
+
+        <h2>
+            Tecnología aplicada a la robótica
+        </h2>
+
+        <p>
+            Una propuesta que combina electrónica,
+            programación y automatización.
+        </p>
+
+    </div>
+
+
+
+    <div class="two-columns">
+
+
+        <div class="card">
+
+            <h3>
+                🤖 ¿Qué es ROBO-COC?
+            </h3>
+
+            <p>
+
+                ROBO-COC es un proyecto de carrito robótico
+                desarrollado para integrar diferentes
+                tecnologías de control y automatización.
+
+                El ESP32 será el controlador principal,
+                encargado de recibir las órdenes de la
+                interfaz web y controlar los diferentes
+                componentes electrónicos.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <h3>
+                🎯 Objetivos
+            </h3>
+
+
+            <ul class="objectives">
+
+                <li>
+                    Controlar el movimiento del carrito.
+                </li>
+
+                <li>
+                    Incorporar dos sensores de aproximación.
+                </li>
+
+                <li>
+                    Controlar luces y direccionales.
+                </li>
+
+                <li>
+                    Incorporar una bocina.
+                </li>
+
+                <li>
+                    Implementar control de velocidad.
+                </li>
+
+                <li>
+                    Preparar futuras ampliaciones.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     TECNOLOGÍA
+===================================================== -->
+
+<section id="tecnologia">
+
+<div class="container">
+
+
+    <div class="section-title">
+
+        <small>
+            HARDWARE
+        </small>
+
+        <h2>
+            Componentes principales
+        </h2>
+
+        <p>
+            Elementos que forman parte del sistema ROBO-COC.
+        </p>
+
+    </div>
+
+
+
+    <div class="grid">
+
+
+        <div class="card tech">
+
+            <div class="icon">
+                🧠
+            </div>
+
+            <h3>
+                ESP32
+            </h3>
+
+            <p>
+                Controlador principal del carrito,
+                con comunicación inalámbrica
+                y múltiples GPIO.
+            </p>
+
+        </div>
+
+
+
+        <div class="card tech">
+
+            <div class="icon">
+                ⚙️
+            </div>
+
+            <h3>
+                Motores
+            </h3>
+
+            <p>
+                Permiten el movimiento del carrito
+                hacia adelante, atrás, izquierda
+                y derecha.
+            </p>
+
+        </div>
+
+
+
+        <div class="card tech">
+
+            <div class="icon">
+                🔌
+            </div>
+
+            <h3>
+                L298N
+            </h3>
+
+            <p>
+                Driver de potencia utilizado
+                para controlar los motores
+                desde el ESP32.
+            </p>
+
+        </div>
+
+
+
+        <div class="card tech">
+
+            <div class="icon">
+                📡
+            </div>
+
+            <h3>
+                Sensores
+            </h3>
+
+            <p>
+                Dos sensores de aproximación
+                para detectar obstáculos
+                delante y detrás.
+            </p>
+
+        </div>
+
+
+
+        <div class="card tech">
+
+            <div class="icon">
+                💡
+            </div>
+
+            <h3>
+                Luces
+            </h3>
+
+            <p>
+                Sistema de iluminación,
+                direccionales y luces
+                de emergencia.
+            </p>
+
+        </div>
+
+
+
+        <div class="card tech">
+
+            <div class="icon">
+                🔊
+            </div>
+
+            <h3>
+                Bocina
+            </h3>
+
+            <p>
+                Sistema sonoro controlado
+                desde la interfaz web.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     INTEGRANTES
+     SOLO NOMBRES Y ROLES
+===================================================== -->
+
+<section id="integrantes">
+
+<div class="container">
+
+
+    <div class="section-title">
+
+        <small>
+            EQUIPO DE TRABAJO
+        </small>
+
+        <h2>
+            Integrantes del proyecto
+        </h2>
+
+        <p>
+            Equipo responsable del desarrollo de ROBO-COC.
+        </p>
+
+    </div>
+
+
+
+    <div class="team">
+
+
+        <div class="member">
+
+            <div class="number">
+                01
+            </div>
+
+            <h3>
+                LUIS LOPEZ
+            </h3>
+
+            <span class="role">
+                Programador
+            </span>
+
+        </div>
+
+
+
+        <div class="member">
+
+            <div class="number">
+                02
+            </div>
+
+            <h3>
+                JOSUE BOECKMANN
+            </h3>
+
+            <span class="role">
+                Programador
+            </span>
+
+        </div>
+
+
+
+        <div class="member">
+
+            <div class="number">
+                03
+            </div>
+
+            <h3>
+                IGNACIO MIRANDA
+            </h3>
+
+            <span class="role">
+                Encargado de circuitos
+            </span>
+
+        </div>
+
+
+
+        <div class="member">
+
+            <div class="number">
+                04
+            </div>
+
+            <h3>
+                GILSON TERRAZA
+            </h3>
+
+            <span class="role">
+                Encargado de circuitos
+            </span>
+
+        </div>
+
+
+
+        <div class="member">
+
+            <div class="number">
+                05
+            </div>
+
+            <h3>
+                JULIO ROLDAN
+            </h3>
+
+            <span class="role">
+                Encargado del informe
+            </span>
+
+        </div>
+
+
+
+        <div class="member">
+
+            <div class="number">
+                06
+            </div>
+
+            <h3>
+                AARON CASTAÑON
+            </h3>
+
+            <span class="role">
+                Encargado del informe
+            </span>
+
+        </div>
+
+
+
+        <div class="member">
+
+            <div class="number">
+                07
+            </div>
+
+            <h3>
+                ROBERTO COC
+            </h3>
+
+            <span class="role">
+                Encargado del informe
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PANEL DE CONTROL
+===================================================== -->
+
+<section id="control">
+
+<div class="container">
+
+
+    <div class="section-title">
+
+        <small>
+            CONTROL REMOTO
+        </small>
+
+        <h2>
+            Panel de control ROBO-COC
+        </h2>
+
+        <p>
+            Interfaz preparada para conectarse
+            posteriormente con el ESP32.
+        </p>
+
+    </div>
+
+
+
+    <div class="control-grid">
+
+
+        <div class="card">
+
+
+            <div class="control-header">
+
+                <strong>
+                    🎮 Movimiento
+                </strong>
+
+                <span class="status">
+
+                    <i class="status-dot"></i>
+
+                    ESP32 NO CONECTADO
+
+                </span>
+
+            </div>
+
+
+
+            <div class="direction">
+
+
+                <div class="row">
+
+                    <button
+                        class="control-btn"
+                        onclick="command('adelante')">
+
+                        ▲
+
+                    </button>
+
+                </div>
+
+
+
+                <div class="row">
+
+                    <button
+                        class="control-btn"
+                        onclick="command('izquierda')">
+
+                        ◀
+
+                    </button>
+
+
+
+                    <button
+                        class="control-btn stop"
+                        onclick="command('stop')">
+
+                        ■
+
+                    </button>
+
+
+
+                    <button
+                        class="control-btn"
+                        onclick="command('derecha')">
+
+                        ▶
+
+                    </button>
+
+                </div>
+
+
+
+                <div class="row">
+
+                    <button
+                        class="control-btn"
+                        onclick="command('atras')">
+
+                        ▼
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="speed">
+
+                <div class="speed-header">
+
+                    <span>
+                        ⚡ Velocidad
+                    </span>
+
+                    <strong id="speed">
+                        70%
+                    </strong>
+
+                </div>
+
+
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="70"
+                    oninput="changeSpeed(this.value)">
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="card">
+
+
+            <div class="control-header">
+
+                <strong>
+                    ⚡ Funciones
+                </strong>
+
+            </div>
+
+
+
+            <div class="functions">
+
+
+                <button
+                    class="function"
+                    id="lights"
+                    onclick="toggleLights()">
+
+                    💡 Luces
+
+                </button>
+
+
+
+                <button
+                    class="function"
+                    onclick="showMessage('🔊 Bocina preparada para ESP32')">
+
+                    🔊 Bocina
+
+                </button>
+
+
+
+                <button
+                    class="function"
+                    onclick="showMessage('🟡 Direccional izquierda')">
+
+                    🟡 ← Izquierda
+
+                </button>
+
+
+
+                <button
+                    class="function"
+                    onclick="showMessage('🟡 Direccional derecha')">
+
+                    🟡 Derecha →
+
+                </button>
+
+
+
+                <button
+                    class="function"
+                    onclick="showMessage('🚨 Emergencia activada')">
+
+                    🚨 Emergencia
+
+                </button>
+
+
+
+                <button
+                    class="function"
+                    onclick="command('freno')">
+
+                    🔴 Freno
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SENSORES
+===================================================== -->
+
+<section id="sensores">
+
+<div class="container">
+
+
+    <div class="section-title">
+
+        <small>
+            MONITOREO
+        </small>
+
+        <h2>
+            Sensores de aproximación
+        </h2>
+
+        <p>
+            Espacio preparado para recibir
+            los datos de los dos sensores
+            desde el ESP32.
+        </p>
+
+    </div>
+
+
+
+    <div class="sensors">
+
+
+        <div class="card sensor">
+
+            <div class="icon">
+                📡
+            </div>
+
+            <h3>
+                Sensor delantero
+            </h3>
+
+            <div class="distance">
+
+                <span id="front">
+                    --
+                </span>
+
+                <small>
+                    cm
+                </small>
+
+            </div>
+
+            <span class="sensor-status">
+                ESPERANDO ESP32
+            </span>
+
+        </div>
+
+
+
+        <div class="card sensor">
+
+            <div class="icon">
+                📡
+            </div>
+
+            <h3>
+                Sensor trasero
+            </h3>
+
+            <div class="distance">
+
+                <span id="rear">
+                    --
+                </span>
+
+                <small>
+                    cm
+                </small>
+
+            </div>
+
+            <span class="sensor-status">
+                ESPERANDO ESP32
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FUTURAS FUNCIONES
+===================================================== -->
+
+<section>
+
+<div class="container">
+
+
+    <div class="section-title">
+
+        <small>
+            AMPLIACIONES
+        </small>
+
+        <h2>
+            Futuras funciones
+        </h2>
+
+        <p>
+            Funciones que podrán agregarse posteriormente.
+        </p>
+
+    </div>
+
+
+
+    <div class="future">
+
+
+        <div class="card">
+
+            <div class="icon">
+                📷
+            </div>
+
+            <h3>
+                Cámara
+            </h3>
+
+            <p>
+                Transmisión de video.
+            </p>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                🔋
+            </div>
+
+            <h3>
+                Batería
+            </h3>
+
+            <p>
+                Monitoreo del nivel de carga.
+            </p>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                📊
+            </div>
+
+            <h3>
+                Telemetría
+            </h3>
+
+            <p>
+                Información del vehículo.
+            </p>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                🎮
+            </div>
+
+            <h3>
+                Joystick
+            </h3>
+
+            <p>
+                Control táctil avanzado.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     INFORMACIÓN
+===================================================== -->
+
+<section>
+
+<div class="container">
+
+
+    <div class="section-title">
+
+        <small>
+            PRESENTACIÓN
+        </small>
+
+        <h2>
+            Información del proyecto
+        </h2>
+
+    </div>
+
+
+
+    <div class="info">
+
+
+        <div class="card info-card">
+
+            <strong>
+                INSTITUCIÓN
+            </strong>
+
+            <span>
+                INTECAP
+            </span>
+
+        </div>
+
+
+
+        <div class="card info-card">
+
+            <strong>
+                PROYECTO
+            </strong>
+
+            <span>
+                ROBO-COC
+            </span>
+
+        </div>
+
+
+
+        <div class="card info-card">
+
+            <strong>
+                ÁREA
+            </strong>
+
+            <span>
+                Robótica y Electrónica
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-logo">
+        ROBO-<span>COC</span>
+    </div>
+
+    <p>
+        Smart Robotic Car
+    </p>
+
+    <p>
+        Proyecto de robótica,
+        electrónica y programación.
+    </p>
+
+    <div class="footer-intecap">
+        INTECAP
+    </div>
+
+    <p>
+        LUIS LOPEZ · JOSUE BOECKMANN · IGNACIO MIRANDA
+    </p>
+
+    <p>
+        GILSON TERRAZA · JULIO ROLDAN · AARON CASTAÑON · ROBERTO COC
+    </p>
+
+    <p>
+        © 2026 ROBO-COC
+    </p>
+
+</footer>
+
+
+
+<!-- =====================================================
+     MENSAJE
+===================================================== -->
+
+<div
+    class="toast"
+    id="toast">
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   MENSAJES
+===================================================== */
+
+function showMessage(message){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.innerText =
+        message;
+
+    toast.classList.add("show");
+
+
+    setTimeout(function(){
+
+        toast.classList.remove("show");
+
+    },2200);
+
+}
+
+
+/* =====================================================
+   MOVIMIENTO
+===================================================== */
+
+function command(action){
+
+    showMessage(
+
+        "Comando: " +
+        action.toUpperCase() +
+        " · ESP32 pendiente de conexión"
+
+    );
+
+}
+
+
+/* =====================================================
+   VELOCIDAD
+===================================================== */
+
+function changeSpeed(value){
+
+    document.getElementById("speed")
+        .innerText =
+        value + "%";
+
+}
+
+
+/* =====================================================
+   LUCES
+===================================================== */
+
+let lightsOn = false;
+
+
+function toggleLights(){
+
+    lightsOn =
+        !lightsOn;
+
+
+    const button =
+        document.getElementById("lights");
+
+
+    if(lightsOn){
+
+        button.classList.add("active");
+
+        showMessage(
+            "💡 Luces encendidas"
+        );
+
+    }
+
+    else{
+
+        button.classList.remove("active");
+
+        showMessage(
+            "💡 Luces apagadas"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   FUTURA CONEXIÓN ESP32
+=====================================================
+
+   La página está preparada para conectar
+   posteriormente con el ESP32.
+
+   Comandos:
+
+       adelante
+       atras
+       izquierda
+       derecha
+       stop
+       freno
+
+   Funciones:
+
+       luces
+       bocina
+       direccionales
+       emergencia
+       velocidad
+
+   Sensores:
+
+       sensor delantero
+       sensor trasero
+
+===================================================== */
+
+</script>
+
+
+</body>
+
+</html>

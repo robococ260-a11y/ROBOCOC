@@ -1,243 +1,211 @@
-/* =====================================================
-   VARIABLES
-===================================================== */
+/* ==========================================
+   CONFIGURACIÓN ESP32
+========================================== */
 
-let currentSpeed = 70;
+// Cuando conectemos el ESP32,
+// cambiaremos esta dirección por la IP real.
+//
+// Ejemplo:
+// const ESP32_IP = "192.168.4.1";
+
+const ESP32_IP = "";
+
+let esp32Connected = false;
+
+
+/* ==========================================
+   ESTADOS
+========================================== */
+
+let speed = 70;
+
+let lights = false;
+let leftSignal = false;
+let rightSignal = false;
+let emergency = false;
+
 let currentMode = "manual";
 
-let lightsOn = false;
-let emergencyOn = false;
 
-let leftSignalOn = false;
-let rightSignalOn = false;
+/* ==========================================
+   CONEXIÓN CON ESP32
+========================================== */
+
+async function sendCommand(command) {
+
+    console.log("Comando:", command);
+
+    /*
+        FUTURA CONEXIÓN ESP32
+
+        Cuando tengamos la IP del ESP32,
+        podremos utilizar algo como:
+
+        fetch(`http://${ESP32_IP}/${command}`)
+            .then(response => response.text())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+    */
+
+    if (!ESP32_IP) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `http://${ESP32_IP}/${command}`
+        );
+
+        const data = await response.text();
+
+        console.log("ESP32:", data);
+
+        setConnection(true);
+
+    } catch (error) {
+
+        console.error("Error ESP32:", error);
+
+        setConnection(false);
+
+    }
+}
 
 
-/* =====================================================
+/* ==========================================
+   ESTADO ESP32
+========================================== */
+
+function setConnection(status) {
+
+    esp32Connected = status;
+
+    const dot = document.getElementById("connectionDot");
+    const text = document.getElementById("connectionText");
+
+    if (status) {
+
+        dot.style.background = "#6f879b";
+        text.textContent = "CONECTADO";
+
+    } else {
+
+        dot.style.background = "#77818a";
+        text.textContent = "DESCONECTADO";
+
+    }
+}
+
+
+/* ==========================================
    MOVIMIENTO
-===================================================== */
+========================================== */
 
 function move(direction) {
 
-    const status =
+    const vehicleStatus =
         document.getElementById("vehicleStatus");
 
+    if (vehicleStatus) {
+        vehicleStatus.textContent =
+            direction.toUpperCase();
+    }
 
-    const names = {
+    console.log("Movimiento:", direction);
 
-        forward: "AVANZANDO",
-
-        backward: "RETROCEDIENDO",
-
-        left: "GIRANDO IZQUIERDA",
-
-        right: "GIRANDO DERECHA"
-
-    };
-
-
-    status.textContent =
-        names[direction] || "EN MOVIMIENTO";
-
-
-    console.log(
-        "Movimiento:",
-        direction
-    );
-
-
-    console.log(
-        "Velocidad:",
-        currentSpeed + "%"
-    );
-
+    sendCommand(`move?direction=${direction}&speed=${speed}`);
 }
 
-
-/* =====================================================
-   DETENER
-===================================================== */
 
 function stopCar() {
 
-    document.getElementById(
-        "vehicleStatus"
-    ).textContent = "DETENIDO";
+    const vehicleStatus =
+        document.getElementById("vehicleStatus");
 
+    if (vehicleStatus) {
+        vehicleStatus.textContent = "DETENIDO";
+    }
 
-    console.log(
-        "Vehículo detenido"
-    );
+    console.log("STOP");
 
+    sendCommand("stop");
 }
 
 
-/* =====================================================
+/* ==========================================
    VELOCIDAD
-===================================================== */
+========================================== */
 
 function changeSpeed(value) {
 
-    currentSpeed = value;
+    speed = Number(value);
 
+    document.getElementById("speedValue")
+        .textContent = `${speed}%`;
 
-    document.getElementById(
-        "speedLabel"
-    ).textContent = value + "%";
+    document.getElementById("speedLabel")
+        .textContent = `${speed}%`;
 
-
-    document.getElementById(
-        "speedValue"
-    ).textContent = value + "%";
-
+    sendCommand(`speed?value=${speed}`);
 }
 
 
-/* =====================================================
+/* ==========================================
    LUCES
-===================================================== */
+========================================== */
 
 function toggleLights() {
 
-    lightsOn = !lightsOn;
-
+    lights = !lights;
 
     const state =
-        document.getElementById(
-            "lightsState"
-        );
+        document.getElementById("lightsState");
 
+    state.textContent =
+        lights ? "ENCENDIDAS" : "APAGADAS";
 
-    const button =
-        document.getElementById(
-            "lightsBtn"
-        );
-
-
-    if (lightsOn) {
-
-        state.textContent =
-            "ENCENDIDAS";
-
-
-        button.style.background =
-            "#dce8f1";
-
-    } else {
-
-        state.textContent =
-            "APAGADAS";
-
-
-        button.style.background =
-            "";
-
-    }
-
-
-    console.log(
-        "Luces:",
-        lightsOn ? "ON" : "OFF"
+    sendCommand(
+        `lights?state=${lights ? 1 : 0}`
     );
-
 }
 
 
-/* =====================================================
+/* ==========================================
    BOCINA
-===================================================== */
+========================================== */
 
 function horn() {
 
-    console.log(
-        "Bocina activada"
-    );
+    console.log("Bocina");
 
-
-    const status =
-        document.getElementById(
-            "vehicleStatus"
-        );
-
-
-    status.textContent =
-        "BOCINA";
-
-
-    setTimeout(() => {
-
-        if (
-            status.textContent ===
-            "BOCINA"
-        ) {
-
-            status.textContent =
-                "DETENIDO";
-
-        }
-
-    }, 700);
+    sendCommand("horn");
 
 }
 
 
-/* =====================================================
+/* ==========================================
    DIRECCIONALES
-===================================================== */
+========================================== */
 
 function toggleSignal(side) {
 
-
     if (side === "left") {
 
-        leftSignalOn =
-            !leftSignalOn;
+        leftSignal = !leftSignal;
 
-
-        const button =
-            document.getElementById(
-                "leftSignalBtn"
-            );
-
-
-        button.style.background =
-            leftSignalOn
-                ? "#dce8f1"
-                : "";
-
-
-        console.log(
-            "Direccional izquierda:",
-            leftSignalOn
-                ? "ON"
-                : "OFF"
+        sendCommand(
+            `signal?side=left&state=${leftSignal ? 1 : 0}`
         );
 
     }
 
-
     if (side === "right") {
 
-        rightSignalOn =
-            !rightSignalOn;
+        rightSignal = !rightSignal;
 
-
-        const button =
-            document.getElementById(
-                "rightSignalBtn"
-            );
-
-
-        button.style.background =
-            rightSignalOn
-                ? "#dce8f1"
-                : "";
-
-
-        console.log(
-            "Direccional derecha:",
-            rightSignalOn
-                ? "ON"
-                : "OFF"
+        sendCommand(
+            `signal?side=right&state=${rightSignal ? 1 : 0}`
         );
 
     }
@@ -245,178 +213,138 @@ function toggleSignal(side) {
 }
 
 
-/* =====================================================
+/* ==========================================
    EMERGENCIA
-===================================================== */
+========================================== */
 
 function toggleEmergency() {
 
-    emergencyOn =
-        !emergencyOn;
-
-
-    const button =
-        document.getElementById(
-            "emergencyBtn"
-        );
-
-
-    const small =
-        button.querySelector(
-            "small"
-        );
-
-
-    if (emergencyOn) {
-
-        small.textContent =
-            "ACTIVADA";
-
-
-        button.style.background =
-            "#dce8f1";
-
-    } else {
-
-        small.textContent =
-            "APAGADA";
-
-
-        button.style.background =
-            "";
-
-    }
-
+    emergency = !emergency;
 
     console.log(
         "Emergencia:",
-        emergencyOn
-            ? "ON"
-            : "OFF"
+        emergency
+    );
+
+    sendCommand(
+        `emergency?state=${emergency ? 1 : 0}`
     );
 
 }
 
 
-/* =====================================================
-   MODO DE CONDUCCIÓN
-===================================================== */
+/* ==========================================
+   MODO
+========================================== */
 
 function setMode(mode) {
 
     currentMode = mode;
 
-
     const manual =
-        document.getElementById(
-            "manualMode"
-        );
-
+        document.getElementById("manualMode");
 
     const automatic =
-        document.getElementById(
-            "autoMode"
-        );
+        document.getElementById("autoMode");
 
-
-    manual.classList.remove(
-        "active"
-    );
-
-
-    automatic.classList.remove(
-        "active"
-    );
-
+    manual.classList.remove("active");
+    automatic.classList.remove("active");
 
     if (mode === "manual") {
 
-        manual.classList.add(
-            "active"
-        );
+        manual.classList.add("active");
 
     } else {
 
-        automatic.classList.add(
-            "active"
-        );
+        automatic.classList.add("active");
 
     }
 
+    console.log("Modo:", mode);
 
-    console.log(
-        "Modo:",
-        mode
-    );
+    sendCommand(`mode?type=${mode}`);
 
 }
 
 
-/* =====================================================
+/* ==========================================
+   SENSORES
+========================================== */
+
+function updateFrontSensor(distance) {
+
+    document.getElementById("frontDistance")
+        .textContent = `${distance} cm`;
+
+    document.getElementById("sensorFrontBig")
+        .textContent = distance;
+
+    let percentage =
+        Math.min(Math.max(distance, 0), 100);
+
+    document.getElementById("frontBar")
+        .style.width = `${percentage}%`;
+
+}
+
+
+function updateRearSensor(distance) {
+
+    document.getElementById("rearDistance")
+        .textContent = `${distance} cm`;
+
+    document.getElementById("sensorRearBig")
+        .textContent = distance;
+
+    let percentage =
+        Math.min(Math.max(distance, 0), 100);
+
+    document.getElementById("rearBar")
+        .style.width = `${percentage}%`;
+
+}
+
+
+/* ==========================================
    TECLADO
-===================================================== */
+========================================== */
 
 document.addEventListener(
     "keydown",
     function(event) {
 
-        const key =
-            event.key.toLowerCase();
-
-
         if (
-            key === "w" ||
-            key === "arrowup"
+            event.target.tagName === "INPUT" ||
+            event.target.tagName === "TEXTAREA"
         ) {
-
-            event.preventDefault();
-
-            move("forward");
-
+            return;
         }
 
+        switch (event.key.toLowerCase()) {
 
-        if (
-            key === "s" ||
-            key === "arrowdown"
-        ) {
+            case "w":
+            case "arrowup":
+                move("forward");
+                break;
 
-            event.preventDefault();
+            case "s":
+            case "arrowdown":
+                move("backward");
+                break;
 
-            move("backward");
+            case "a":
+            case "arrowleft":
+                move("left");
+                break;
 
-        }
+            case "d":
+            case "arrowright":
+                move("right");
+                break;
 
-
-        if (
-            key === "a" ||
-            key === "arrowleft"
-        ) {
-
-            event.preventDefault();
-
-            move("left");
-
-        }
-
-
-        if (
-            key === "d" ||
-            key === "arrowright"
-        ) {
-
-            event.preventDefault();
-
-            move("right");
-
-        }
-
-
-        if (key === " ") {
-
-            event.preventDefault();
-
-            stopCar();
+            case " ":
+                stopCar();
+                break;
 
         }
 
@@ -424,97 +352,52 @@ document.addEventListener(
 );
 
 
-/* =====================================================
-   SENSORES DEMO
-===================================================== */
+/* ==========================================
+   DATOS DE PRUEBA
+========================================== */
+
+// Estos valores son solamente para comprobar
+// visualmente el funcionamiento de la página.
+// Cuando conectemos el ESP32 serán sustituidos
+// por datos reales.
 
 function demoSensors() {
 
-
     const front =
-        Math.floor(
-            Math.random() * 101
-        );
-
+        Math.floor(Math.random() * 80) + 20;
 
     const rear =
-        Math.floor(
-            Math.random() * 101
-        );
+        Math.floor(Math.random() * 80) + 20;
 
+    updateFrontSensor(front);
 
-    document.getElementById(
-        "frontDistance"
-    ).textContent =
-        front + " cm";
-
-
-    document.getElementById(
-        "rearDistance"
-    ).textContent =
-        rear + " cm";
-
-
-    document.getElementById(
-        "sensorFrontBig"
-    ).textContent =
-        front;
-
-
-    document.getElementById(
-        "sensorRearBig"
-    ).textContent =
-        rear;
-
-
-    document.getElementById(
-        "frontBar"
-    ).style.width =
-        front + "%";
-
-
-    document.getElementById(
-        "rearBar"
-    ).style.width =
-        rear + "%";
+    updateRearSensor(rear);
 
 }
 
 
-/* =====================================================
-   BATERÍA DEMO
-===================================================== */
-
-function demoBattery() {
+setInterval(demoSensors, 3000);
 
 
-    const battery =
-        Math.floor(
-            Math.random() * 21
-        ) + 75;
-
-
-    document.getElementById(
-        "batteryValue"
-    ).textContent =
-        battery + " %";
-
-}
-
-
-/* =====================================================
+/* ==========================================
    INICIO
-===================================================== */
+========================================== */
 
-window.addEventListener(
-    "load",
+document.addEventListener(
+    "DOMContentLoaded",
     function() {
 
         changeSpeed(70);
 
-        demoSensors();
+        setConnection(false);
 
-        demoBattery();
+        console.log(
+            "ROBO-COC iniciado correctamente."
+        );
+
+        console.log(
+            "Sistema preparado para ESP32 + L298N."
+        );
 
     }
 );

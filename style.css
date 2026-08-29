@@ -1,0 +1,1829 @@
+/* =====================================================
+   CONFIGURACIÓN GENERAL
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --blue: #003b6f;
+    --blue-dark: #002746;
+    --blue-light: #075a9c;
+
+    --white: #ffffff;
+
+    --gray-light: #f1f3f5;
+    --gray: #d9dee3;
+    --gray-dark: #68727d;
+
+    --black: #111820;
+
+    --border: #dce2e7;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    min-height: 76px;
+
+    padding: 12px 5%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border-bottom: 1px solid var(--border);
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.brand-mark {
+    width: 45px;
+    height: 45px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--blue);
+
+    color: white;
+
+    font-size: 24px;
+    font-weight: 900;
+
+    border-radius: 8px;
+}
+
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.brand-text strong {
+    font-size: 20px;
+    color: var(--blue-dark);
+}
+
+
+.brand-text strong span {
+    color: var(--blue-light);
+}
+
+
+.brand-text small {
+    color: var(--gray-dark);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+}
+
+
+.nav-menu {
+    display: flex;
+
+    gap: 20px;
+
+    align-items: center;
+}
+
+
+.nav-menu a {
+    color: var(--blue-dark);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    transition: 0.2s;
+}
+
+
+.nav-menu a:hover {
+    color: var(--blue-light);
+}
+
+
+.connection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.connection-dot {
+    width: 10px;
+    height: 10px;
+
+    background: #777;
+
+    border-radius: 50%;
+}
+
+
+.connection small,
+.connection strong {
+    display: block;
+}
+
+
+.connection small {
+    color: var(--gray-dark);
+
+    font-size: 9px;
+}
+
+
+.connection strong {
+    color: #777;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   PRESENTADOR
+===================================================== */
+
+.presenter {
+    min-height: 54px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 18px;
+
+    background: var(--blue-dark);
+
+    color: white;
+
+    letter-spacing: 1px;
+}
+
+
+.presenter span {
+    font-size: 10px;
+
+    opacity: 0.75;
+}
+
+
+.presenter strong {
+    font-size: 18px;
+
+    letter-spacing: 3px;
+}
+
+
+.presenter-line {
+    width: 70px;
+
+    height: 1px;
+
+    background: rgba(255, 255, 255, 0.4);
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+    min-height: 720px;
+
+    padding: 90px 7%;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    align-items: center;
+
+    gap: 60px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f5f7f9 55%,
+            #e7edf2 100%
+        );
+}
+
+
+.hero-content {
+    max-width: 650px;
+}
+
+
+.section-label {
+    color: var(--blue-light);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 20px;
+}
+
+
+.hero h1 {
+    font-size: clamp(60px, 8vw, 110px);
+
+    line-height: 0.9;
+
+    letter-spacing: -5px;
+
+    color: var(--blue-dark);
+}
+
+
+.hero h1 span {
+    color: var(--blue-light);
+}
+
+
+.hero h2 {
+    margin-top: 20px;
+
+    color: var(--gray-dark);
+
+    font-size: 17px;
+
+    letter-spacing: 4px;
+}
+
+
+.hero-description {
+    max-width: 600px;
+
+    margin: 25px 0;
+
+    color: #56616c;
+
+    font-size: 16px;
+}
+
+
+.hero-buttons {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+}
+
+
+.btn {
+    padding: 14px 22px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.7px;
+
+    border-radius: 5px;
+
+    transition: 0.25s;
+}
+
+
+.btn-primary {
+    background: var(--blue);
+
+    color: white;
+}
+
+
+.btn-primary:hover {
+    background: var(--blue-light);
+
+    transform: translateY(-2px);
+}
+
+
+.btn-secondary {
+    border: 1px solid var(--blue);
+
+    color: var(--blue);
+
+    background: white;
+}
+
+
+.btn-secondary:hover {
+    background: var(--blue);
+
+    color: white;
+}
+
+
+.hero-metrics {
+    margin-top: 45px;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    border-top: 1px solid var(--border);
+}
+
+
+.hero-metrics div {
+    padding: 18px 12px;
+
+    border-right: 1px solid var(--border);
+}
+
+
+.hero-metrics div:last-child {
+    border-right: none;
+}
+
+
+.hero-metrics strong,
+.hero-metrics span {
+    display: block;
+}
+
+
+.hero-metrics strong {
+    color: var(--blue);
+
+    font-size: 18px;
+}
+
+
+.hero-metrics span {
+    margin-top: 4px;
+
+    color: var(--gray-dark);
+
+    font-size: 8px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   PANEL DEL VEHÍCULO
+===================================================== */
+
+.hero-panel {
+    position: relative;
+
+    min-height: 500px;
+
+    background: var(--blue-dark);
+
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 25px 60px rgba(0, 39, 70, 0.22);
+}
+
+
+.panel-grid {
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+        );
+
+    background-size: 35px 35px;
+}
+
+
+.robot-placeholder {
+    position: absolute;
+
+    inset: 80px 30px 90px;
+
+    display: grid;
+
+    place-items: center;
+}
+
+
+.car-body {
+    position: relative;
+
+    width: 280px;
+
+    height: 170px;
+
+    background: #dfe4e8;
+
+    border: 7px solid #ffffff;
+
+    border-radius: 30px;
+
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.4);
+}
+
+
+.car-top {
+    position: absolute;
+
+    top: 20px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background: var(--blue);
+
+    color: white;
+
+    padding: 10px 25px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+.car-front {
+    position: absolute;
+
+    bottom: 18px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    gap: 30px;
+}
+
+
+.car-front span {
+    width: 30px;
+
+    height: 12px;
+
+    background: var(--blue-light);
+
+    border-radius: 5px;
+}
+
+
+.car-center {
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    font-weight: 900;
+
+    font-size: 25px;
+
+    color: var(--blue-dark);
+}
+
+
+.wheel {
+    position: absolute;
+
+    width: 55px;
+
+    height: 70px;
+
+    background: #101820;
+
+    border-radius: 14px;
+
+    border: 5px solid #555;
+}
+
+
+.wheel-1 {
+    left: -40px;
+
+    top: 20px;
+}
+
+
+.wheel-2 {
+    right: -40px;
+
+    top: 20px;
+}
+
+
+.wheel-3 {
+    left: -40px;
+
+    bottom: 20px;
+}
+
+
+.wheel-4 {
+    right: -40px;
+
+    bottom: 20px;
+}
+
+
+.technical-label {
+    position: absolute;
+
+    color: white;
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    padding: 6px 10px;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+}
+
+
+.label-one {
+    top: 30px;
+
+    left: 30px;
+}
+
+
+.label-two {
+    top: 30px;
+
+    right: 30px;
+}
+
+
+.label-three {
+    bottom: 80px;
+
+    left: 30px;
+}
+
+
+.hero-status {
+    position: absolute;
+
+    left: 30px;
+
+    bottom: 25px;
+
+    color: white;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+}
+
+
+.hero-status span {
+    display: inline-block;
+
+    width: 8px;
+
+    height: 8px;
+
+    background: #8b949d;
+
+    border-radius: 50%;
+
+    margin-right: 8px;
+}
+
+
+.hero-specs {
+    position: absolute;
+
+    right: 30px;
+
+    bottom: 20px;
+
+    display: flex;
+
+    gap: 20px;
+}
+
+
+.hero-specs div {
+    color: white;
+}
+
+
+.hero-specs small,
+.hero-specs strong {
+    display: block;
+}
+
+
+.hero-specs small {
+    font-size: 7px;
+
+    opacity: 0.6;
+}
+
+
+.hero-specs strong {
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   COC
+===================================================== */
+
+.coc-section {
+    padding: 70px 7%;
+
+    background: var(--blue);
+}
+
+
+.coc-box {
+    max-width: 1200px;
+
+    margin: auto;
+
+    color: white;
+}
+
+
+.coc-title {
+    font-size: 35px;
+
+    margin-bottom: 35px;
+}
+
+
+.coc-title strong {
+    color: #cbd8e3;
+}
+
+
+.coc-definition {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 25px;
+}
+
+
+.coc-definition > div {
+    padding: 25px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.06);
+}
+
+
+.coc-definition b {
+    font-size: 45px;
+
+    display: block;
+}
+
+
+.coc-definition span {
+    font-size: 13px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+
+.coc-definition p {
+    margin-top: 10px;
+
+    color: #d7e0e7;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   SECCIONES
+===================================================== */
+
+.section {
+    padding: 100px 7%;
+}
+
+
+.gray-section {
+    background: var(--gray-light);
+}
+
+
+.section-title {
+    max-width: 750px;
+
+    margin-bottom: 50px;
+}
+
+
+.section-title > span {
+    color: var(--blue-light);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+
+.section-title h2 {
+    margin: 10px 0;
+
+    font-size: clamp(35px, 5vw, 55px);
+
+    line-height: 1;
+
+    color: var(--blue-dark);
+}
+
+
+.section-title h2 strong {
+    color: var(--blue-light);
+}
+
+
+.section-title p {
+    color: var(--gray-dark);
+}
+
+
+/* =====================================================
+   TARJETAS
+===================================================== */
+
+.project-grid,
+.hardware-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+
+.info-card,
+.hardware-card {
+    position: relative;
+
+    padding: 30px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    transition: 0.25s;
+}
+
+
+.info-card:hover,
+.hardware-card:hover {
+    transform: translateY(-5px);
+
+    border-color: var(--blue-light);
+
+    box-shadow:
+        0 15px 30px rgba(0, 0, 0, 0.07);
+}
+
+
+.card-number {
+    position: absolute;
+
+    top: 20px;
+
+    right: 20px;
+
+    color: #ccd3d9;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+.card-icon,
+.hardware-icon {
+    width: 55px;
+
+    height: 55px;
+
+    display: grid;
+
+    place-items: center;
+
+    background: var(--blue);
+
+    color: white;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    font-weight: 900;
+}
+
+
+.info-card h3,
+.hardware-card h3 {
+    color: var(--blue-dark);
+
+    margin-bottom: 12px;
+}
+
+
+.info-card p,
+.hardware-card p {
+    color: var(--gray-dark);
+
+    font-size: 14px;
+}
+
+
+.info-card ul {
+    padding-left: 18px;
+
+    color: var(--gray-dark);
+
+    font-size: 13px;
+}
+
+
+.hardware-card small {
+    color: var(--blue-light);
+
+    font-weight: bold;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+.dashboard {
+    max-width: 1200px;
+
+    margin: auto;
+
+    background: var(--blue-dark);
+
+    color: white;
+
+    padding: 30px;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+
+.dashboard-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.12);
+
+    padding-bottom: 25px;
+}
+
+
+.dashboard-header small {
+    font-size: 9px;
+
+    opacity: 0.6;
+}
+
+
+.dashboard-header h3 {
+    font-size: 25px;
+}
+
+
+.vehicle-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+#vehicleStatusDot {
+    width: 10px;
+
+    height: 10px;
+
+    background: #7c8790;
+
+    border-radius: 50%;
+}
+
+
+.vehicle-status strong {
+    display: block;
+
+    font-size: 11px;
+}
+
+
+.telemetry {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    margin: 25px 0;
+
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+.telemetry div {
+    padding: 18px;
+
+    border-right:
+        1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+.telemetry small {
+    display: block;
+
+    font-size: 8px;
+
+    opacity: 0.6;
+}
+
+
+.telemetry strong {
+    font-size: 20px;
+}
+
+
+.control-layout {
+    display: grid;
+
+    grid-template-columns: 0.8fr 1.2fr;
+
+    gap: 20px;
+}
+
+
+.control-panel {
+    padding: 25px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 8px;
+}
+
+
+.panel-title {
+    margin-bottom: 20px;
+
+    font-size: 10px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    color: #b8c9d7;
+}
+
+
+.direction-pad {
+    width: 190px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 60px);
+
+    grid-template-rows:
+        repeat(3, 60px);
+
+    gap: 5px;
+}
+
+
+.direction {
+    border: 0;
+
+    border-radius: 8px;
+
+    background: #e9edf0;
+
+    color: var(--blue-dark);
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+
+.direction:hover {
+    background: white;
+
+    transform: scale(1.05);
+}
+
+
+.up {
+    grid-column: 2;
+}
+
+
+.left {
+    grid-column: 1;
+
+    grid-row: 2;
+}
+
+
+.stop {
+    grid-column: 2;
+
+    grid-row: 2;
+}
+
+
+.right {
+    grid-column: 3;
+
+    grid-row: 2;
+}
+
+
+.down {
+    grid-column: 2;
+
+    grid-row: 3;
+}
+
+
+.control-help {
+    margin-top: 20px;
+
+    text-align: center;
+
+    color: #9baab6;
+
+    font-size: 10px;
+}
+
+
+.function-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+}
+
+
+.function-grid button {
+    min-height: 65px;
+
+    padding: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    background: #f0f3f5;
+
+    color: var(--blue-dark);
+
+    border: 0;
+
+    border-radius: 7px;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+
+.function-grid button:hover {
+    background: white;
+}
+
+
+.function-grid button span {
+    font-size: 20px;
+}
+
+
+.function-grid strong,
+.function-grid small {
+    display: block;
+}
+
+
+.function-grid strong {
+    font-size: 10px;
+}
+
+
+.function-grid small {
+    font-size: 8px;
+
+    color: var(--gray-dark);
+}
+
+
+.speed-panel {
+    margin-top: 20px;
+
+    padding: 20px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    border-radius: 8px;
+}
+
+
+.speed-panel > div {
+    display: flex;
+
+    justify-content: space-between;
+}
+
+
+.speed-panel small {
+    font-size: 9px;
+
+    opacity: 0.6;
+}
+
+
+.speed-panel strong {
+    font-size: 20px;
+}
+
+
+.speed-panel input {
+    width: 100%;
+
+    margin-top: 15px;
+
+    accent-color: white;
+}
+
+
+.mode-panel {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+.mode-panel > span {
+    margin-right: auto;
+
+    font-size: 9px;
+
+    opacity: 0.7;
+}
+
+
+.mode {
+    padding: 10px 18px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.2);
+
+    border-radius: 5px;
+
+    background: transparent;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+
+.mode.active {
+    background: white;
+
+    color: var(--blue-dark);
+}
+
+
+/* =====================================================
+   SENSORES
+===================================================== */
+
+.sensor-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+}
+
+
+.sensor-card {
+    padding: 30px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+
+.sensor-header {
+    display: flex;
+
+    justify-content: space-between;
+}
+
+
+.sensor-header span {
+    color: var(--gray-dark);
+
+    font-size: 9px;
+}
+
+
+.sensor-header b {
+    color: var(--blue);
+
+    font-size: 10px;
+}
+
+
+.distance {
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 8px;
+
+    margin: 25px 0;
+}
+
+
+.distance strong {
+    color: var(--blue-dark);
+
+    font-size: 60px;
+}
+
+
+.distance span {
+    color: var(--gray-dark);
+}
+
+
+.sensor-bar {
+    height: 10px;
+
+    background: #e5e8eb;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+
+.sensor-bar div {
+    width: 0%;
+
+    height: 100%;
+
+    background: var(--blue);
+
+    transition: 0.3s;
+}
+
+
+.scale {
+    display: flex;
+
+    justify-content: space-between;
+
+    color: var(--gray-dark);
+
+    font-size: 8px;
+
+    margin-top: 5px;
+}
+
+
+.sensor-card p {
+    margin-top: 20px;
+
+    color: var(--gray-dark);
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   INFORMACIÓN
+===================================================== */
+
+.info-project {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 1px;
+
+    background: var(--border);
+
+    border: 1px solid var(--border);
+}
+
+
+.info-project div {
+    padding: 25px;
+
+    background: white;
+}
+
+
+.info-project span,
+.info-project strong {
+    display: block;
+}
+
+
+.info-project span {
+    color: var(--gray-dark);
+
+    font-size: 9px;
+}
+
+
+.info-project strong {
+    color: var(--blue-dark);
+
+    font-size: 16px;
+}
+
+
+/* =====================================================
+   EQUIPO
+===================================================== */
+
+.team-section {
+    margin-top: 90px;
+}
+
+
+.team-heading {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: end;
+
+    margin-bottom: 30px;
+}
+
+
+.team-heading span {
+    color: var(--blue-light);
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+}
+
+
+.team-heading h3 {
+    font-size: 40px;
+
+    color: var(--blue-dark);
+}
+
+
+.team-heading h3 strong {
+    color: var(--blue-light);
+}
+
+
+.team-count {
+    color: var(--blue);
+
+    font-size: 45px;
+
+    font-weight: 900;
+
+    text-align: right;
+}
+
+
+.team-count small {
+    display: block;
+
+    color: var(--gray-dark);
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+}
+
+
+.team-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+
+.team-member {
+    position: relative;
+
+    min-height: 180px;
+
+    padding: 25px;
+
+    background: var(--gray-light);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: flex-end;
+
+    transition: 0.2s;
+}
+
+
+.team-member:hover {
+    background: var(--blue-dark);
+
+    color: white;
+
+    transform: translateY(-4px);
+}
+
+
+.member-number {
+    position: absolute;
+
+    top: 15px;
+
+    right: 15px;
+
+    font-size: 9px;
+
+    color: var(--gray-dark);
+}
+
+
+.member-icon {
+    margin-bottom: auto;
+
+    color: var(--blue);
+
+    font-size: 28px;
+}
+
+
+.team-member strong {
+    font-size: 13px;
+}
+
+
+.team-member small {
+    margin-top: 5px;
+
+    color: var(--gray-dark);
+
+    font-size: 8px;
+
+    font-weight: bold;
+}
+
+
+.team-member:hover small,
+.team-member:hover .member-number {
+    color: #c2d0dc;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+    padding: 45px 7%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    background: #001d33;
+
+    color: white;
+}
+
+
+.footer-logo-text {
+    color: white;
+
+    font-size: 28px;
+
+    font-weight: 900;
+
+    letter-spacing: 3px;
+}
+
+
+.footer-brand strong,
+.footer-brand span {
+    display: block;
+}
+
+
+.footer-brand strong {
+    font-size: 25px;
+}
+
+
+.footer-brand span {
+    color: #aab8c3;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+}
+
+
+.footer-info {
+    text-align: right;
+}
+
+
+.footer-info span {
+    display: block;
+
+    color: #aab8c3;
+
+    font-size: 9px;
+
+    margin: 3px 0;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .navbar {
+        flex-wrap: wrap;
+    }
+
+
+    .nav-menu {
+        order: 3;
+
+        width: 100%;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+    }
+
+
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+
+    .project-grid,
+    .hardware-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .control-layout {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .navbar {
+        padding: 12px 4%;
+    }
+
+
+    .connection {
+        display: none;
+    }
+
+
+    .presenter {
+        gap: 8px;
+    }
+
+
+    .presenter-line {
+        width: 25px;
+    }
+
+
+    .hero {
+        padding: 70px 5%;
+    }
+
+
+    .hero h1 {
+        font-size: 65px;
+    }
+
+
+    .hero-metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .hero-panel {
+        min-height: 430px;
+    }
+
+
+    .hero-specs {
+        display: none;
+    }
+
+
+    .coc-definition,
+    .project-grid,
+    .hardware-grid,
+    .sensor-grid,
+    .info-project,
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .section {
+        padding: 70px 5%;
+    }
+
+
+    .dashboard {
+        padding: 18px;
+    }
+
+
+    .telemetry {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .function-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .mode-panel {
+        flex-wrap: wrap;
+    }
+
+
+    .mode-panel > span {
+        width: 100%;
+    }
+
+
+    .team-heading,
+    footer {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    .footer-info {
+        text-align: left;
+    }
+
+}

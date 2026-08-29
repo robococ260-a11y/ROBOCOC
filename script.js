@@ -1,245 +1,256 @@
-/* ==========================================
-   CONFIGURACIÓN ESP32
-========================================== */
-
-// Cuando conectemos el ESP32,
-// cambiaremos esta dirección por la IP real.
-//
-// Ejemplo:
-// const ESP32_IP = "192.168.4.1";
-
-const ESP32_IP = "";
-
-let esp32Connected = false;
-
-
-/* ==========================================
-   ESTADOS
-========================================== */
+/* =========================================
+   ESTADO DEL VEHÍCULO
+========================================= */
 
 let speed = 70;
+let currentMovement = "DETENIDO";
 
-let lights = false;
-let leftSignal = false;
-let rightSignal = false;
-let emergency = false;
-
-let currentMode = "manual";
-
-
-/* ==========================================
-   CONEXIÓN CON ESP32
-========================================== */
-
-async function sendCommand(command) {
-
-    console.log("Comando:", command);
-
-    /*
-        FUTURA CONEXIÓN ESP32
-
-        Cuando tengamos la IP del ESP32,
-        podremos utilizar algo como:
-
-        fetch(`http://${ESP32_IP}/${command}`)
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(error => console.log(error));
-    */
-
-    if (!ESP32_IP) {
-        return;
-    }
-
-    try {
-
-        const response = await fetch(
-            `http://${ESP32_IP}/${command}`
-        );
-
-        const data = await response.text();
-
-        console.log("ESP32:", data);
-
-        setConnection(true);
-
-    } catch (error) {
-
-        console.error("Error ESP32:", error);
-
-        setConnection(false);
-
-    }
-}
+let lightsOn = false;
+let leftSignalOn = false;
+let rightSignalOn = false;
+let emergencyOn = false;
 
 
-/* ==========================================
-   ESTADO ESP32
-========================================== */
-
-function setConnection(status) {
-
-    esp32Connected = status;
-
-    const dot = document.getElementById("connectionDot");
-    const text = document.getElementById("connectionText");
-
-    if (status) {
-
-        dot.style.background = "#6f879b";
-        text.textContent = "CONECTADO";
-
-    } else {
-
-        dot.style.background = "#77818a";
-        text.textContent = "DESCONECTADO";
-
-    }
-}
-
-
-/* ==========================================
+/* =========================================
    MOVIMIENTO
-========================================== */
+========================================= */
 
 function move(direction) {
 
-    const vehicleStatus =
-        document.getElementById("vehicleStatus");
+    const names = {
+        forward: "AVANZANDO",
+        backward: "RETROCEDIENDO",
+        left: "GIRO IZQUIERDA",
+        right: "GIRO DERECHA"
+    };
 
-    if (vehicleStatus) {
-        vehicleStatus.textContent =
-            direction.toUpperCase();
-    }
+    currentMovement = names[direction] || "DETENIDO";
 
-    console.log("Movimiento:", direction);
+    updateVehicleStatus();
 
-    sendCommand(`move?direction=${direction}&speed=${speed}`);
+    /*
+        AQUÍ POSTERIORMENTE PUEDES ENVIAR
+        EL COMANDO AL ESP32.
+
+        Ejemplo:
+
+        sendToESP32({
+            command: direction,
+            speed: speed
+        });
+    */
 }
 
+
+/* =========================================
+   DETENER
+========================================= */
 
 function stopCar() {
 
-    const vehicleStatus =
-        document.getElementById("vehicleStatus");
+    currentMovement = "DETENIDO";
 
-    if (vehicleStatus) {
-        vehicleStatus.textContent = "DETENIDO";
-    }
+    updateVehicleStatus();
 
-    console.log("STOP");
+    /*
+        Posteriormente:
 
-    sendCommand("stop");
+        sendToESP32({
+            command: "stop"
+        });
+    */
 }
 
 
-/* ==========================================
+/* =========================================
+   ESTADO
+========================================= */
+
+function updateVehicleStatus() {
+
+    const status = document.getElementById("vehicleStatus");
+    const dot = document.getElementById("vehicleStatusDot");
+
+    status.textContent = currentMovement;
+
+    if (currentMovement === "DETENIDO") {
+
+        dot.style.background = "#5f6976";
+        dot.style.boxShadow = "0 0 10px #5f6976";
+
+    } else {
+
+        dot.style.background = "#258be8";
+        dot.style.boxShadow = "0 0 15px #258be8";
+    }
+}
+
+
+/* =========================================
    VELOCIDAD
-========================================== */
+========================================= */
 
 function changeSpeed(value) {
 
-    speed = Number(value);
+    speed = value;
 
-    document.getElementById("speedValue")
-        .textContent = `${speed}%`;
+    document.getElementById("speedLabel").textContent =
+        value + "%";
 
-    document.getElementById("speedLabel")
-        .textContent = `${speed}%`;
+    document.getElementById("speedValue").textContent =
+        value + "%";
 
-    sendCommand(`speed?value=${speed}`);
+    /*
+        Posteriormente:
+
+        sendToESP32({
+            command: "speed",
+            value: value
+        });
+    */
 }
 
 
-/* ==========================================
+/* =========================================
    LUCES
-========================================== */
+========================================= */
 
 function toggleLights() {
 
-    lights = !lights;
+    lightsOn = !lightsOn;
 
-    const state =
-        document.getElementById("lightsState");
+    const state = document.getElementById("lightsState");
+    const button = document.getElementById("lightsBtn");
 
-    state.textContent =
-        lights ? "ENCENDIDAS" : "APAGADAS";
+    if (lightsOn) {
 
-    sendCommand(
-        `lights?state=${lights ? 1 : 0}`
-    );
+        state.textContent = "ENCENDIDAS";
+
+        button.style.borderColor = "#258be8";
+        button.style.background = "#132b45";
+
+    } else {
+
+        state.textContent = "APAGADAS";
+
+        button.style.borderColor = "";
+        button.style.background = "";
+    }
+
+    /*
+        Posteriormente:
+
+        sendToESP32({
+            command: "lights",
+            value: lightsOn
+        });
+    */
 }
 
 
-/* ==========================================
+/* =========================================
    BOCINA
-========================================== */
+========================================= */
 
 function horn() {
 
-    console.log("Bocina");
+    /*
+        Posteriormente:
 
-    sendCommand("horn");
+        sendToESP32({
+            command: "horn"
+        });
+    */
 
+    const originalTitle = document.title;
+
+    document.title = "🔊 BOCINA · ROBO-COC";
+
+    setTimeout(() => {
+        document.title = originalTitle;
+    }, 700);
 }
 
 
-/* ==========================================
+/* =========================================
    DIRECCIONALES
-========================================== */
+========================================= */
 
 function toggleSignal(side) {
 
     if (side === "left") {
 
-        leftSignal = !leftSignal;
+        leftSignalOn = !leftSignalOn;
 
-        sendCommand(
-            `signal?side=left&state=${leftSignal ? 1 : 0}`
-        );
+        const button =
+            document.getElementById("leftSignalBtn");
+
+        button.style.borderColor =
+            leftSignalOn ? "#258be8" : "";
 
     }
 
     if (side === "right") {
 
-        rightSignal = !rightSignal;
+        rightSignalOn = !rightSignalOn;
 
-        sendCommand(
-            `signal?side=right&state=${rightSignal ? 1 : 0}`
-        );
+        const button =
+            document.getElementById("rightSignalBtn");
+
+        button.style.borderColor =
+            rightSignalOn ? "#258be8" : "";
 
     }
 
+    /*
+        Posteriormente:
+
+        sendToESP32({
+            command: "signal",
+            side: side
+        });
+    */
 }
 
 
-/* ==========================================
+/* =========================================
    EMERGENCIA
-========================================== */
+========================================= */
 
 function toggleEmergency() {
 
-    emergency = !emergency;
+    emergencyOn = !emergencyOn;
 
-    console.log(
-        "Emergencia:",
-        emergency
-    );
+    const button =
+        document.getElementById("emergencyBtn");
 
-    sendCommand(
-        `emergency?state=${emergency ? 1 : 0}`
-    );
+    if (emergencyOn) {
 
+        button.style.borderColor = "#258be8";
+        button.style.background = "#132b45";
+
+    } else {
+
+        button.style.borderColor = "";
+        button.style.background = "";
+    }
+
+    /*
+        Posteriormente:
+
+        sendToESP32({
+            command: "emergency",
+            value: emergencyOn
+        });
+    */
 }
 
 
-/* ==========================================
-   MODO
-========================================== */
+/* =========================================
+   MODO DE CONDUCCIÓN
+========================================= */
 
 function setMode(mode) {
-
-    currentMode = mode;
 
     const manual =
         document.getElementById("manualMode");
@@ -247,157 +258,133 @@ function setMode(mode) {
     const automatic =
         document.getElementById("autoMode");
 
-    manual.classList.remove("active");
-    automatic.classList.remove("active");
-
     if (mode === "manual") {
 
         manual.classList.add("active");
+        automatic.classList.remove("active");
 
     } else {
 
         automatic.classList.add("active");
-
+        manual.classList.remove("active");
     }
 
-    console.log("Modo:", mode);
+    /*
+        Posteriormente:
 
-    sendCommand(`mode?type=${mode}`);
-
+        sendToESP32({
+            command: "mode",
+            value: mode
+        });
+    */
 }
 
 
-/* ==========================================
-   SENSORES
-========================================== */
-
-function updateFrontSensor(distance) {
-
-    document.getElementById("frontDistance")
-        .textContent = `${distance} cm`;
-
-    document.getElementById("sensorFrontBig")
-        .textContent = distance;
-
-    let percentage =
-        Math.min(Math.max(distance, 0), 100);
-
-    document.getElementById("frontBar")
-        .style.width = `${percentage}%`;
-
-}
-
-
-function updateRearSensor(distance) {
-
-    document.getElementById("rearDistance")
-        .textContent = `${distance} cm`;
-
-    document.getElementById("sensorRearBig")
-        .textContent = distance;
-
-    let percentage =
-        Math.min(Math.max(distance, 0), 100);
-
-    document.getElementById("rearBar")
-        .style.width = `${percentage}%`;
-
-}
-
-
-/* ==========================================
+/* =========================================
    TECLADO
-========================================== */
+========================================= */
 
-document.addEventListener(
-    "keydown",
-    function(event) {
+document.addEventListener("keydown", function(event) {
 
-        if (
-            event.target.tagName === "INPUT" ||
-            event.target.tagName === "TEXTAREA"
-        ) {
-            return;
-        }
+    const key = event.key.toLowerCase();
 
-        switch (event.key.toLowerCase()) {
+    if (
+        key === "w" ||
+        key === "a" ||
+        key === "s" ||
+        key === "d" ||
+        key === "arrowup" ||
+        key === "arrowdown" ||
+        key === "arrowleft" ||
+        key === "arrowright"
+    ) {
 
-            case "w":
-            case "arrowup":
-                move("forward");
-                break;
-
-            case "s":
-            case "arrowdown":
-                move("backward");
-                break;
-
-            case "a":
-            case "arrowleft":
-                move("left");
-                break;
-
-            case "d":
-            case "arrowright":
-                move("right");
-                break;
-
-            case " ":
-                stopCar();
-                break;
-
-        }
-
+        event.preventDefault();
     }
-);
+
+    switch (key) {
+
+        case "w":
+        case "arrowup":
+            move("forward");
+            break;
+
+        case "s":
+        case "arrowdown":
+            move("backward");
+            break;
+
+        case "a":
+        case "arrowleft":
+            move("left");
+            break;
+
+        case "d":
+        case "arrowright":
+            move("right");
+            break;
+
+        case " ":
+            stopCar();
+            break;
+    }
+
+});
 
 
-/* ==========================================
-   DATOS DE PRUEBA
-========================================== */
+/* =========================================
+   SOLTAR TECLA
+========================================= */
 
-// Estos valores son solamente para comprobar
-// visualmente el funcionamiento de la página.
-// Cuando conectemos el ESP32 serán sustituidos
-// por datos reales.
+document.addEventListener("keyup", function(event) {
 
-function demoSensors() {
+    const key = event.key.toLowerCase();
 
-    const front =
-        Math.floor(Math.random() * 80) + 20;
+    if (
+        key === "w" ||
+        key === "a" ||
+        key === "s" ||
+        key === "d" ||
+        key === "arrowup" ||
+        key === "arrowdown" ||
+        key === "arrowleft" ||
+        key === "arrowright"
+    ) {
 
-    const rear =
-        Math.floor(Math.random() * 80) + 20;
+        stopCar();
+    }
 
-    updateFrontSensor(front);
+});
 
-    updateRearSensor(rear);
 
+/* =========================================
+   FUNCIÓN PREPARADA PARA ESP32
+========================================= */
+
+function sendToESP32(data) {
+
+    /*
+        ESTA FUNCIÓN ESTÁ PREPARADA PARA
+        LA FUTURA CONEXIÓN CON EL ESP32.
+
+        Por ejemplo, cuando el ESP32 tenga
+        una IP como:
+
+        http://192.168.4.1
+
+        podremos hacer:
+
+        fetch("http://192.168.4.1/control", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        NO SE ACTIVA TODAVÍA porque primero
+        necesitamos definir el código del ESP32.
+    */
+
+    console.log("Comando para ESP32:", data);
 }
-
-
-setInterval(demoSensors, 3000);
-
-
-/* ==========================================
-   INICIO
-========================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        changeSpeed(70);
-
-        setConnection(false);
-
-        console.log(
-            "ROBO-COC iniciado correctamente."
-        );
-
-        console.log(
-            "Sistema preparado para ESP32 + L298N."
-        );
-
-    }
-);

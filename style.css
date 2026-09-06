@@ -1621,3 +1621,127 @@ footer {
     }
 
 }
+/* =========================================================
+   ROBO-COC
+   AJUSTES PARA CONTROL REAL DEL ESP32
+   ========================================================= */
+
+
+/* Evita selección accidental al manejar el carro */
+
+.direction,
+.function-grid button,
+.mode {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* Importante para mantener presionados
+   los botones desde celular */
+
+.direction,
+.brake-button,
+.function-grid button {
+    touch-action: none;
+}
+
+
+/* BOTÓN PRESIONADO */
+
+.direction:active {
+    background: var(--blue-light);
+    border-color: var(--blue-bright);
+
+    transform: scale(0.94);
+
+    box-shadow:
+        0 0 18px
+        rgba(37, 139, 232, 0.45);
+}
+
+
+/* BOTÓN STOP */
+
+.direction.stop:active {
+    background: #7a202b;
+    border-color: #d34b5a;
+
+    box-shadow:
+        0 0 18px
+        rgba(211, 75, 90, 0.35);
+}
+
+
+/* FRENO */
+
+.brake-button:active {
+    background: #401820 !important;
+    border-color: #e05260 !important;
+
+    transform: scale(0.98);
+}
+
+
+/* TRANSICIÓN DEL PUNTO DE CONEXIÓN */
+
+.connection-dot,
+#vehicleStatusDot {
+    transition:
+        background 0.25s,
+        box-shadow 0.25s;
+}
+
+
+/* TRANSICIÓN DE BOTONES */
+
+.function-grid button,
+.direction,
+.mode {
+    transition:
+        background 0.18s,
+        border-color 0.18s,
+        transform 0.12s,
+        box-shadow 0.18s;
+}
+
+
+/* SLIDER MÁS CÓMODO */
+
+#speedSlider {
+    cursor: pointer;
+}
+
+
+/* CELULAR */
+
+@media (max-width: 700px) {
+
+    .direction {
+        min-width: 65px;
+        min-height: 65px;
+
+        font-size: 24px;
+    }
+
+
+    .function-grid button {
+        min-height: 75px;
+    }
+
+
+    #speedSlider {
+        min-height: 30px;
+    }
+}
+
+
+/* CELULAR PEQUEÑO */
+
+@media (max-width: 420px) {
+
+    .direction {
+        min-width: 55px;
+        min-height: 55px;
+    }
+}

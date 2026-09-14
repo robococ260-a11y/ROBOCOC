@@ -1,1008 +1,501 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description"
-        content="ROBO-COC - Proyecto de mecatrónica, robótica, electrónica y programación con ESP32.">
-
-    <title>ROBO-COC | INTECAP</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#05070b">
+  <title>ROBO-COC // Centro de Control</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- =========================
-         BARRA DE NAVEGACIÓN
-    ========================== -->
+  <div id="cursor"></div>
+  <div id="cursorTrail"></div>
+  <div class="noise"></div>
 
-    <header class="navbar">
-
-        <div class="brand">
-            <div class="brand-mark">R</div>
-
-            <div class="brand-text">
-                <strong>ROBO-<span>COC</span></strong>
-                <small>SMART ROBOTIC CAR</small>
-            </div>
-        </div>
-
-        <nav class="nav-menu">
-            <a href="#inicio">INICIO</a>
-            <a href="#proyecto">PROYECTO</a>
-            <a href="#tecnologia">TECNOLOGÍA</a>
-            <a href="#control">CONTROL</a>
-            <a href="#sensores">SENSORES</a>
-            <a href="#equipo">EQUIPO</a>
-        </nav>
-
-        <div class="connection">
-            <span class="connection-dot" id="connectionDot"></span>
-
-            <div>
-                <small>ESP32</small>
-                <strong id="connectionText">DESCONECTADO</strong>
-            </div>
-        </div>
-
-    </header>
-
-
-    <!-- =========================
-         INTECAP
-    ========================== -->
-
-    <div class="intecap-top">
-        INTECAP
+  <aside class="side-rail">
+    <div class="rail-logo">
+      <span>RC</span>
     </div>
 
-
-    <main>
-
-        <!-- =========================
-             HERO
-        ========================== -->
-
-        <section class="hero" id="inicio">
-
-            <div class="hero-content">
-
-                <div class="section-label">
-                    PROYECTO DE MECATRÓNICA · INTECAP · 2026
-                </div>
-
-                <h1>
-                    ROBO-<span>COC</span>
-                </h1>
-
-                <h2>
-                    CONTROL · OPERACIÓN · CONDUCCIÓN
-                </h2>
-
-                <p class="hero-description">
-                    Sistema mecatrónico de movilidad inteligente que
-                    integra electrónica, programación, automatización,
-                    sensores y comunicación inalámbrica mediante ESP32.
-                </p>
-
-                <div class="hero-buttons">
-
-                    <a href="#control" class="btn btn-primary">
-                        ABRIR PANEL DE CONTROL
-                    </a>
-
-                    <a href="#proyecto" class="btn btn-secondary">
-                        CONOCER EL PROYECTO
-                    </a>
-
-                </div>
-
-                <!-- FRASE -->
-
-                <div class="motivational-phrase">
-
-                    <span>
-                        INNOVACIÓN · TECNOLOGÍA · PRECISIÓN
-                    </span>
-
-                    <p>
-                        “Transformamos ideas en movimiento,
-                        combinando tecnología, innovación y precisión.”
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================
-                 REPRESENTACIÓN DEL CARRO
-            ========================== -->
-
-            <div class="hero-panel">
-
-                <div class="panel-grid"></div>
-
-                <div class="technical-label label-one">
-                    ESP32
-                </div>
-
-                <div class="technical-label label-two">
-                    MOTOR DC
-                </div>
-
-                <div class="technical-label label-three">
-                    SENSOR
-                </div>
-
-
-                <div class="robot-placeholder">
-
-                    <div class="car-body">
-
-                        <div class="car-top">
-                            ESP32
-                        </div>
-
-                        <div class="car-front">
-                            <span></span>
-                            <span></span>
-                        </div>
-
-                        <div class="car-center">
-                            ROBO
-                        </div>
-
-                        <div class="wheel wheel-1"></div>
-                        <div class="wheel wheel-2"></div>
-                        <div class="wheel wheel-3"></div>
-                        <div class="wheel wheel-4"></div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="hero-status">
-                    <span></span>
-                    SISTEMA DE CONTROL
-                </div>
-
-
-                <div class="hero-specs">
-
-                    <div>
-                        <small>CONTROLADOR</small>
-                        <strong>ESP32</strong>
-                    </div>
-
-                    <div>
-                        <small>MOTORES</small>
-                        <strong>4 DC</strong>
-                    </div>
-
-                    <div>
-                        <small>DRIVER</small>
-                        <strong>2 × L298N</strong>
-                    </div>
-
-                    <div>
-                        <small>COMUNICACIÓN</small>
-                        <strong>WI-FI</strong>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             COC
-        ========================== -->
-
-        <section class="coc-section">
-
-            <div class="coc-box">
-
-                <div class="coc-title">
-                    <span>ROBO-</span>
-                    <strong>COC</strong>
-                </div>
-
-                <div class="coc-definition">
-
-                    <div>
-                        <b>C</b>
-                        <span>CONTROL</span>
-                        <p>
-                            Control electrónico de los sistemas
-                            del vehículo.
-                        </p>
-                    </div>
-
-                    <div>
-                        <b>O</b>
-                        <span>OPERACIÓN</span>
-                        <p>
-                            Gestión de motores, sensores y
-                            funciones electrónicas.
-                        </p>
-                    </div>
-
-                    <div>
-                        <b>C</b>
-                        <span>CONDUCCIÓN</span>
-                        <p>
-                            Movimiento, dirección y conducción
-                            del carrito robótico.
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             PROYECTO
-        ========================== -->
-
-        <section class="section" id="proyecto">
-
-            <div class="section-title">
-
-                <span>01 / PROYECTO</span>
-
-                <h2>
-                    Tecnología aplicada a la
-                    <strong>mecatrónica.</strong>
-                </h2>
-
-                <p>
-                    ROBO-COC es un proyecto de robótica y electrónica
-                    que integra movimiento, sensores, iluminación,
-                    sonido y control inalámbrico.
-                </p>
-
-            </div>
-
-
-            <div class="project-grid">
-
-                <article class="info-card">
-
-                    <span class="card-number">01</span>
-
-                    <div class="card-icon">⚙</div>
-
-                    <h3>¿Qué es ROBO-COC?</h3>
-
-                    <p>
-                        Es un carrito robótico controlado mediante
-                        un ESP32. El sistema recibe instrucciones
-                        desde una interfaz web y controla los
-                        diferentes elementos electrónicos del vehículo.
-                    </p>
-
-                </article>
-
-
-                <article class="info-card">
-
-                    <span class="card-number">02</span>
-
-                    <div class="card-icon">◈</div>
-
-                    <h3>Objetivos</h3>
-
-                    <ul>
-                        <li>Controlar los 4 motores.</li>
-                        <li>Detectar obstáculos.</li>
-                        <li>Controlar las luces.</li>
-                        <li>Controlar direccionales.</li>
-                        <li>Activar la bocina.</li>
-                        <li>Regular la velocidad.</li>
-                        <li>Implementar seguridad.</li>
-                    </ul>
-
-                </article>
-
-
-                <article class="info-card">
-
-                    <span class="card-number">03</span>
-
-                    <div class="card-icon">⬡</div>
-
-                    <h3>Sistema mecatrónico</h3>
-
-                    <p>
-                        El proyecto combina mecánica, electricidad,
-                        electrónica, programación y automatización
-                        para desarrollar un vehículo robótico funcional.
-                    </p>
-
-                </article>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             TECNOLOGÍA
-        ========================== -->
-
-        <section class="section gray-section" id="tecnologia">
-
-            <div class="section-title">
-
-                <span>02 / HARDWARE</span>
-
-                <h2>
-                    Arquitectura del
-                    <strong>sistema.</strong>
-                </h2>
-
-                <p>
-                    Componentes principales utilizados en el proyecto.
-                </p>
-
-            </div>
-
-
-            <div class="hardware-grid">
-
-                <article class="hardware-card">
-                    <div class="hardware-icon">ESP32</div>
-                    <small>CONTROLADOR</small>
-                    <h3>ESP32</h3>
-                    <p>
-                        Controlador principal del carrito.
-                        Gestiona comunicación Wi-Fi, sensores,
-                        motores y accesorios.
-                    </p>
-                </article>
-
-
-                <article class="hardware-card">
-                    <div class="hardware-icon">4M</div>
-                    <small>MOVIMIENTO</small>
-                    <h3>4 MOTORES DC</h3>
-                    <p>
-                        Cuatro motores permiten el movimiento
-                        de las cuatro ruedas del vehículo.
-                    </p>
-                </article>
-
-
-                <article class="hardware-card">
-                    <div class="hardware-icon">L2</div>
-                    <small>DRIVER</small>
-                    <h3>L298N</h3>
-                    <p>
-                        Módulos utilizados para controlar la
-                        potencia y dirección de los motores.
-                    </p>
-                </article>
-
-
-                <article class="hardware-card">
-                    <div class="hardware-icon">S</div>
-                    <small>DETECCIÓN</small>
-                    <h3>SENSORES</h3>
-                    <p>
-                        Sensores utilizados para detectar
-                        obstáculos.
-                    </p>
-                </article>
-
-
-                <article class="hardware-card">
-                    <div class="hardware-icon">L</div>
-                    <small>ILUMINACIÓN</small>
-                    <h3>LUCES</h3>
-                    <p>
-                        Sistema de luces delanteras,
-                        traseras y direccionales.
-                    </p>
-                </article>
-
-
-                <article class="hardware-card">
-                    <div class="hardware-icon">B</div>
-                    <small>AUDIO</small>
-                    <h3>BOCINA</h3>
-                    <p>
-                        Sistema sonoro controlado desde
-                        el panel web.
-                    </p>
-                </article>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             CONTROL
-        ========================== -->
-
-        <section class="section" id="control">
-
-            <div class="section-title">
-
-                <span>03 / CONTROL</span>
-
-                <h2>
-                    Panel de
-                    <strong>conducción.</strong>
-                </h2>
-
-                <p>
-                    Interfaz preparada para conectarse posteriormente
-                    con el ESP32.
-                </p>
-
-            </div>
-
-
-            <div class="dashboard">
-
-                <div class="dashboard-header">
-
-                    <div>
-                        <small>
-                            ROBO-COC · VEHICLE CONTROL SYSTEM
-                        </small>
-
-                        <h3>PANEL DE CONTROL</h3>
-                    </div>
-
-
-                    <div class="vehicle-status">
-
-                        <span id="vehicleStatusDot"></span>
-
-                        <div>
-                            <small>ESTADO</small>
-
-                            <strong id="vehicleStatus">
-                                DETENIDO
-                            </strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- TELEMETRÍA -->
-
-                <div class="telemetry">
-
-                    <div>
-                        <small>VELOCIDAD</small>
-                        <strong id="speedValue">70%</strong>
-                    </div>
-
-                    <div>
-                        <small>BATERÍA</small>
-                        <strong id="batteryValue">-- %</strong>
-                    </div>
-
-                    <div>
-                        <small>SENSOR FRONTAL</small>
-                        <strong id="frontDistance">-- cm</strong>
-                    </div>
-
-                    <div>
-                        <small>SENSOR TRASERO</small>
-                        <strong id="rearDistance">-- cm</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="control-layout">
-
-                    <!-- MOVIMIENTO -->
-
-                    <div class="control-panel">
-
-                        <div class="panel-title">
-                            MOVIMIENTO
-                        </div>
-
-                        <div class="direction-pad">
-
-                            <button
-                                class="direction up"
-                                onclick="move('forward')">
-                                ▲
-                            </button>
-
-                            <button
-                                class="direction left"
-                                onclick="move('left')">
-                                ◀
-                            </button>
-
-                            <button
-                                class="direction stop"
-                                onclick="stopCar()">
-                                ■
-                            </button>
-
-                            <button
-                                class="direction right"
-                                onclick="move('right')">
-                                ▶
-                            </button>
-
-                            <button
-                                class="direction down"
-                                onclick="move('backward')">
-                                ▼
-                            </button>
-
-                        </div>
-
-                        <p class="control-help">
-                            Utiliza W A S D o las flechas
-                            del teclado.
-                        </p>
-
-                    </div>
-
-
-                    <!-- FUNCIONES -->
-
-                    <div class="control-panel">
-
-                        <div class="panel-title">
-                            FUNCIONES DEL VEHÍCULO
-                        </div>
-
-                        <div class="function-grid">
-
-                            <button
-                                id="lightsBtn"
-                                onclick="toggleLights()">
-
-                                <span>💡</span>
-
-                                <div>
-                                    <strong>LUCES</strong>
-                                    <small id="lightsState">
-                                        APAGADAS
-                                    </small>
-                                </div>
-
-                            </button>
-
-
-                            <button onclick="horn()">
-
-                                <span>🔊</span>
-
-                                <div>
-                                    <strong>BOCINA</strong>
-                                    <small>ACTIVAR</small>
-                                </div>
-
-                            </button>
-
-
-                            <button
-                                id="leftSignalBtn"
-                                onclick="toggleSignal('left')">
-
-                                <span>←</span>
-
-                                <div>
-                                    <strong>
-                                        DIRECCIONAL IZQUIERDA
-                                    </strong>
-
-                                    <small>
-                                        APAGADA
-                                    </small>
-                                </div>
-
-                            </button>
-
-
-                            <button
-                                id="rightSignalBtn"
-                                onclick="toggleSignal('right')">
-
-                                <span>→</span>
-
-                                <div>
-                                    <strong>
-                                        DIRECCIONAL DERECHA
-                                    </strong>
-
-                                    <small>
-                                        APAGADA
-                                    </small>
-                                </div>
-
-                            </button>
-
-
-                            <button
-                                id="emergencyBtn"
-                                onclick="toggleEmergency()">
-
-                                <span>!</span>
-
-                                <div>
-                                    <strong>EMERGENCIA</strong>
-
-                                    <small>
-                                        APAGADA
-                                    </small>
-                                </div>
-
-                            </button>
-
-
-                            <button
-                                class="brake-button"
-                                onclick="stopCar()">
-
-                                <span>●</span>
-
-                                <div>
-                                    <strong>FRENO</strong>
-
-                                    <small>
-                                        DETENER
-                                    </small>
-                                </div>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- VELOCIDAD -->
-
-                <div class="speed-panel">
-
-                    <div>
-                        <small>
-                            CONTROL DE VELOCIDAD
-                        </small>
-
-                        <strong id="speedLabel">
-                            70%
-                        </strong>
-                    </div>
-
-                    <input
-                        type="range"
-                        id="speedSlider"
-                        min="0"
-                        max="100"
-                        value="70"
-                        oninput="changeSpeed(this.value)">
-
-                </div>
-
-
-                <!-- MODO -->
-
-                <div class="mode-panel">
-
-                    <span>MODO DE CONDUCCIÓN</span>
-
-                    <button
-                        id="manualMode"
-                        class="mode active"
-                        onclick="setMode('manual')">
-                        MANUAL
-                    </button>
-
-                    <button
-                        id="autoMode"
-                        class="mode"
-                        onclick="setMode('automatic')">
-                        AUTOMÁTICO
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             SENSORES
-        ========================== -->
-
-        <section class="section gray-section" id="sensores">
-
-            <div class="section-title">
-
-                <span>04 / MONITOREO</span>
-
-                <h2>
-                    Sistema de
-                    <strong>sensores.</strong>
-                </h2>
-
-                <p>
-                    Monitoreo preparado para recibir datos
-                    desde el ESP32.
-                </p>
-
-            </div>
-
-
-            <div class="sensor-grid">
-
-                <article class="sensor-card">
-
-                    <div class="sensor-header">
-                        <span>SENSOR 01</span>
-                        <b>FRONTAL</b>
-                    </div>
-
-                    <div class="distance">
-
-                        <strong id="sensorFrontBig">
-                            --
-                        </strong>
-
-                        <span>cm</span>
-
-                    </div>
-
-                    <div class="sensor-bar">
-                        <div id="frontBar"></div>
-                    </div>
-
-                    <div class="scale">
-                        <span>0</span>
-                        <span>50</span>
-                        <span>100</span>
-                    </div>
-
-                    <p>
-                        Detección de obstáculos frontales.
-                    </p>
-
-                </article>
-
-
-                <article class="sensor-card">
-
-                    <div class="sensor-header">
-                        <span>SENSOR 02</span>
-                        <b>TRASERO</b>
-                    </div>
-
-                    <div class="distance">
-
-                        <strong id="sensorRearBig">
-                            --
-                        </strong>
-
-                        <span>cm</span>
-
-                    </div>
-
-                    <div class="sensor-bar">
-                        <div id="rearBar"></div>
-                    </div>
-
-                    <div class="scale">
-                        <span>0</span>
-                        <span>50</span>
-                        <span>100</span>
-                    </div>
-
-                    <p>
-                        Detección de obstáculos traseros.
-                    </p>
-
-                </article>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             EQUIPO
-        ========================== -->
-
-        <section class="section" id="equipo">
-
-            <div class="section-title">
-
-                <span>05 / INFORMACIÓN</span>
-
-                <h2>
-                    Información del
-                    <strong>proyecto.</strong>
-                </h2>
-
-            </div>
-
-
-            <div class="info-project">
-
-                <div>
-                    <span>CONTROLADOR</span>
-                    <strong>ESP32</strong>
-                </div>
-
-                <div>
-                    <span>MOTORES</span>
-                    <strong>4 MOTORES DC</strong>
-                </div>
-
-                <div>
-                    <span>DRIVER</span>
-                    <strong>2 × L298N</strong>
-                </div>
-
-                <div>
-                    <span>SENSORES</span>
-                    <strong>ULTRASÓNICOS</strong>
-                </div>
-
-                <div>
-                    <span>COMUNICACIÓN</span>
-                    <strong>WI-FI</strong>
-                </div>
-
-                <div>
-                    <span>INTERFAZ</span>
-                    <strong>PÁGINA WEB</strong>
-                </div>
-
-            </div>
-
-
-            <div class="team-section">
-
-                <div class="team-heading">
-
-                    <div>
-                        <span>ROBO-COC / TEAM</span>
-
-                        <h3>
-                            Equipo de
-                            <strong>desarrollo.</strong>
-                        </h3>
-                    </div>
-
-                    <div class="team-count">
-                        07
-                        <small>INTEGRANTES</small>
-                    </div>
-
-                </div>
-
-
-                <div class="team-grid">
-
-                    <div class="team-member">
-                        <span class="member-number">01</span>
-                        <div class="member-icon">&lt;/&gt;</div>
-                        <strong>LUIS LÓPEZ</strong>
-                        <small>DESARROLLADOR DE SOFTWARE</small>
-                    </div>
-
-
-                    <div class="team-member">
-                        <span class="member-number">02</span>
-                        <div class="member-icon">&lt;/&gt;</div>
-                        <strong>JOSUE BOECKMANN</strong>
-                        <small>DESARROLLADOR DE SOFTWARE</small>
-                    </div>
-
-
-                    <div class="team-member">
-                        <span class="member-number">03</span>
-                        <div class="member-icon">⚙</div>
-                        <strong>IGNACIO MIRANDA</strong>
-                        <small>TÉCNICO EN HARDWARE Y MONTAJE</small>
-                    </div>
-
-
-                    <div class="team-member">
-                        <span class="member-number">04</span>
-                        <div class="member-icon">⚙</div>
-                        <strong>GILSON TERRAZA</strong>
-                        <small>TÉCNICO EN HARDWARE Y MONTAJE</small>
-                    </div>
-
-
-                    <div class="team-member">
-                        <span class="member-number">05</span>
-                        <div class="member-icon">▤</div>
-                        <strong>JULIO ROLDAN</strong>
-                        <small>DOCUMENTADOR TÉCNICO</small>
-                    </div>
-
-
-                    <div class="team-member">
-                        <span class="member-number">06</span>
-                        <div class="member-icon">▤</div>
-                        <strong>AARON CASTAÑON</strong>
-                        <small>DOCUMENTADOR TÉCNICO</small>
-                    </div>
-
-
-                    <div class="team-member">
-                        <span class="member-number">07</span>
-                        <div class="member-icon">▤</div>
-                        <strong>ROBERTO COC</strong>
-                        <small>DOCUMENTADOR TÉCNICO</small>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =========================
-         FOOTER
-    ========================== -->
-
-    <footer>
-
-        <div class="footer-logo">
-            INTECAP
+    <div class="rail-line"></div>
+
+    <nav class="rail-nav">
+      <a href="#home" data-label="INICIO">01</a>
+      <a href="#identity" data-label="PROYECTO">02</a>
+      <a href="#mecatronica" data-label="MECATRÓNICA">03</a>
+      <a href="#blueprint" data-label="ARQUITECTURA">04</a>
+      <a href="#telemetry" data-label="SENSORES">05</a>
+      <a href="#command" data-label="CONTROL">06</a>
+      <a href="#team" data-label="EQUIPO">07</a>
+    </nav>
+
+    <div class="rail-status">
+      <i id="railDot"></i>
+      <span id="railStatusText">DESCONECTADO</span>
+    </div>
+  </aside>
+
+  <header class="top-status">
+    <div class="system-name">
+      <span>ROBO-COC</span>
+      <small>CONTROL // OPERACIÓN // CONDUCCIÓN</small>
+    </div>
+
+    <div class="system-meta">
+      <div><span>CONTROLADOR</span><strong>ESP32</strong></div>
+      <div><span>RED</span><strong>ROBO-COC</strong></div>
+      <div><span>IP</span><strong>192.168.4.1</strong></div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HOME -->
+    <section id="home" class="screen hero">
+      <div class="hero-bg"></div>
+
+      <div class="hero-left">
+        <p class="mono reveal">INTECAP // MECATRÓNICA // 2026</p>
+
+        <div class="hero-lockup">
+          <span class="hero-mini">PROYECTO</span>
+          <h1>
+            ROBO
+            <span>COC</span>
+          </h1>
         </div>
 
-        <div class="footer-brand">
+        <p class="hero-copy reveal">
+          Plataforma robótica móvil con control inalámbrico, telemetría,
+          navegación automática y sistema de seguridad integrado.
+        </p>
 
+        <div class="hero-cta reveal">
+          <a href="#command" class="cta-main">INICIAR CONTROL</a>
+          <a href="#blueprint" class="cta-alt">VER SISTEMA</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="vehicle-stage" id="vehicleStage">
+          <div class="stage-ring r1"></div>
+          <div class="stage-ring r2"></div>
+          <div class="stage-ring r3"></div>
+
+          <div class="scan-beam"></div>
+
+          <div class="vehicle-iso" id="vehicleIso">
+            <div class="vehicle-platform">
+              <div class="deck-line dl1"></div>
+              <div class="deck-line dl2"></div>
+              <div class="deck-line dl3"></div>
+
+              <div class="module esp">ESP32</div>
+              <div class="module l298 left">L298N</div>
+              <div class="module l298 right">L298N</div>
+
+              <div class="sensor-node front"></div>
+              <div class="sensor-node rear"></div>
+
+              <div class="wheel wa"></div>
+              <div class="wheel wb"></div>
+              <div class="wheel wc"></div>
+              <div class="wheel wd"></div>
+            </div>
+          </div>
+
+          <div class="stage-tag tag-1"><span>01</span><b>ESP32</b></div>
+          <div class="stage-tag tag-2"><span>02</span><b>4x MOTOR DC</b></div>
+          <div class="stage-tag tag-3"><span>03</span><b>2x HC-SR04</b></div>
+          <div class="stage-tag tag-4"><span>04</span><b>PUNTO DE ACCESO Wi-Fi</b></div>
+        </div>
+
+        <div class="hero-data">
+          <div><span>MODO</span><strong id="heroMode">MANUAL</strong></div>
+          <div><span>VELOCIDAD</span><strong id="heroSpeed">70%</strong></div>
+          <div><span>FRONTAL</span><strong id="heroFront">-- cm</strong></div>
+          <div><span>TRASERO</span><strong id="heroRear">-- cm</strong></div>
+        </div>
+      </div>
+
+      <div class="scroll-mark">
+        <span>DESLIZA</span>
+        <i></i>
+      </div>
+    </section>
+
+    <!-- IDENTITY -->
+    <section id="identity" class="screen identity">
+      <div class="identity-title">
+        <span>02 // EL PROYECTO</span>
+        <h2>
+          UNA MÁQUINA.
+          <em>VARIOS SISTEMAS.</em>
+        </h2>
+      </div>
+
+      <div class="identity-grid">
+        <article class="identity-card large reveal">
+          <span>NÚCLEO</span>
+          <h3>ESP32</h3>
+          <p>Servidor web, control lógico, lectura de sensores y gestión de actuadores.</p>
+          <div class="chip-graphic">
+            <i></i><i></i><i></i><i></i>
+            <b>ESP32</b>
+            <i></i><i></i><i></i><i></i>
+          </div>
+        </article>
+
+        <article class="identity-card reveal">
+          <span>CONDUCCIÓN</span>
+          <h3>4 MOTORES</h3>
+          <p>Tracción diferencial controlada por dos L298N.</p>
+          <strong>04</strong>
+        </article>
+
+        <article class="identity-card reveal">
+          <span>SENSORES</span>
+          <h3>2 SENSORES</h3>
+          <p>Lectura ultrasónica frontal y trasera.</p>
+          <strong>02</strong>
+        </article>
+
+        <article class="identity-card reveal">
+          <span>CONEXIÓN</span>
+          <h3>Wi-Fi</h3>
+          <p>Conexión directa al punto de acceso del vehículo.</p>
+          <strong>Wi-Fi</strong>
+        </article>
+
+        <article class="identity-card reveal">
+          <span>SEGURIDAD</span>
+          <h3>SEGURIDAD</h3>
+          <p>Freno, emergencia, luces, señalización y bocina.</p>
+          <strong>ACTIVA</strong>
+        </article>
+      </div>
+    </section>
+
+
+    <!-- MECATRÓNICA -->
+    <section id="mecatronica" class="screen mechatronics">
+      <div class="mecha-head">
+        <span>03 // MECATRÓNICA APLICADA</span>
+        <h2>
+          LA INTEGRACIÓN
+          <em>DEL PROYECTO.</em>
+        </h2>
+        <p>
+          ROBO-COC es un sistema mecatrónico porque combina mecánica, electrónica,
+          programación, control y automatización para que el vehículo pueda percibir
+          su entorno, tomar decisiones y ejecutar movimientos.
+        </p>
+      </div>
+
+      <div class="mecha-system">
+        <div class="mecha-center">
+          <div class="mecha-orbit orbit-one"></div>
+          <div class="mecha-orbit orbit-two"></div>
+          <div class="mecha-core">
+            <small>SISTEMA</small>
             <strong>ROBO-COC</strong>
-
-            <span>
-                CONTROL · OPERACIÓN · CONDUCCIÓN
-            </span>
-
+            <span>MECATRÓNICA</span>
+          </div>
         </div>
 
-        <div class="footer-info">
+        <article class="mecha-card mechanical reveal">
+          <span>01</span>
+          <h3>MECÁNICA</h3>
+          <p>
+            Estructura del vehículo, montaje, ruedas, distribución de componentes
+            y transmisión del movimiento mediante los cuatro motores DC.
+          </p>
+          <strong>ESTRUCTURA + MOVIMIENTO</strong>
+        </article>
 
-            <span>
-                INTECAP · MECATRÓNICA
-            </span>
+        <article class="mecha-card electronic reveal">
+          <span>02</span>
+          <h3>ELECTRÓNICA</h3>
+          <p>
+            ESP32, drivers L298N, sensores HC-SR04, luces, direccionales,
+            bocina y conexiones eléctricas forman el sistema electrónico.
+          </p>
+          <strong>SENSORES + ACTUADORES</strong>
+        </article>
 
-            <span>
-                PROYECTO DE ROBÓTICA Y ELECTRÓNICA · 2026
-            </span>
+        <article class="mecha-card programming reveal">
+          <span>03</span>
+          <h3>PROGRAMACIÓN</h3>
+          <p>
+            El software interpreta comandos de la página web, controla entradas
+            y salidas, procesa lecturas y ejecuta las funciones del vehículo.
+          </p>
+          <strong>ESP32 + INTERFAZ WEB</strong>
+        </article>
 
+        <article class="mecha-card control reveal">
+          <span>04</span>
+          <h3>CONTROL Y AUTOMATIZACIÓN</h3>
+          <p>
+            El PWM regula la velocidad y el modo automático utiliza las distancias
+            de los sensores para avanzar, retroceder o girar ante obstáculos.
+          </p>
+          <strong>DECISIÓN + RESPUESTA</strong>
+        </article>
+      </div>
+
+      <div class="mecha-flow reveal">
+        <div>
+          <span>ENTRADA</span>
+          <strong>SENSORES / USUARIO</strong>
+        </div>
+        <i></i>
+        <div>
+          <span>PROCESAMIENTO</span>
+          <strong>ESP32</strong>
+        </div>
+        <i></i>
+        <div>
+          <span>SALIDA</span>
+          <strong>MOTORES / LUCES / BOCINA</strong>
+        </div>
+      </div>
+
+      <div class="mecha-summary reveal">
+        <span>¿POR QUÉ ES MECATRÓNICA?</span>
+        <p>
+          Porque ninguna parte trabaja de forma aislada: los sensores obtienen información,
+          el ESP32 la procesa mediante software y los actuadores producen una respuesta física.
+          Esa integración entre sistemas mecánicos, electrónicos y de control es la base de ROBO-COC.
+        </p>
+      </div>
+    </section>
+
+    <!-- BLUEPRINT -->
+    <section id="blueprint" class="screen blueprint">
+      <div class="blueprint-head">
+        <div>
+          <span>04 // ARQUITECTURA</span>
+          <h2>PLANO TÉCNICO</h2>
+        </div>
+        <p id="blueprintCaption">ESP32 // CONTROLADOR PRINCIPAL</p>
+      </div>
+
+      <div class="blueprint-stage">
+        <div class="bp-grid"></div>
+
+        <div class="bp-car">
+          <div class="bp-body">
+            <div class="bp-core" id="bpCore">ESP32</div>
+            <div class="bp-module bp-front">HC-SR04</div>
+            <div class="bp-module bp-rear">HC-SR04</div>
+            <div class="bp-module bp-left">L298N</div>
+            <div class="bp-module bp-right">L298N</div>
+
+            <div class="bp-wheel b1"></div>
+            <div class="bp-wheel b2"></div>
+            <div class="bp-wheel b3"></div>
+            <div class="bp-wheel b4"></div>
+          </div>
+
+          <div class="bp-line line-front"></div>
+          <div class="bp-line line-rear"></div>
+          <div class="bp-line line-left"></div>
+          <div class="bp-line line-right"></div>
         </div>
 
-    </footer>
+        <div class="bp-callout c-front">
+          <span>SENSOR FRONTAL</span>
+          <strong id="bpFront">-- cm</strong>
+        </div>
 
+        <div class="bp-callout c-rear">
+          <span>SENSOR TRASERO</span>
+          <strong id="bpRear">-- cm</strong>
+        </div>
 
-    <script src="script.js"></script>
+        <div class="bp-callout c-drive">
+          <span>SISTEMA DE TRACCIÓN</span>
+          <strong>4x DC</strong>
+        </div>
 
+        <div class="bp-callout c-link">
+          <span>RED</span>
+          <strong>PUNTO DE ACCESO Wi-Fi</strong>
+        </div>
+      </div>
+
+      <div class="blueprint-steps">
+        <button class="bp-step active" data-system="core">ESP32</button>
+        <button class="bp-step" data-system="drive">TRACCIÓN</button>
+        <button class="bp-step" data-system="sense">SENSORES</button>
+        <button class="bp-step" data-system="safe">SEGURIDAD</button>
+      </div>
+    </section>
+
+    <!-- TELEMETRY -->
+    <section id="telemetry" class="screen telemetry">
+      <div class="telemetry-title">
+        <span>05 // TELEMETRÍA</span>
+        <h2>DATOS<br><em>EN VIVO.</em></h2>
+      </div>
+
+      <div class="telemetry-layout">
+        <div class="radar-panel reveal">
+          <div class="panel-head">
+            <span>RADAR // EN VIVO</span>
+            <strong id="radarConnection">ESPERANDO</strong>
+          </div>
+          <canvas id="radarCanvas"></canvas>
+        </div>
+
+        <div class="metric-stack">
+          <article class="metric-card reveal">
+            <span>DISTANCIA FRONTAL</span>
+            <strong id="frontMetric">--</strong>
+            <small>CM</small>
+            <div class="metric-bar"><i id="frontBar"></i></div>
+          </article>
+
+          <article class="metric-card reveal">
+            <span>DISTANCIA TRASERA</span>
+            <strong id="rearMetric">--</strong>
+            <small>CM</small>
+            <div class="metric-bar"><i id="rearBar"></i></div>
+          </article>
+
+          <article class="metric-card reveal">
+            <span>POTENCIA DE MOTORES</span>
+            <strong id="speedMetric">70</strong>
+            <small>%</small>
+            <div class="metric-bar"><i id="speedBar"></i></div>
+          </article>
+
+          <article class="metric-card reveal">
+            <span>MODO</span>
+            <strong id="modeMetric">MANUAL</strong>
+            <small>CONDUCCIÓN</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMAND CENTER -->
+    <section id="command" class="screen command">
+      <div class="command-title">
+        <div>
+          <span>06 // CENTRO DE CONTROL</span>
+          <h2>CONTROL<br><em>EN TIEMPO REAL.</em></h2>
+        </div>
+
+        <div class="connection-state">
+          <i id="commandDot"></i>
+          <div>
+            <span>ESTADO DEL ESP32</span>
+            <strong id="commandConnection">DESCONECTADO</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="cockpit">
+        <section class="cockpit-drive">
+          <div class="cockpit-head">
+            <span>CONDUCCIÓN</span>
+            <strong id="driveState">DETENIDO</strong>
+          </div>
+
+          <div class="steering-zone">
+            <div class="steering-ring"></div>
+            <div class="steering-ring inner"></div>
+
+            <button class="drive-control forward" data-command="forward">▲</button>
+            <button class="drive-control left" data-command="left">◀</button>
+            <button class="drive-control stop" data-command="stop">■</button>
+            <button class="drive-control right" data-command="right">▶</button>
+            <button class="drive-control back" data-command="back">▼</button>
+          </div>
+
+          <div class="keyboard-note">WASD // FLECHAS // ESPACIO = DETENER</div>
+        </section>
+
+        <section class="cockpit-functions">
+          <div class="cockpit-head">
+            <span>SISTEMAS DEL VEHÍCULO</span>
+            <strong>06 FUNCIONES</strong>
+          </div>
+
+          <div class="function-grid">
+            <button class="function-btn" data-action="lights"><span>01</span><b>LUCES</b><small>ACTIVAR / APAGAR</small></button>
+            <button class="function-btn" data-action="horn"><span>02</span><b>BOCINA</b><small>MANTENER</small></button>
+            <button class="function-btn" data-action="leftSignal"><span>03</span><b>DIRECCIONAL IZQ.</b><small>ACTIVAR / APAGAR</small></button>
+            <button class="function-btn" data-action="rightSignal"><span>04</span><b>DIRECCIONAL DER.</b><small>ACTIVAR / APAGAR</small></button>
+            <button class="function-btn warning" data-action="hazard"><span>05</span><b>INTERMITENTES</b><small>ACTIVAR / APAGAR</small></button>
+            <button class="function-btn danger" data-action="brake"><span>06</span><b>FRENO</b><small>MANTENER</small></button>
+          </div>
+        </section>
+
+        <aside class="cockpit-data">
+          <div class="cockpit-head">
+            <span>ESTADO</span>
+            <strong>EN VIVO</strong>
+          </div>
+
+          <div class="data-row"><span>FRONTAL</span><strong id="miniFront">-- cm</strong></div>
+          <div class="data-row"><span>TRASERO</span><strong id="miniRear">-- cm</strong></div>
+          <div class="data-row"><span>LUCES</span><strong id="miniLights">OFF</strong></div>
+          <div class="data-row"><span>SEÑAL</span><strong id="miniSignal">OFF</strong></div>
+          <div class="data-row"><span>MODO</span><strong id="miniMode">MANUAL</strong></div>
+          <div class="data-row"><span>POTENCIA</span><strong id="miniSpeed">70%</strong></div>
+        </aside>
+      </div>
+
+      <div class="command-bottom">
+        <div class="power-control">
+          <div class="power-head">
+            <span>POTENCIA DE MOTORES</span>
+            <strong id="speedValue">70%</strong>
+          </div>
+          <input id="speedRange" type="range" min="0" max="100" value="70">
+        </div>
+
+        <div class="mode-switch">
+          <button id="manualMode" class="active">MANUAL</button>
+          <button id="autoMode">AUTOMÁTICO</button>
+        </div>
+
+        <button id="emergency" class="emergency-control">
+          <span>EMERGENCIA</span>
+          <strong>DETENER</strong>
+        </button>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team" class="screen team">
+      <div class="team-head">
+        <span>07 // EQUIPO</span>
+        <h2>CREADO<br><em>POR NOSOTROS.</em></h2>
+      </div>
+
+      <div class="team-grid">
+        <article><span>01</span><strong>LUIS LÓPEZ</strong><small>DESARROLLO DE SOFTWARE</small></article>
+        <article><span>02</span><strong>JOSUE BOECKMANN</strong><small>DESARROLLO DE SOFTWARE</small></article>
+        <article><span>03</span><strong>IGNACIO MIRANDA</strong><small>HARDWARE Y MONTAJE</small></article>
+        <article><span>04</span><strong>GILSON TERRAZA</strong><small>HARDWARE Y MONTAJE</small></article>
+        <article><span>05</span><strong>JULIO ROLDAN</strong><small>DOCUMENTACIÓN TÉCNICA</small></article>
+        <article><span>06</span><strong>AARON CASTAÑON</strong><small>DOCUMENTACIÓN TÉCNICA</small></article>
+        <article><span>07</span><strong>ROBERTO COC</strong><small>DOCUMENTACIÓN TÉCNICA</small></article>
+      </div>
+    </section>
+
+    <section class="final">
+      <span>INTECAP // MECATRÓNICA // 2026</span>
+      <h2>ROBO-COC</h2>
+      <p>CONTROL // OPERACIÓN // CONDUCCIÓN</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>

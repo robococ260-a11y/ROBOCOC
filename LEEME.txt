@@ -1,0 +1,23 @@
+ROBO-COC V5 // CENTRO DE CONTROL EN ESPAÑOL
+
+Cambios de esta versión:
+- Toda la interfaz visible está en español.
+- Nueva sección completa: "Mecatrónica aplicada".
+- Explica mecánica, electrónica, programación, control y automatización.
+- Incluye un flujo Entrada → Procesamiento → Salida.
+- Mantiene el control real del ESP32.
+
+PARA PROBAR:
+1. Conecta la computadora o teléfono a:
+   Red: ROBO-COC
+   Clave: robococ2026
+
+2. Abre esta carpeta en VS Code.
+
+3. Ejecuta index.html con Live Server.
+
+4. La dirección configurada es:
+   http://192.168.4.1
+
+Si tu Monitor Serial muestra otra IP, cambia solamente esta línea en script.js:
+const ESP32="http://192.168.4.1";

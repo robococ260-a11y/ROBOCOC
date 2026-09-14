@@ -1,1650 +1,400 @@
-/* =========================================================
-   ROBO-COC
-   CONEXIÓN REAL ENTRE PAGINA WEB Y ESP32
-   ========================================================= */
+const ESP32="http://192.168.4.1";
 
+let state={front:-1,rear:-1,speed:70,mode:"manual",lights:false,emergency:false,signal:"off"};
+let holdTimer=null;
+let currentCommand="S";
+let emergencyActive=false;
+let currentSignal="off";
+let lightsActive=false;
 
-// =========================================================
-// VARIABLES
-// =========================================================
+const $=id=>document.getElementById(id);
 
-let speed = 70;
+function command(path){
+  return fetch(ESP32+path,{method:"GET",mode:"no-cors",cache:"no-store"}).catch(()=>{});
+}
 
-let currentMovement = "DETENIDO";
+async function getStatus(){
+  const r=await fetch(ESP32+"/status?t="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw new Error();
+  return r.json();
+}
 
-let currentCommand = "S";
+function setOnline(online){
+  $("railDot").classList.toggle("online",online);
+  $("railStatusText").textContent=online?"CONECTADO":"DESCONECTADO";
+  $("commandDot").classList.toggle("online",online);
+  $("commandConnection").textContent=online?"CONECTADO":"DESCONECTADO";
+  $("radarConnection").textContent=online?"EN VIVO":"ESPERANDO";
+}
 
-let movementTimer = null;
+function dist(v){
+  return v!=null&&v>=0?Number(v).toFixed(1)+" cm":"-- cm";
+}
 
-let lightsOn = false;
+function signalName(v){
+  if(v==="left")return "IZQUIERDA";
+  if(v==="right")return "DERECHA";
+  if(v==="hazard")return "INTERMITENTES";
+  return "OFF";
+}
 
-let leftSignalOn = false;
+function render(data){
+  state=data;
+  setOnline(true);
 
-let rightSignalOn = false;
+  $("heroMode").textContent=data.mode==="manual"?"MANUAL":"AUTOMÁTICO";
+  $("heroSpeed").textContent=data.speed+"%";
+  $("heroFront").textContent=dist(data.front);
+  $("heroRear").textContent=dist(data.rear);
 
-let emergencyOn = false;
+  $("bpFront").textContent=dist(data.front);
+  $("bpRear").textContent=dist(data.rear);
 
-let currentMode = "manual";
+  $("frontMetric").textContent=data.front>=0?Number(data.front).toFixed(1):"--";
+  $("rearMetric").textContent=data.rear>=0?Number(data.rear).toFixed(1):"--";
+  $("speedMetric").textContent=data.speed;
+  $("modeMetric").textContent=data.mode==="manual"?"MANUAL":"AUTOMÁTICO";
 
+  $("frontBar").style.width=Math.min(100,Math.max(0,(data.front/400)*100))+"%";
+  $("rearBar").style.width=Math.min(100,Math.max(0,(data.rear/400)*100))+"%";
+  $("speedBar").style.width=data.speed+"%";
 
-// =========================================================
-// COMANDOS
-// =========================================================
+  $("miniFront").textContent=dist(data.front);
+  $("miniRear").textContent=dist(data.rear);
+  $("miniLights").textContent=data.lights?"ON":"OFF";
+  $("miniSignal").textContent=signalName(data.signal);
+  $("miniMode").textContent=data.mode==="manual"?"MANUAL":"AUTOMÁTICO";
+  $("miniSpeed").textContent=data.speed+"%";
+  $("speedValue").textContent=data.speed+"%";
 
-const COMMANDS = {
+  if(document.activeElement!==$("speedRange"))$("speedRange").value=data.speed;
 
-    forward: "F",
+  lightsActive=!!data.lights;
+  emergencyActive=!!data.emergency;
+  currentSignal=data.signal||"off";
 
-    backward: "B",
+  paintActions();
+  updateEmergency();
+  setModeUI(data.mode);
 
-    left: "L",
+  if(emergencyActive)$("driveState").textContent="EMERGENCIA";
+}
 
-    right: "R"
+async function poll(){
+  try{render(await getStatus())}
+  catch{setOnline(false)}
+}
+setInterval(poll,500);
+poll();
 
+// DRIVE
+const driveMap={
+  forward:["F","AVANZANDO"],
+  back:["B","RETROCEDIENDO"],
+  left:["L","IZQUIERDA"],
+  right:["R","DERECHA"]
 };
 
+function sendMove(cmd){command("/cmd?m="+cmd)}
 
-const MOVEMENT_NAMES = {
+function clearDrive(){
+  document.querySelectorAll(".drive-control").forEach(b=>b.classList.remove("active"));
+}
 
-    F: "AVANZANDO",
+function startMove(cmd,label){
+  if(emergencyActive){$("driveState").textContent="EMERGENCIA";return}
+  stopMove(false);
+  currentCommand=cmd;
+  sendMove(cmd);
+  $("driveState").textContent=label;
+  holdTimer=setInterval(()=>sendMove(cmd),250);
+}
 
-    B: "RETROCEDIENDO",
+function stopMove(sendStop=true){
+  if(holdTimer){clearInterval(holdTimer);holdTimer=null}
+  if(sendStop)sendMove("S");
+  currentCommand="S";
+  clearDrive();
+}
 
-    L: "GIRO IZQUIERDA",
+document.querySelectorAll(".drive-control").forEach(btn=>{
+  const action=btn.dataset.command;
 
-    R: "GIRO DERECHA",
+  if(action==="stop"){
+    btn.addEventListener("click",()=>{
+      stopMove();
+      $("driveState").textContent="DETENIDO";
+    });
+    return;
+  }
 
-    S: "DETENIDO",
+  const press=e=>{
+    e.preventDefault();
+    const cfg=driveMap[action];
+    clearDrive();
+    btn.classList.add("active");
+    startMove(cfg[0],cfg[1]);
+  };
 
-    BR: "FRENANDO"
+  const release=()=>{
+    if(currentCommand!=="S"){
+      stopMove();
+      if(!emergencyActive)$("driveState").textContent="DETENIDO";
+    }
+  };
 
+  btn.addEventListener("pointerdown",press);
+  ["pointerup","pointerleave","pointercancel"].forEach(ev=>btn.addEventListener(ev,release));
+});
+
+// KEYBOARD
+const keyMap={w:"F",arrowup:"F",s:"B",arrowdown:"B",a:"L",arrowleft:"L",d:"R",arrowright:"R"};
+const keyLabel={F:"AVANZANDO",B:"RETROCEDIENDO",L:"IZQUIERDA",R:"DERECHA"};
+
+document.addEventListener("keydown",e=>{
+  if(["INPUT","TEXTAREA"].includes(document.activeElement?.tagName))return;
+
+  if(e.code==="Space"){
+    e.preventDefault();
+    stopMove();
+    $("driveState").textContent="DETENIDO";
+    return;
+  }
+
+  const cmd=keyMap[e.key.toLowerCase()];
+  if(!cmd)return;
+
+  e.preventDefault();
+
+  if(currentCommand!==cmd)startMove(cmd,keyLabel[cmd]);
+});
+
+document.addEventListener("keyup",e=>{
+  if(!keyMap[e.key.toLowerCase()])return;
+  e.preventDefault();
+  stopMove();
+  if(!emergencyActive)$("driveState").textContent="DETENIDO";
+});
+
+window.addEventListener("blur",()=>{if(currentCommand!=="S")stopMove()});
+
+// SPEED
+let speedTimer=null;
+$("speedRange").addEventListener("input",()=>{
+  const v=$("speedRange").value;
+  $("speedValue").textContent=v+"%";
+  $("speedMetric").textContent=v;
+  $("miniSpeed").textContent=v+"%";
+  $("heroSpeed").textContent=v+"%";
+  $("speedBar").style.width=v+"%";
+
+  clearTimeout(speedTimer);
+  speedTimer=setTimeout(()=>command("/speed?v="+v),70);
+});
+
+// MODES
+function setModeUI(mode){
+  const manual=mode==="manual";
+  $("manualMode").classList.toggle("active",manual);
+  $("autoMode").classList.toggle("active",!manual);
+}
+
+$("manualMode").addEventListener("click",()=>{
+  stopMove();
+  command("/mode?m=manual");
+  setModeUI("manual");
+  $("driveState").textContent="DETENIDO";
+});
+
+$("autoMode").addEventListener("click",()=>{
+  stopMove();
+  command("/mode?m=auto");
+  setModeUI("auto");
+  $("driveState").textContent="AUTOMÁTICO";
+});
+
+// FUNCTIONS
+const actions={};
+document.querySelectorAll(".function-btn").forEach(b=>actions[b.dataset.action]=b);
+
+function paintActions(){
+  actions.lights?.classList.toggle("active",lightsActive);
+  actions.leftSignal?.classList.toggle("active",currentSignal==="left");
+  actions.rightSignal?.classList.toggle("active",currentSignal==="right");
+  actions.hazard?.classList.toggle("active",currentSignal==="hazard");
+}
+
+actions.lights?.addEventListener("click",()=>command("/light?toggle=1"));
+
+function toggleSignal(s){
+  currentSignal=currentSignal===s?"off":s;
+  paintActions();
+  command("/signal?s="+currentSignal);
+}
+actions.leftSignal?.addEventListener("click",()=>toggleSignal("left"));
+actions.rightSignal?.addEventListener("click",()=>toggleSignal("right"));
+actions.hazard?.addEventListener("click",()=>toggleSignal("hazard"));
+
+const hornOn=()=>{actions.horn?.classList.add("active");command("/horn?state=on")};
+const hornOff=()=>{actions.horn?.classList.remove("active");command("/horn?state=off")};
+actions.horn?.addEventListener("pointerdown",hornOn);
+["pointerup","pointerleave","pointercancel"].forEach(ev=>actions.horn?.addEventListener(ev,hornOff));
+
+const brakeOn=e=>{
+  e.preventDefault();
+  stopMove(false);
+  actions.brake?.classList.add("active");
+  sendMove("BR");
+  $("driveState").textContent="FRENANDO";
 };
+const brakeOff=()=>{
+  actions.brake?.classList.remove("active");
+  sendMove("S");
+  if(!emergencyActive)$("driveState").textContent="DETENIDO";
+};
+actions.brake?.addEventListener("pointerdown",brakeOn);
+["pointerup","pointerleave","pointercancel"].forEach(ev=>actions.brake?.addEventListener(ev,brakeOff));
 
-
-// =========================================================
-// PETICIONES AL ESP32
-// =========================================================
-
-async function esp32Request(path) {
-
-    try {
-
-        const response =
-            await fetch(
-                path,
-                {
-                    method: "GET",
-
-                    cache: "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-        }
-
-
-        setConnection(true);
-
-
-        return response;
-
-    }
-
-    catch (error) {
-
-        setConnection(false);
-
-
-        console.error(
-            "Error ESP32:",
-            error
-        );
-
-
-        throw error;
-    }
+// EMERGENCY
+function updateEmergency(){
+  $("emergency").classList.toggle("active",emergencyActive);
+  $("emergency").querySelector("span").textContent=emergencyActive?"TOCA PARA":"EMERGENCIA";
+  $("emergency").querySelector("strong").textContent=emergencyActive?"REARMAR":"DETENER";
 }
-
-
-// =========================================================
-// CONEXION
-// =========================================================
-
-function setConnection(connected) {
-
-    const text =
-        document.getElementById(
-            "connectionText"
-        );
-
-
-    const dot =
-        document.getElementById(
-            "connectionDot"
-        );
-
-
-    if (!text || !dot) {
-
-        return;
-    }
-
-
-    if (connected) {
-
-        text.textContent =
-            "CONECTADO";
-
-
-        dot.style.background =
-            "#22c55e";
-
-
-        dot.style.boxShadow =
-            "0 0 12px #22c55e";
-
-    }
-
-    else {
-
-        text.textContent =
-            "DESCONECTADO";
-
-
-        dot.style.background =
-            "#ef4444";
-
-
-        dot.style.boxShadow =
-            "0 0 12px #ef4444";
-    }
-}
-
-
-// =========================================================
-// MOVIMIENTO
-// =========================================================
-
-function move(direction) {
-
-    const command =
-        COMMANDS[direction];
-
-
-    if (!command) {
-
-        return;
-    }
-
-
-    startMove(command);
-}
-
-
-// =========================================================
-// INICIAR MOVIMIENTO
-// =========================================================
-
-function startMove(command) {
-
-    if (
-        currentMode !== "manual"
-        ||
-        emergencyOn
-    ) {
-
-        return;
-    }
-
-
+$("emergency").addEventListener("click",()=>{
+  if(emergencyActive){
+    command("/emergency?state=off");
+    emergencyActive=false;
+    $("driveState").textContent="DETENIDO";
+  }else{
     stopMove(false);
-
-
-    currentCommand =
-        command;
-
-
-    currentMovement =
-        MOVEMENT_NAMES[command]
-        ||
-        "DETENIDO";
-
-
-    updateVehicleStatus();
-
-
-    esp32Request(
-        "/cmd?m=" +
-        encodeURIComponent(command)
-    ).catch(() => {});
-
-
-    /*
-       Se vuelve a mandar el comando
-       mientras mantienes presionado
-       el botón.
-    */
-
-    movementTimer =
-        setInterval(
-            function () {
-
-                esp32Request(
-                    "/cmd?m=" +
-                    encodeURIComponent(command)
-                ).catch(() => {});
-
-            },
-            250
-        );
-}
-
-
-// =========================================================
-// DETENER MOVIMIENTO
-// =========================================================
-
-function stopMove(
-    sendStop = true
-) {
-
-    if (movementTimer) {
-
-        clearInterval(
-            movementTimer
-        );
-
-
-        movementTimer = null;
-    }
-
-
-    currentCommand = "S";
-
-    currentMovement =
-        "DETENIDO";
-
-
-    updateVehicleStatus();
-
-
-    if (sendStop) {
-
-        esp32Request(
-            "/cmd?m=S"
-        ).catch(() => {});
-    }
-}
-
-
-// =========================================================
-// BOTON STOP
-// =========================================================
-
-function stopCar() {
-
-    stopMove(true);
-}
-
-
-// =========================================================
-// FRENO
-// =========================================================
-
-function brake() {
-
-    stopMove(false);
-
-
-    currentCommand =
-        "BR";
-
-
-    currentMovement =
-        "FRENANDO";
-
-
-    updateVehicleStatus();
-
-
-    esp32Request(
-        "/cmd?m=BR"
-    ).catch(() => {});
-}
-
-
-// =========================================================
-// ESTADO VISUAL
-// =========================================================
-
-function updateVehicleStatus() {
-
-    const status =
-        document.getElementById(
-            "vehicleStatus"
-        );
-
-
-    const dot =
-        document.getElementById(
-            "vehicleStatusDot"
-        );
-
-
-    if (!status || !dot) {
-
-        return;
-    }
-
-
-    // EMERGENCIA
-
-    if (emergencyOn) {
-
-        status.textContent =
-            "EMERGENCIA";
-
-
-        dot.style.background =
-            "#ef4444";
-
-
-        dot.style.boxShadow =
-            "0 0 15px #ef4444";
-
-
-        return;
-    }
-
-
-    // AUTOMATICO
-
-    if (
-        currentMode !== "manual"
-    ) {
-
-        status.textContent =
-            "MODO AUTOMÁTICO";
-
-
-        dot.style.background =
-            "#f59e0b";
-
-
-        dot.style.boxShadow =
-            "0 0 15px #f59e0b";
-
-
-        return;
-    }
-
-
-    status.textContent =
-        currentMovement;
-
-
-    if (
-        currentMovement ===
-        "DETENIDO"
-    ) {
-
-        dot.style.background =
-            "#5f6976";
-
-
-        dot.style.boxShadow =
-            "0 0 10px #5f6976";
-
-    }
-
-    else {
-
-        dot.style.background =
-            "#258be8";
-
-
-        dot.style.boxShadow =
-            "0 0 15px #258be8";
-    }
-}
-
-
-// =========================================================
-// VELOCIDAD
-// =========================================================
-
-function changeSpeed(value) {
-
-    speed =
-        Number(value);
-
-
-    const label =
-        document.getElementById(
-            "speedLabel"
-        );
-
-
-    const valueBox =
-        document.getElementById(
-            "speedValue"
-        );
-
-
-    if (label) {
-
-        label.textContent =
-            speed + "%";
-    }
-
-
-    if (valueBox) {
-
-        valueBox.textContent =
-            speed + "%";
-    }
-
-
-    esp32Request(
-        "/speed?v=" +
-        encodeURIComponent(speed)
-    ).catch(() => {});
-}
-
-
-// =========================================================
-// LUCES
-// =========================================================
-
-async function toggleLights() {
-
-    try {
-
-        const response =
-            await esp32Request(
-                "/light?toggle=1"
-            );
-
-
-        const state =
-            (
-                await response.text()
-            )
-            .trim()
-            .toUpperCase();
-
-
-        lightsOn =
-            state === "ON";
-
-
-        updateLightsUI();
-
-    }
-
-    catch (error) {
-
-    }
-}
-
-
-// =========================================================
-// ACTUALIZAR LUCES
-// =========================================================
-
-function updateLightsUI() {
-
-    const state =
-        document.getElementById(
-            "lightsState"
-        );
-
-
-    const button =
-        document.getElementById(
-            "lightsBtn"
-        );
-
-
-    if (!state || !button) {
-
-        return;
-    }
-
-
-    state.textContent =
-        lightsOn
-        ? "ENCENDIDAS"
-        : "APAGADAS";
-
-
-    button.style.borderColor =
-        lightsOn
-        ? "#258be8"
-        : "";
-
-
-    button.style.background =
-        lightsOn
-        ? "#132b45"
-        : "";
-}
-
-
-// =========================================================
-// BOCINA
-// =========================================================
-
-function horn() {
-
-    hornOn();
-
-
-    setTimeout(
-        function () {
-
-            hornOff();
-
-        },
-        400
-    );
-}
-
-
-function hornOn() {
-
-    esp32Request(
-        "/horn?state=on"
-    ).catch(() => {});
-}
-
-
-function hornOff() {
-
-    esp32Request(
-        "/horn?state=off"
-    ).catch(() => {});
-}
-
-
-// =========================================================
-// DIRECCIONALES
-// =========================================================
-
-function toggleSignal(side) {
-
-    let nextSignal =
-        "off";
-
-
-    if (
-        side === "left"
-    ) {
-
-        nextSignal =
-            leftSignalOn
-            ? "off"
-            : "left";
-    }
-
-
-    else if (
-        side === "right"
-    ) {
-
-        nextSignal =
-            rightSignalOn
-            ? "off"
-            : "right";
-    }
-
-
-    esp32Request(
-        "/signal?s=" +
-        encodeURIComponent(
-            nextSignal
-        )
-    )
-
-    .then(
-        function () {
-
-            leftSignalOn =
-                nextSignal ===
-                "left";
-
-
-            rightSignalOn =
-                nextSignal ===
-                "right";
-
-
-            updateSignalUI();
-        }
-    )
-
-    .catch(() => {});
-}
-
-
-// =========================================================
-// INTERFAZ DIRECCIONALES
-// =========================================================
-
-function updateSignalUI() {
-
-    const leftBtn =
-        document.getElementById(
-            "leftSignalBtn"
-        );
-
-
-    const rightBtn =
-        document.getElementById(
-            "rightSignalBtn"
-        );
-
-
-    if (leftBtn) {
-
-        leftBtn.style.borderColor =
-            leftSignalOn
-            ? "#258be8"
-            : "";
-
-
-        const small =
-            leftBtn.querySelector(
-                "small"
-            );
-
-
-        if (small) {
-
-            small.textContent =
-                leftSignalOn
-                ? "ENCENDIDA"
-                : "APAGADA";
-        }
-    }
-
-
-    if (rightBtn) {
-
-        rightBtn.style.borderColor =
-            rightSignalOn
-            ? "#258be8"
-            : "";
-
-
-        const small =
-            rightBtn.querySelector(
-                "small"
-            );
-
-
-        if (small) {
-
-            small.textContent =
-                rightSignalOn
-                ? "ENCENDIDA"
-                : "APAGADA";
-        }
-    }
-}
-
-
-// =========================================================
-// EMERGENCIA
-// =========================================================
-
-function toggleEmergency() {
-
-    const newState =
-        !emergencyOn;
-
-
-    if (newState) {
-
-        stopMove(false);
-    }
-
-
-    esp32Request(
-
-        "/emergency?state=" +
-        (
-            newState
-            ? "on"
-            : "off"
-        )
-
-    )
-
-    .then(
-        function () {
-
-            emergencyOn =
-                newState;
-
-
-            updateEmergencyUI();
-
-
-            updateVehicleStatus();
-        }
-    )
-
-    .catch(() => {});
-}
-
-
-// =========================================================
-// INTERFAZ EMERGENCIA
-// =========================================================
-
-function updateEmergencyUI() {
-
-    const button =
-        document.getElementById(
-            "emergencyBtn"
-        );
-
-
-    if (!button) {
-
-        return;
-    }
-
-
-    button.style.borderColor =
-        emergencyOn
-        ? "#ef4444"
-        : "";
-
-
-    button.style.background =
-        emergencyOn
-        ? "#3b1118"
-        : "";
-
-
-    const small =
-        button.querySelector(
-            "small"
-        );
-
-
-    if (small) {
-
-        small.textContent =
-            emergencyOn
-            ? "ACTIVADA"
-            : "APAGADA";
-    }
-}
-
-
-// =========================================================
-// MODO MANUAL / AUTOMATICO
-// =========================================================
-
-function setMode(mode) {
-
-    const wantedMode =
-
-        (
-            mode === "automatic"
-            ||
-            mode === "auto"
-        )
-
-        ? "automatic"
-        : "manual";
-
-
-    stopMove(true);
-
-
-    esp32Request(
-
-        "/mode?m=" +
-
-        (
-            wantedMode ===
-            "automatic"
-
-            ? "auto"
-            : "manual"
-        )
-
-    )
-
-    .then(
-        function () {
-
-            currentMode =
-                wantedMode;
-
-
-            updateModeUI();
-
-
-            updateVehicleStatus();
-        }
-    )
-
-    .catch(() => {});
-}
-
-
-// =========================================================
-// INTERFAZ MODO
-// =========================================================
-
-function updateModeUI() {
-
-    const manual =
-        document.getElementById(
-            "manualMode"
-        );
-
-
-    const automatic =
-        document.getElementById(
-            "autoMode"
-        );
-
-
-    if (
-        !manual ||
-        !automatic
-    ) {
-
-        return;
-    }
-
-
-    if (
-        currentMode ===
-        "manual"
-    ) {
-
-        manual.classList.add(
-            "active"
-        );
-
-
-        automatic.classList.remove(
-            "active"
-        );
-
-    }
-
-    else {
-
-        automatic.classList.add(
-            "active"
-        );
-
-
-        manual.classList.remove(
-            "active"
-        );
-    }
-}
-
-
-// =========================================================
-// DISTANCIAS
-// =========================================================
-
-function setDistance(
-    prefix,
-    value
-) {
-
-    const valid =
-
-        typeof value ===
-        "number"
-
-        &&
-        value >= 0;
-
-
-    const text =
-
-        valid
-
-        ? value.toFixed(1) +
-          " cm"
-
-        : "-- cm";
-
-
-    const number =
-
-        valid
-
-        ? value.toFixed(1)
-
-        : "--";
-
-
-    const telemetry =
-        document.getElementById(
-
-            prefix === "front"
-
-            ? "frontDistance"
-
-            : "rearDistance"
-        );
-
-
-    const big =
-        document.getElementById(
-
-            prefix === "front"
-
-            ? "sensorFrontBig"
-
-            : "sensorRearBig"
-        );
-
-
-    const bar =
-        document.getElementById(
-
-            prefix === "front"
-
-            ? "frontBar"
-
-            : "rearBar"
-        );
-
-
-    if (telemetry) {
-
-        telemetry.textContent =
-            text;
-    }
-
-
-    if (big) {
-
-        big.textContent =
-            number;
-    }
-
-
-    if (bar) {
-
-        const percent =
-
-            valid
-
-            ? Math.max(
-                0,
-                Math.min(
-                    value,
-                    100
-                )
-            )
-
-            : 0;
-
-
-        bar.style.width =
-            percent + "%";
-    }
-}
-
-
-// =========================================================
-// ACTUALIZAR DATOS ESP32
-// =========================================================
-
-async function updateStatus() {
-
-    try {
-
-        const response =
-            await esp32Request(
-                "/status"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        // VELOCIDAD
-
-        speed =
-            Number(
-                data.speed ??
-                speed
-            );
-
-
-        const slider =
-            document.getElementById(
-                "speedSlider"
-            );
-
-
-        const speedLabel =
-            document.getElementById(
-                "speedLabel"
-            );
-
-
-        const speedValue =
-            document.getElementById(
-                "speedValue"
-            );
-
-
-        if (slider) {
-
-            slider.value =
-                speed;
-        }
-
-
-        if (speedLabel) {
-
-            speedLabel.textContent =
-                speed + "%";
-        }
-
-
-        if (speedValue) {
-
-            speedValue.textContent =
-                speed + "%";
-        }
-
-
-        // SENSORES
-
-        setDistance(
-            "front",
-            Number(
-                data.front
-            )
-        );
-
-
-        setDistance(
-            "rear",
-            Number(
-                data.rear
-            )
-        );
-
-
-        // LUCES
-
-        lightsOn =
-            Boolean(
-                data.lights
-            );
-
-
-        // EMERGENCIA
-
-        emergencyOn =
-            Boolean(
-                data.emergency
-            );
-
-
-        // MODO
-
-        const modeText =
-            String(
-                data.mode || ""
-            )
-            .toLowerCase();
-
-
-        currentMode =
-
-            modeText.includes(
-                "auto"
-            )
-
-            ? "automatic"
-
-            : "manual";
-
-
-        // DIRECCIONALES
-
-        const signal =
-
-            String(
-                data.signal ||
-                "off"
-            )
-
-            .toLowerCase();
-
-
-        leftSignalOn =
-            signal ===
-            "left";
-
-
-        rightSignalOn =
-            signal ===
-            "right";
-
-
-        // ACTUALIZAR PANTALLA
-
-        updateLightsUI();
-
-        updateSignalUI();
-
-        updateEmergencyUI();
-
-        updateModeUI();
-
-        updateVehicleStatus();
-
-    }
-
-    catch (error) {
-
-    }
-}
-
-
-// =========================================================
-// TECLADO
-// =========================================================
-
-const KEY_COMMANDS = {
-
-    "w": "F",
-
-    "arrowup": "F",
-
-    "s": "B",
-
-    "arrowdown": "B",
-
-    "a": "L",
-
-    "arrowleft": "L",
-
-    "d": "R",
-
-    "arrowright": "R"
+    command("/emergency?state=on");
+    emergencyActive=true;
+    $("driveState").textContent="EMERGENCIA";
+  }
+  updateEmergency();
+});
+
+// BLUEPRINT TABS
+const bpMap={
+  core:["ESP32","ESP32 // CONTROLADOR PRINCIPAL"],
+  drive:["L298N","TRACCIÓN // 4 MOTORES DC"],
+  sense:["HC-SR04","SENSORES // ULTRASONIDO"],
+  safe:["SEGURIDAD","SEGURIDAD // SEÑALIZACIÓN Y FRENO"]
 };
-
-
-// =========================================================
-// TECLA PRESIONADA
-// =========================================================
-
-document.addEventListener(
-
-    "keydown",
-
-    function (event) {
-
-        const key =
-            event.key.toLowerCase();
-
-
-        const command =
-            KEY_COMMANDS[key];
-
-
-        if (command) {
-
-            event.preventDefault();
-
-
-            if (
-                currentCommand !==
-                command
-            ) {
-
-                startMove(
-                    command
-                );
-            }
-
-
-            return;
-        }
-
-
-        // ESPACIO = STOP
-
-        if (
-            key === " "
-        ) {
-
-            event.preventDefault();
-
-
-            stopCar();
-        }
-    }
-);
-
-
-// =========================================================
-// SOLTAR TECLA
-// =========================================================
-
-document.addEventListener(
-
-    "keyup",
-
-    function (event) {
-
-        const key =
-            event.key.toLowerCase();
-
-
-        const command =
-            KEY_COMMANDS[key];
-
-
-        if (command) {
-
-            event.preventDefault();
-
-
-            if (
-                currentCommand ===
-                command
-            ) {
-
-                stopMove(true);
-            }
-        }
-    }
-);
-
-
-// =========================================================
-// CONFIGURAR BOTONES DE MOVIMIENTO
-// =========================================================
-
-function configureMovementButtons() {
-
-    const buttons = [
-
-        {
-            selector:
-                ".direction.up",
-
-            command:
-                "F"
-        },
-
-        {
-            selector:
-                ".direction.down",
-
-            command:
-                "B"
-        },
-
-        {
-            selector:
-                ".direction.left",
-
-            command:
-                "L"
-        },
-
-        {
-            selector:
-                ".direction.right",
-
-            command:
-                "R"
-        }
-
-    ];
-
-
-    buttons.forEach(
-        function (item) {
-
-            const button =
-                document.querySelector(
-                    item.selector
-                );
-
-
-            if (!button) {
-
-                return;
-            }
-
-
-            // Quitar onclick anterior
-
-            button.onclick =
-                null;
-
-
-            button.removeAttribute(
-                "onclick"
-            );
-
-
-            button.style.touchAction =
-                "none";
-
-
-            // PRESIONAR
-
-            button.addEventListener(
-
-                "pointerdown",
-
-                function (event) {
-
-                    event.preventDefault();
-
-
-                    startMove(
-                        item.command
-                    );
-                }
-            );
-
-
-            // SOLTAR
-
-            button.addEventListener(
-
-                "pointerup",
-
-                function () {
-
-                    stopMove(true);
-                }
-            );
-
-
-            // SALIR DEL BOTON
-
-            button.addEventListener(
-
-                "pointerleave",
-
-                function () {
-
-                    if (
-                        currentCommand ===
-                        item.command
-                    ) {
-
-                        stopMove(true);
-                    }
-                }
-            );
-
-
-            // CANCELAR
-
-            button.addEventListener(
-
-                "pointercancel",
-
-                function () {
-
-                    stopMove(true);
-                }
-            );
-        }
-    );
+document.querySelectorAll(".bp-step").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".bp-step").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const cfg=bpMap[btn.dataset.system];
+    $("bpCore").textContent=cfg[0];
+    $("blueprintCaption").textContent=cfg[1];
+  });
+});
+
+// RADAR
+const canvas=$("radarCanvas"),ctx=canvas.getContext("2d");
+let phase=0;
+
+function resizeRadar(){
+  const r=canvas.getBoundingClientRect(),dpr=devicePixelRatio||1;
+  canvas.width=r.width*dpr;
+  canvas.height=r.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
 }
+addEventListener("resize",resizeRadar);
+resizeRadar();
 
+function drawRadar(){
+  const r=canvas.getBoundingClientRect(),w=r.width,h=r.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#070c12";
+  ctx.fillRect(0,0,w,h);
 
-// =========================================================
-// CONFIGURAR BOCINA
-// =========================================================
+  ctx.strokeStyle="rgba(80,233,255,.055)";
+  ctx.lineWidth=1;
+  for(let x=0;x<w;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+  for(let y=0;y<h;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
 
-function configureHornButton() {
+  const cx=w/2,cy=h/2,carW=Math.min(160,w*.28),carH=70,max=Math.min(w*.31,230);
 
-    const button =
-        document.querySelector(
-            'button[onclick="horn()"]'
-        );
+  ctx.strokeStyle="#50e9ff";
+  ctx.fillStyle="rgba(51,136,255,.09)";
+  ctx.beginPath();
+  ctx.roundRect(cx-carW/2,cy-carH/2,carW,carH,12);
+  ctx.fill();ctx.stroke();
 
+  ctx.fillStyle="#50e9ff";
+  ctx.font="700 9px Arial";
+  ctx.textAlign="center";
+  ctx.fillText("ROBO-COC",cx,cy+3);
 
-    if (!button) {
+  const pulse=.82+Math.sin(phase)*.06;
 
-        return;
-    }
+  ctx.fillStyle="rgba(80,233,255,.035)";
+  ctx.strokeStyle="rgba(80,233,255,.2)";
+  ctx.beginPath();
+  ctx.moveTo(cx+carW/2,cy);
+  ctx.arc(cx+carW/2,cy,max*pulse,-.45,.45);
+  ctx.closePath();ctx.fill();ctx.stroke();
 
+  ctx.fillStyle="rgba(51,136,255,.035)";
+  ctx.strokeStyle="rgba(51,136,255,.2)";
+  ctx.beginPath();
+  ctx.moveTo(cx-carW/2,cy);
+  ctx.arc(cx-carW/2,cy,max*pulse,Math.PI-.45,Math.PI+.45);
+  ctx.closePath();ctx.fill();ctx.stroke();
 
-    button.onclick =
-        null;
+  if(state.front>0&&state.front<=400){
+    const x=cx+carW/2+(Math.min(state.front,400)/400)*max;
+    ctx.strokeStyle=state.front<30?"#ff415c":"#50e9ff";
+    ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(x,cy-40);ctx.lineTo(x,cy+40);ctx.stroke();
+  }
 
+  if(state.rear>0&&state.rear<=400){
+    const x=cx-carW/2-(Math.min(state.rear,400)/400)*max;
+    ctx.strokeStyle="#3388ff";
+    ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(x,cy-35);ctx.lineTo(x,cy+35);ctx.stroke();
+  }
 
-    button.removeAttribute(
-        "onclick"
-    );
-
-
-    button.style.touchAction =
-        "none";
-
-
-    button.addEventListener(
-
-        "pointerdown",
-
-        function (event) {
-
-            event.preventDefault();
-
-            hornOn();
-        }
-    );
-
-
-    button.addEventListener(
-
-        "pointerup",
-
-        hornOff
-    );
-
-
-    button.addEventListener(
-
-        "pointerleave",
-
-        hornOff
-    );
-
-
-    button.addEventListener(
-
-        "pointercancel",
-
-        hornOff
-    );
+  phase+=.04;
+  requestAnimationFrame(drawRadar);
 }
-
-
-// =========================================================
-// CONFIGURAR FRENO
-// =========================================================
-
-function configureBrakeButton() {
-
-    const button =
-        document.querySelector(
-            ".brake-button"
-        );
-
-
-    if (!button) {
-
-        return;
-    }
-
-
-    button.onclick =
-        null;
-
-
-    button.removeAttribute(
-        "onclick"
-    );
-
-
-    button.style.touchAction =
-        "none";
-
-
-    button.addEventListener(
-
-        "pointerdown",
-
-        function (event) {
-
-            event.preventDefault();
-
-            brake();
-        }
-    );
-
-
-    button.addEventListener(
-
-        "pointerup",
-
-        stopCar
-    );
-
-
-    button.addEventListener(
-
-        "pointerleave",
-
-        stopCar
-    );
-
-
-    button.addEventListener(
-
-        "pointercancel",
-
-        stopCar
-    );
-}
-
-
-// =========================================================
-// SEGURIDAD
-// =========================================================
-
-window.addEventListener(
-
-    "blur",
-
-    function () {
-
-        if (
-            currentCommand !==
-            "S"
-        ) {
-
-            stopMove(true);
-        }
-
-
-        hornOff();
-    }
-);
-
-
-document.addEventListener(
-
-    "visibilitychange",
-
-    function () {
-
-        if (
-            document.hidden
-        ) {
-
-            if (
-                currentCommand !==
-                "S"
-            ) {
-
-                stopMove(true);
-            }
-
-
-            hornOff();
-        }
-    }
-);
-
-
-// =========================================================
-// INICIO
-// =========================================================
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    function () {
-
-        configureMovementButtons();
-
-        configureHornButton();
-
-        configureBrakeButton();
-
-
-        updateVehicleStatus();
-
-        updateLightsUI();
-
-        updateSignalUI();
-
-        updateEmergencyUI();
-
-        updateModeUI();
-
-
-        updateStatus();
-
-
-        // ACTUALIZAR ESP32
-        // CADA MEDIO SEGUNDO
-
-        setInterval(
-            updateStatus,
-            500
-        );
-    }
-);
+drawRadar();
+
+// REVEAL
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")});
+},{threshold:.14});
+document.querySelectorAll(".reveal").forEach(el=>revealObs.observe(el));
+
+// NAV
+const navLinks=[...document.querySelectorAll(".rail-nav a")];
+const sectionObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    navLinks.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id));
+  });
+},{rootMargin:"-35% 0px -55% 0px"});
+document.querySelectorAll("section[id]").forEach(s=>sectionObs.observe(s));
+
+// CURSOR
+document.addEventListener("mousemove",e=>{
+  $("cursor").style.left=e.clientX+"px";
+  $("cursor").style.top=e.clientY+"px";
+  $("cursorTrail").style.left=e.clientX+"px";
+  $("cursorTrail").style.top=e.clientY+"px";
+});
+
+// HERO 3D
+$("vehicleStage").addEventListener("mousemove",e=>{
+  const r=$("vehicleStage").getBoundingClientRect();
+  const x=(e.clientX-r.left)/r.width-.5;
+  const y=(e.clientY-r.top)/r.height-.5;
+  $("vehicleIso").style.transform=`rotateX(${58-y*7}deg) rotateZ(${-28+x*8}deg) translateZ(18px)`;
+});
+$("vehicleStage").addEventListener("mouseleave",()=>{
+  $("vehicleIso").style.transform="rotateX(58deg) rotateZ(-28deg)";
+});

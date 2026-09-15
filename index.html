@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#eef9ff">
+<meta name="theme-color" content="#030711">
 <title>INTECAP | ROBO-COC 2026</title>
 <style>
 :root{
@@ -264,171 +264,34 @@ footer{padding:56px 20px;border-top:1px solid var(--line);text-align:center;colo
 
 
 /* ==========================================================
-   TEMA CLARO ROBO-COC — FONDO DE CARROS ROBÓTICOS
-   Se agrega al final para conservar todos los efectos 3D.
+   FONDO OSCURO DE CARROS ROBÓTICOS — SIN INTERNET
 ========================================================== */
-:root{
-  --bg:#eef9ff;
-  --bg2:#dff3ff;
-  --panel:rgba(255,255,255,.78);
-  --panel2:rgba(242,250,255,.92);
-  --line:rgba(28,101,154,.18);
-  --cyan:#00aeea;
-  --blue:#2563eb;
-  --ice:#10283b;
-  --muted:#557286;
-  --amber:#d98b00;
-  --red:#e9415a;
-  --green:#0baf73;
-  --shadow:0 24px 70px rgba(41,101,143,.14);
-}
-
-body{
-  color:var(--ice);
-  background:
-    radial-gradient(900px 620px at 8% -8%,rgba(0,174,234,.18),transparent 62%),
-    radial-gradient(850px 620px at 100% 20%,rgba(37,99,235,.13),transparent 62%),
-    radial-gradient(700px 500px at 50% 100%,rgba(125,211,252,.16),transparent 66%),
-    linear-gradient(180deg,#f9fdff 0%,#eef9ff 42%,#e8f6ff 100%);
-}
-
-/* Rejilla técnica clara */
-body::before{
-  opacity:.40;
-  background-image:
-    linear-gradient(rgba(25,107,163,.075) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(25,107,163,.075) 1px,transparent 1px);
-  background-size:44px 44px;
-  mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.75) 70%,transparent 100%);
-}
-
-/* Patrón de carros robóticos hecho en SVG, sin imágenes externas */
 body::after{
   content:"";
   position:fixed;
   inset:0;
-  z-index:-2;
+  z-index:-3;
   pointer-events:none;
-  opacity:.105;
-  background-image:url("data:image/svg+xml,%3Csvg width='520' height='320' viewBox='0 0 520 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%230b6fa8' stroke-width='2' opacity='.82'%3E%3Cg transform='translate(48 48) rotate(-8 92 56)'%3E%3Crect x='28' y='18' width='128' height='76' rx='18'/%3E%3Crect x='60' y='34' width='64' height='40' rx='8'/%3E%3Ccircle cx='72' cy='54' r='7'/%3E%3Ccircle cx='112' cy='54' r='7'/%3E%3Cpath d='M20 32h-12v20h12M20 60h-12v20h12M164 32h12v20h-12M164 60h12v20h-12M92 18V5m0 89v13M52 18L42 5m90 13l10-13M52 94l-10 13m90-13l10 13'/%3E%3Cpath d='M72 77h40M78 84h28'/%3E%3C/g%3E%3Cg transform='translate(308 186) rotate(9 82 50)'%3E%3Crect x='22' y='14' width='120' height='72' rx='16'/%3E%3Crect x='52' y='29' width='60' height='38' rx='7'/%3E%3Ccircle cx='67' cy='48' r='6'/%3E%3Ccircle cx='97' cy='48' r='6'/%3E%3Cpath d='M15 27H4v18h11M15 56H4v18h11M149 27h11v18h-11M149 56h11v18h-11M82 14V2m0 84v12'/%3E%3C/g%3E%3Cg opacity='.55'%3E%3Cpath d='M216 52h72M252 16v72M220 238h74M257 202v74' stroke-dasharray='7 7'/%3E%3Ccircle cx='252' cy='52' r='24'/%3E%3Ccircle cx='257' cy='238' r='22'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity:.065;
+  background-image:url("data:image/svg+xml,%3Csvg width='520' height='320' viewBox='0 0 520 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2346e7ff' stroke-width='2' opacity='.9'%3E%3Cg transform='translate(48 48) rotate(-8 92 56)'%3E%3Crect x='28' y='18' width='128' height='76' rx='18'/%3E%3Crect x='60' y='34' width='64' height='40' rx='8'/%3E%3Ccircle cx='72' cy='54' r='7'/%3E%3Ccircle cx='112' cy='54' r='7'/%3E%3Cpath d='M20 32h-12v20h12M20 60h-12v20h12M164 32h12v20h-12M164 60h12v20h-12M92 18V5m0 89v13M52 18L42 5m90 13l10-13M52 94l-10 13m90-13l10 13'/%3E%3Cpath d='M72 77h40M78 84h28'/%3E%3C/g%3E%3Cg transform='translate(308 186) rotate(9 82 50)'%3E%3Crect x='22' y='14' width='120' height='72' rx='16'/%3E%3Crect x='52' y='29' width='60' height='38' rx='7'/%3E%3Ccircle cx='67' cy='48' r='6'/%3E%3Ccircle cx='97' cy='48' r='6'/%3E%3Cpath d='M15 27H4v18h11M15 56H4v18h11M149 27h11v18h-11M149 56h11v18h-11M82 14V2m0 84v12'/%3E%3C/g%3E%3Cg opacity='.55'%3E%3Cpath d='M216 52h72M252 16v72M220 238h74M257 202v74' stroke-dasharray='7 7'/%3E%3Ccircle cx='252' cy='52' r='24'/%3E%3Ccircle cx='257' cy='238' r='22'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   background-repeat:repeat;
   background-size:520px 320px;
-  filter:drop-shadow(0 7px 16px rgba(36,107,154,.08));
+  filter:drop-shadow(0 0 14px rgba(70,231,255,.08));
 }
-
-canvas#network{opacity:.28}
-.noise{opacity:.012}
-
-.glass{
-  background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(231,246,255,.76));
-  border-color:rgba(28,101,154,.16);
-  box-shadow:0 22px 65px rgba(44,111,156,.13);
-  backdrop-filter:blur(20px) saturate(1.15);
-}
-
-.boot{
-  background:
-    radial-gradient(circle at 50% 35%,rgba(0,174,234,.17),transparent 34%),
-    linear-gradient(180deg,#fbfeff,#eaf8ff);
-}
-.boot-line{background:#d4eaf7}
-.boot-status{color:#66859a}
-
-.nav.scrolled{
-  background:rgba(247,252,255,.82);
-  backdrop-filter:blur(22px) saturate(1.25);
-  border-color:rgba(28,101,154,.14);
-  box-shadow:0 10px 40px rgba(31,103,151,.08);
-}
-.navlinks{color:#55768b}
-.navlinks a:hover,.navlinks a.active{color:#0e3148;background:rgba(0,174,234,.08)}
-.conn{color:#648499}
-
-.section-title span{color:#6c8799}
-.hero-sub{color:#58778c}
-.btn{background:rgba(255,255,255,.68);color:#173448;border-color:rgba(31,103,151,.16);box-shadow:0 8px 24px rgba(30,111,165,.06)}
-.btn:hover{background:#fff;border-color:rgba(0,174,234,.52);box-shadow:0 14px 34px rgba(0,174,234,.12)}
-.btn.primary{color:#fff;background:linear-gradient(135deg,#00bfea,#3267f2);box-shadow:0 16px 35px rgba(37,99,235,.20)}
-
-.hstat{background:rgba(255,255,255,.70);border-color:rgba(28,101,154,.15);box-shadow:0 10px 28px rgba(41,101,143,.07)}
-.hstat small{color:#6d899b}.hstat b{color:#183c53}
-
-.holo-shell{
-  background:
-    radial-gradient(circle at 50% 44%,rgba(0,174,234,.16),transparent 42%),
-    linear-gradient(145deg,rgba(255,255,255,.88),rgba(223,243,255,.76));
-  box-shadow:0 34px 90px rgba(42,115,163,.16),inset 0 0 55px rgba(0,174,234,.06);
-}
-.holo-shell::before{opacity:.45}
-.car-body{background:linear-gradient(155deg,rgba(239,250,255,.98),rgba(200,233,250,.98));box-shadow:inset 0 0 40px rgba(0,174,234,.12),0 18px 40px rgba(40,114,161,.18)}
-.car-body::before{background:linear-gradient(180deg,rgba(207,238,252,.95),rgba(244,252,255,.98))}
-.wheel{background:#29465a;border-color:#79a7c4;box-shadow:0 0 15px rgba(37,99,235,.20)}
-.headlight{background:#bcd5e5}
-.holo-data{color:#66869b}
-
-.system-card{background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(234,247,255,.76));box-shadow:0 16px 42px rgba(43,105,145,.09)}
-.system-card .num{color:rgba(18,88,137,.07)}
-.discipline .idx{color:#66879a}
-.process{background:rgba(30,112,166,.14)}
-.process div{background:#f7fcff}
-.process small{color:#668397}
-
-.tech-cube .face,.cube .face{background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(215,241,255,.75))!important;border-color:rgba(0,174,234,.33)!important;color:#087baa!important;box-shadow:inset 0 0 34px rgba(0,174,234,.08)!important}
-.tech-icon{background:rgba(255,255,255,.55)}
-
-.panel-head{color:#65849a}
-.metric label{color:#57788d}
-.meter{background:#dbeefa}
-.tele-chip,.statusbox,.sstate{background:rgba(255,255,255,.58)}
-.tele-chip small,.statusbox small,.sstate small{color:#6b8799}
-
-.mini-car-stage{
-  background:
-    radial-gradient(circle at 50% 50%,rgba(0,174,234,.12),transparent 58%),
-    linear-gradient(145deg,#fafdff,#eaf8ff);
-}
-.mini-car{background:#eaf8ff;box-shadow:0 0 24px rgba(37,99,235,.16)}
-.mini-car::before,.mini-car::after{background:#39596f;box-shadow:0 47px 0 #39596f}
-.mini-car .mh{background:#a8c8da}
-.pad-btn{background:#f6fbfe;color:#54768d;box-shadow:0 8px 22px rgba(42,109,153,.08)}
-.pad-btn:hover{color:#0d3851;background:#fff}
-.pad-btn.active{color:#fff;background:linear-gradient(135deg,#00bce8,#3470ee)}
-.pad-hint{color:#69889c}
-.range-head{color:#5b7a8f}
-.mode-row button{background:#f4faff;color:#58788c}
-.mode-row button.active{color:#fff}
-.fn{background:#f8fcff;color:#18384e;box-shadow:0 10px 28px rgba(42,105,146,.07)}
-.fn:hover{background:#fff}
-.fn.on{background:rgba(0,174,234,.10)}
-.fn small,.fn span{color:#69879a}
-
-.tags span{background:rgba(255,255,255,.50);color:#58788d}
-.member{background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(234,247,255,.78));box-shadow:0 16px 40px rgba(42,103,143,.08)}
-.member span{color:#638297}
-.member.primary{background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(219,243,255,.88));border-color:rgba(0,174,234,.34)}
-footer{color:#68869a}
-
-.toast{background:rgba(251,254,255,.94);color:#466a80;border-color:rgba(28,101,154,.18);box-shadow:0 12px 36px rgba(43,107,149,.14)}
-.conn-banner{background:rgba(255,249,232,.94);color:#a86900;border-color:rgba(217,139,0,.24);box-shadow:0 12px 34px rgba(120,88,24,.10)}
-
-/* Mejor contraste para la marca gigante sobre fondo claro */
-.intecap-giant{-webkit-text-stroke:1.4px rgba(0,126,181,.30);text-shadow:0 18px 50px rgba(0,174,234,.08)}
-
 @media(max-width:720px){
-  body::after{background-size:390px 240px;opacity:.075}
+  body::after{background-size:390px 240px;opacity:.045}
 }
-
 
 /* ===== Integración real con el firmware ESP32 ===== */
 .statusbox b.warn{color:var(--amber)}
 .statusbox b.bad{color:var(--red)}
-.statusbox b.ok{color:#008b70}
+.statusbox b.ok{color:var(--green)}
 .metric.alert strong{color:var(--red)}
 .metric.alert .meter i{background:linear-gradient(90deg,#ff9c9c,var(--red));box-shadow:0 0 14px rgba(255,79,104,.28)}
-.metric.caution strong{color:#bb7200}
+.metric.caution strong{color:var(--amber)}
 .metric.caution .meter i{background:linear-gradient(90deg,#ffd479,var(--amber));box-shadow:0 0 14px rgba(255,192,90,.25)}
 .fn:disabled,.mode-row button:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.2)}
-.connection-note{font:750 10px ui-monospace,Consolas,monospace;color:#5d7b8f}
+.connection-note{font:750 10px ui-monospace,Consolas,monospace;color:var(--muted)}
 
 
 
@@ -737,16 +600,6 @@ button,a,input{touch-action:manipulation}
   </div>
 </section>
 
-<section class="institution">
-  <div class="wrap">
-    <div class="intecap-giant reveal">INTECAP</div>
-    <div class="eyebrow reveal">FORMACIÓN TÉCNICA · TECNOLOGÍA · INNOVACIÓN</div>
-    <h2 class="section-title reveal">Mecatrónica aplicada <span>a un sistema real.</span></h2>
-    <p class="lead reveal">ROBO-COC se desarrolla como proyecto de Mecatrónica en INTECAP, integrando conocimientos técnicos de mecánica, electrónica, programación, automatización y control en una plataforma funcional.</p>
-    <div class="tags reveal"><span>MECATRÓNICA</span><span>ESP32</span><span>AUTOMATIZACIÓN</span><span>CONTROL WEB</span><span>SENSORES</span><span>ROBÓTICA MÓVIL</span></div>
-  </div>
-</section>
-
 <section id="equipo">
   <div class="wrap">
     <div class="eyebrow reveal">07 // EQUIPO</div>
@@ -762,6 +615,20 @@ button,a,input{touch-action:manipulation}
     </div>
   </div>
 </section>
+
+
+
+<section class="institution">
+  <div class="wrap">
+    <div class="intecap-giant reveal">INTECAP</div>
+    <div class="eyebrow reveal">FORMACIÓN TÉCNICA · TECNOLOGÍA · INNOVACIÓN</div>
+    <h2 class="section-title reveal">Mecatrónica aplicada <span>a un sistema real.</span></h2>
+    <p class="lead reveal">ROBO-COC se desarrolla como proyecto de Mecatrónica en INTECAP, integrando conocimientos técnicos de mecánica, electrónica, programación, automatización y control en una plataforma funcional.</p>
+    <div class="tags reveal"><span>MECATRÓNICA</span><span>ESP32</span><span>AUTOMATIZACIÓN</span><span>CONTROL WEB</span><span>SENSORES</span><span>ROBÓTICA MÓVIL</span></div>
+  </div>
+</section>
+
+
 
 <footer>INTECAP // MECATRÓNICA // ROBO-COC // CONTROL · OPERACIÓN · CONDUCCIÓN // 2026</footer>
 
@@ -1177,14 +1044,14 @@ function fitRadar(){
 function drawRadar(){
   const size=Number(el.radar.dataset.cssSize)||360,c=size/2,R=c-10;
   rctx.clearRect(0,0,size,size);
-  rctx.lineWidth=1;rctx.strokeStyle="rgba(0,174,234,.15)";
+  rctx.lineWidth=1;rctx.strokeStyle="rgba(70,231,255,.15)";
   for(let i=1;i<=4;i++){rctx.beginPath();rctx.arc(c,c,R*i/4,0,Math.PI*2);rctx.stroke();}
   rctx.beginPath();rctx.moveTo(c-R,c);rctx.lineTo(c+R,c);rctx.moveTo(c,c-R);rctx.lineTo(c,c+R);rctx.stroke();
-  const grad=rctx.createRadialGradient(c,c,0,c,c,R);grad.addColorStop(0,"rgba(0,174,234,.15)");grad.addColorStop(1,"rgba(0,174,234,0)");
+  const grad=rctx.createRadialGradient(c,c,0,c,c,R);grad.addColorStop(0,"rgba(70,231,255,.15)");grad.addColorStop(1,"rgba(0,174,234,0)");
   rctx.beginPath();rctx.moveTo(c,c);rctx.arc(c,c,R,radarAngle-.55,radarAngle);rctx.closePath();rctx.fillStyle=grad;rctx.fill();
-  rctx.beginPath();rctx.moveTo(c,c);rctx.lineTo(c+R*Math.cos(radarAngle),c+R*Math.sin(radarAngle));rctx.strokeStyle="rgba(0,174,234,.88)";rctx.stroke();
-  plot(c,c,R,-Math.PI/2,state.front,"#00aeea");
-  plot(c,c,R, Math.PI/2,state.rear,"#e89a00");
+  rctx.beginPath();rctx.moveTo(c,c);rctx.lineTo(c+R*Math.cos(radarAngle),c+R*Math.sin(radarAngle));rctx.strokeStyle="rgba(70,231,255,.88)";rctx.stroke();
+  plot(c,c,R,-Math.PI/2,state.front,"#46e7ff");
+  plot(c,c,R, Math.PI/2,state.rear,"#ffc05a");
   radarAngle+=.018;requestAnimationFrame(drawRadar);
 }
 function plot(cx,cy,R,a,dist,color){
@@ -1207,9 +1074,9 @@ function netDraw(){
   for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>nw)n.vx*=-1;if(n.y<0||n.y>nh)n.vy*=-1;}
   for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
     const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
-    if(d<130){nctx.strokeStyle=`rgba(0,174,234,${.075*(1-d/130)})`;nctx.beginPath();nctx.moveTo(a.x,a.y);nctx.lineTo(b.x,b.y);nctx.stroke();}
+    if(d<130){nctx.strokeStyle=`rgba(70,231,255,${.075*(1-d/130)})`;nctx.beginPath();nctx.moveTo(a.x,a.y);nctx.lineTo(b.x,b.y);nctx.stroke();}
   }
-  nctx.fillStyle="rgba(0,174,234,.28)";
+  nctx.fillStyle="rgba(70,231,255,.28)";
   for(const n of nodes){nctx.beginPath();nctx.arc(n.x,n.y,1.2,0,Math.PI*2);nctx.fill();}
   requestAnimationFrame(netDraw);
 }

@@ -1,527 +1,1258 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#05070b">
-  <title>INTECAP | ROBO-COC 2026</title>
-  <link rel="stylesheet" href="style-v53.css?v=53">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#eef9ff">
+<title>INTECAP | ROBO-COC 2026</title>
+<style>
+:root{
+  --bg:#030711;--bg2:#07101b;--panel:rgba(10,19,31,.76);--panel2:rgba(14,29,45,.86);
+  --line:rgba(132,173,210,.18);--cyan:#46e7ff;--blue:#4f7cff;--ice:#eaf8ff;
+  --muted:#8fa6b9;--amber:#ffc05a;--red:#ff4f68;--green:#59f2b0;
+  --shadow:0 24px 80px rgba(0,0,0,.38);--radius:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;overflow-x:hidden;color:var(--ice);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(900px 560px at 8% -8%,rgba(70,231,255,.11),transparent 60%),
+    radial-gradient(800px 600px at 100% 22%,rgba(79,124,255,.10),transparent 60%),
+    linear-gradient(180deg,#030711 0%,#050a12 45%,#02050a 100%);
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-3;opacity:.18;
+  background-image:linear-gradient(rgba(70,231,255,.05) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(70,231,255,.05) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:linear-gradient(to bottom,#000 0%,transparent 95%);
+}
+::selection{background:var(--cyan);color:#001018}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer}
+canvas#network{position:fixed;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}
+.noise{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+.wrap{width:min(1200px,calc(100% - 40px));margin:auto}
+section{position:relative;padding:112px 0}
+.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--cyan);font-weight:800;margin-bottom:14px;text-transform:uppercase}
+.section-title{font-size:clamp(34px,5vw,58px);line-height:1.03;letter-spacing:-.035em;max-width:760px}
+.section-title span{color:#72879b;font-weight:500}
+.lead{max-width:760px;margin-top:18px;color:var(--muted);font-size:16px;line-height:1.8}
+.glass{background:linear-gradient(145deg,rgba(13,27,42,.80),rgba(5,12,22,.68));border:1px solid var(--line);
+  box-shadow:var(--shadow);backdrop-filter:blur(16px);border-radius:var(--radius)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* BOOT */
+.boot{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#02050a;transition:opacity .6s,visibility .6s}
+.boot.hide{opacity:0;visibility:hidden}
+.boot-inner{width:min(520px,calc(100% - 48px))}
+.boot-mark{font-size:12px;letter-spacing:.26em;color:var(--cyan);margin-bottom:18px}
+.boot-title{font-size:clamp(42px,10vw,82px);font-weight:900;letter-spacing:-.06em;white-space:nowrap}
+.boot-title span{color:var(--cyan)}
+.boot-line{height:2px;background:#0d1b28;margin-top:28px;overflow:hidden}
+.boot-line i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 18px var(--cyan);animation:bootload 1.35s ease forwards}
+.boot-status{display:flex;justify-content:space-between;margin-top:10px;color:#62778b;font:11px ui-monospace,Consolas,monospace}
+@keyframes bootload{to{width:100%}}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:15px max(20px,calc((100vw - 1200px)/2));border-bottom:1px solid transparent;transition:.25s}
+.nav.scrolled{background:rgba(3,7,17,.84);backdrop-filter:blur(18px);border-color:var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.12em;white-space:nowrap}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);transition:.25s}
+.brand .dot.on{background:var(--green);box-shadow:0 0 14px var(--green)}
+.navlinks{display:flex;align-items:center;gap:2px;color:#71869a;font-size:11px;font-weight:700;letter-spacing:.04em}
+.navlinks a{padding:9px 10px;border-radius:8px;white-space:nowrap}
+.navlinks a:hover,.navlinks a.active{color:var(--ice);background:rgba(255,255,255,.045)}
+.conn{display:flex;align-items:center;gap:8px;color:#61778b;font:10px ui-monospace,Consolas,monospace;white-space:nowrap}
+.conn b{color:var(--amber)}
+.conn b.ok{color:var(--green)}
+.scroll-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan));width:0;z-index:130;box-shadow:0 0 12px var(--cyan)}
+
+/* HERO */
+.hero{min-height:100svh;display:grid;align-items:center;padding:112px 0 60px}
+.hero-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:54px;align-items:center}
+.hero-kicker{display:flex;align-items:center;gap:10px;color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.16em;margin-bottom:22px}
+.hero-kicker::before{content:"";width:34px;height:1px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.hero h1{font-size:clamp(58px,8.4vw,112px);line-height:.86;letter-spacing:-.065em;font-weight:950;white-space:nowrap}
+.hero h1 span{color:var(--cyan);text-shadow:0 0 34px rgba(70,231,255,.42),0 0 90px rgba(70,231,255,.16)}
+.hero-sub{margin-top:26px;max-width:640px;color:#91a6b8;font-size:16px;line-height:1.8}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{position:relative;overflow:hidden;padding:14px 19px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.025);
+  color:var(--ice);font-size:11px;font-weight:850;letter-spacing:.08em;transition:.22s}
+.btn:hover{transform:translateY(-2px);border-color:rgba(70,231,255,.55)}
+.btn.primary{background:linear-gradient(135deg,#49ddff,#4f7cff);color:#00101b;border-color:transparent;box-shadow:0 14px 36px rgba(70,231,255,.18)}
+.btn.primary::after{content:"";position:absolute;inset:-80% -20%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:rotate(20deg) translateX(-80%);transition:.5s}
+.btn.primary:hover::after{transform:rotate(20deg) translateX(80%)}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:34px}
+.hstat{padding:13px 14px;border:1px solid var(--line);background:rgba(5,13,22,.58);border-radius:12px}
+.hstat small{display:block;color:#587087;font-size:9px;letter-spacing:.11em;margin-bottom:5px}
+.hstat b{font-size:12px;color:#cfeefe}
+
+/* HERO 3D */
+.hero-visual{position:relative;min-height:510px;perspective:1400px}
+.holo-shell{position:absolute;inset:0;border:1px solid var(--line);border-radius:28px;background:
+  radial-gradient(circle at 50% 50%,rgba(70,231,255,.075),transparent 45%),
+  linear-gradient(145deg,rgba(12,24,38,.66),rgba(3,8,15,.50));overflow:hidden;box-shadow:var(--shadow)}
+.holo-shell::before{content:"";position:absolute;inset:0;background:
+  linear-gradient(transparent 95%,rgba(70,231,255,.08) 96%),
+  linear-gradient(90deg,transparent 95%,rgba(70,231,255,.08) 96%);background-size:28px 28px;opacity:.28}
+.holo-ring{position:absolute;left:50%;top:50%;width:380px;height:380px;margin:-190px;border:1px dashed rgba(70,231,255,.25);border-radius:50%;
+  transform:rotateX(76deg);animation:ringSpin 18s linear infinite}
+.holo-ring::before,.holo-ring::after{content:"";position:absolute;inset:38px;border:1px solid rgba(79,124,255,.18);border-radius:50%}
+.holo-ring::after{inset:85px;border-style:dashed}
+@keyframes ringSpin{to{transform:rotateX(76deg) rotate(360deg)}}
+.car3d-wrap{position:absolute;left:50%;top:50%;width:280px;height:190px;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(-16deg) rotateY(28deg)}
+.car3d{position:absolute;inset:0;transform-style:preserve-3d;animation:carFloat 4s ease-in-out infinite}
+@keyframes carFloat{50%{transform:translateY(-12px) rotateY(4deg)}}
+.car-body{position:absolute;left:40px;top:48px;width:200px;height:96px;border:1px solid rgba(70,231,255,.55);border-radius:28px 28px 18px 18px;
+  background:linear-gradient(155deg,rgba(16,36,55,.98),rgba(4,11,20,.95));box-shadow:inset 0 0 40px rgba(70,231,255,.08),0 0 40px rgba(70,231,255,.12);
+  transform-style:preserve-3d}
+.car-body::before{content:"";position:absolute;left:46px;top:-34px;width:108px;height:58px;border:1px solid rgba(79,124,255,.5);
+  border-radius:26px 26px 5px 5px;background:linear-gradient(180deg,rgba(25,50,76,.9),rgba(7,18,31,.9));transform:translateZ(18px)}
+.car-body::after{content:"ESP32";position:absolute;inset:0;display:grid;place-items:center;color:var(--cyan);font:800 12px ui-monospace,Consolas,monospace;letter-spacing:.14em}
+.wheel{position:absolute;width:32px;height:54px;border-radius:9px;background:#030609;border:2px solid #29425b;box-shadow:0 0 15px rgba(79,124,255,.35)}
+.w1{left:24px;top:52px}.w2{right:24px;top:52px}.w3{left:24px;bottom:18px}.w4{right:24px;bottom:18px}
+.headlight{position:absolute;top:56px;width:17px;height:8px;border-radius:4px;background:#1c2b3a;transition:.2s}
+.hl1{left:55px}.hl2{right:55px}.headlight.on{background:#fff;box-shadow:0 0 16px 5px #fff}
+.holo-data{position:absolute;font:10px ui-monospace,Consolas,monospace;color:#6e8ca4;letter-spacing:.08em}
+.hd1{left:22px;top:26px}.hd2{right:22px;top:26px;text-align:right}.hd3{left:22px;bottom:24px}.hd4{right:22px;bottom:24px;text-align:right}
+.holo-data b{display:block;color:var(--cyan);margin-top:4px}
+
+/* PROJECT SYSTEM CARDS */
+.system-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:46px}
+.system-card{position:relative;min-height:220px;padding:24px;overflow:hidden;transform-style:preserve-3d;transition:transform .15s,border-color .2s}
+.system-card::before{content:"";position:absolute;inset:0;background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(70,231,255,.10),transparent 60%);opacity:0;transition:.2s}
+.system-card:hover::before{opacity:1}
+.system-card small{position:relative;color:var(--cyan);font-size:9px;font-weight:900;letter-spacing:.15em}
+.system-card h3{position:relative;font-size:25px;margin-top:22px}
+.system-card p{position:relative;margin-top:10px;color:var(--muted);font-size:13px;line-height:1.7}
+.system-card .num{position:absolute;right:18px;bottom:12px;font-size:54px;font-weight:900;color:rgba(255,255,255,.035)}
+
+/* DISCIPLINES */
+.disciplines{margin-top:46px;border-top:1px solid var(--line)}
+.discipline{display:grid;grid-template-columns:78px 250px 1fr;gap:26px;padding:30px 0;border-bottom:1px solid var(--line);align-items:start}
+.discipline .idx{color:#536b80;font:700 11px ui-monospace,Consolas,monospace}
+.discipline h3{font-size:21px}
+.discipline h3 span{display:block;color:var(--cyan);font:700 9px ui-monospace,Consolas,monospace;letter-spacing:.12em;margin-top:8px}
+.discipline p{color:var(--muted);font-size:14px;line-height:1.75}
+.process{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:46px;border-radius:16px;overflow:hidden}
+.process div{position:relative;background:#07111d;padding:23px}
+.process small{display:block;color:#51687c;font-size:9px;letter-spacing:.13em;margin-bottom:7px}
+.process b{color:var(--cyan);font-size:13px}
+.process div:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:50%;z-index:2;color:var(--cyan);transform:translateY(-50%);text-shadow:0 0 12px var(--cyan)}
+
+/* 3D CORE CUBE */
+.tech-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;margin-top:46px}
+.core-stage{min-height:470px;display:grid;place-items:center;perspective:1200px;overflow:hidden}
+.cube{width:190px;height:190px;position:relative;transform-style:preserve-3d;animation:cubeSpin 16s linear infinite}
+@keyframes cubeSpin{from{transform:rotateX(-18deg) rotateY(0)}to{transform:rotateX(-18deg) rotateY(360deg)}}
+.cube-face{position:absolute;inset:0;display:grid;place-items:center;border:1px solid rgba(70,231,255,.36);
+  background:linear-gradient(145deg,rgba(22,48,72,.48),rgba(6,15,27,.72));box-shadow:inset 0 0 38px rgba(70,231,255,.05);
+  color:var(--cyan);font:800 14px ui-monospace,Consolas,monospace;letter-spacing:.10em;backdrop-filter:blur(4px)}
+.cf-front{transform:translateZ(95px)}.cf-back{transform:rotateY(180deg) translateZ(95px)}
+.cf-left{transform:rotateY(-90deg) translateZ(95px)}.cf-right{transform:rotateY(90deg) translateZ(95px)}
+.cf-top{transform:rotateX(90deg) translateZ(95px)}.cf-bottom{transform:rotateX(-90deg) translateZ(95px)}
+.core-orbit{position:absolute;width:330px;height:330px;border:1px dashed rgba(70,231,255,.18);border-radius:50%;transform:rotateX(68deg);animation:ringSpin 14s linear infinite}
+.tech-list{display:grid;gap:12px}
+.tech-item{display:grid;grid-template-columns:58px 1fr;gap:14px;align-items:center;padding:18px}
+.tech-icon{width:58px;height:58px;border:1px solid rgba(70,231,255,.35);border-radius:14px;display:grid;place-items:center;color:var(--cyan);font:800 10px ui-monospace,Consolas,monospace}
+.tech-item h4{font-size:15px}.tech-item p{margin-top:5px;color:var(--muted);font-size:12.5px;line-height:1.6}
+
+/* TELEMETRY */
+.telemetry-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;margin-top:46px}
+.radar-card,.metrics-card{padding:26px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;color:#61778d;font:10px ui-monospace,Consolas,monospace;letter-spacing:.10em}
+.live{color:var(--green);display:flex;align-items:center;gap:7px}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.35}}
+#radar{width:100%;max-width:360px;aspect-ratio:1;display:block;margin:auto}
+.metrics{display:grid;gap:16px}
+.metric{padding-bottom:16px;border-bottom:1px solid var(--line)}
+.metric:last-child{border:0;padding-bottom:0}
+.metric-top{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:9px}
+.metric label{color:#647b90;font-size:10px;letter-spacing:.09em}
+.metric strong{font:800 24px ui-monospace,Consolas,monospace}
+.meter{height:6px;border-radius:99px;background:#0c1a29;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:99px;box-shadow:0 0 12px rgba(70,231,255,.35);transition:.35s}
+.tele-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:20px}
+.tele-chip{padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+.tele-chip small{display:block;color:#536b80;font-size:8px;letter-spacing:.1em}.tele-chip b{display:block;margin-top:5px;color:var(--cyan);font:750 11px ui-monospace,Consolas,monospace}
+
+/* CONTROL */
+.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:46px}
+.control-card,.functions-card{padding:26px}
+.control-status{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.statusbox{padding:13px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+.statusbox small{display:block;color:#536b80;font-size:8px;letter-spacing:.11em}.statusbox b{display:block;margin-top:5px;color:var(--cyan);font:800 11px ui-monospace,Consolas,monospace}
+.mini-car-stage{height:118px;border:1px solid var(--line);border-radius:14px;background:
+  linear-gradient(90deg,transparent 49.8%,rgba(70,231,255,.08) 50%,transparent 50.2%),
+  radial-gradient(circle at 50% 60%,rgba(70,231,255,.05),transparent 65%);position:relative;overflow:hidden;margin-bottom:20px}
+.mini-car{position:absolute;left:50%;top:50%;width:48px;height:78px;margin:-39px 0 0 -24px;border:1px solid var(--blue);border-radius:13px;background:#091522;box-shadow:0 0 24px rgba(79,124,255,.25);transition:.2s}
+.mini-car::before,.mini-car::after{content:"";position:absolute;top:8px;width:7px;height:15px;border-radius:3px;background:#03060b;box-shadow:0 47px 0 #03060b}
+.mini-car::before{left:-6px}.mini-car::after{right:-6px}
+.mini-car .mh{position:absolute;top:3px;width:7px;height:4px;border-radius:2px;background:#1a2a3b}.mini-car .mhl{left:6px}.mini-car .mhr{right:6px}
+.mini-car .mh.on{background:#fff;box-shadow:0 0 9px 2px #fff}
+.pad{width:220px;height:220px;position:relative;margin:0 auto 14px}
+.pad-btn{position:absolute;width:66px;height:66px;border:1px solid var(--line);border-radius:14px;background:#0b1725;color:#7b91a5;font-size:19px;transition:.12s;touch-action:none;user-select:none}
+.pad-btn:hover{color:var(--ice);border-color:rgba(70,231,255,.45)}
+.pad-btn.active{background:var(--cyan);color:#001018;border-color:var(--cyan);box-shadow:0 0 26px rgba(70,231,255,.38);transform:scale(.96)}
+.pad-btn:disabled{opacity:.28;cursor:not-allowed}.pu{left:77px;top:0}.pl{left:0;top:77px}.ps{left:77px;top:77px;border-radius:50%;color:var(--red)}.pr{right:0;top:77px}.pd{left:77px;bottom:0}
+.pad-hint{text-align:center;color:#4e667b;font:9px ui-monospace,Consolas,monospace;letter-spacing:.09em}
+.range-wrap{margin-top:25px}.range-head{display:flex;justify-content:space-between;color:#647b90;font-size:10px;margin-bottom:10px}.range-head b{color:var(--cyan)}
+input[type=range]{width:100%;accent-color:var(--cyan)}
+.mode-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+.mode-row button{padding:12px;border-radius:10px;border:1px solid var(--line);background:#0a1623;color:#6b8398;font-size:10px;font-weight:850;letter-spacing:.08em}
+.mode-row button.active{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#00101a;border-color:transparent}
+.estop{width:100%;margin-top:14px;padding:16px;border-radius:12px;border:1px solid rgba(255,79,104,.48);background:rgba(255,79,104,.08);color:var(--red);font-weight:900;font-size:11px;letter-spacing:.08em}
+.estop.active{background:var(--red);color:#21030a;box-shadow:0 0 30px rgba(255,79,104,.36)}
+.function-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}
+.fn{min-height:98px;padding:15px;text-align:left;border:1px solid var(--line);border-radius:13px;background:#091522;color:var(--ice);transition:.15s;touch-action:none}
+.fn:hover{border-color:rgba(70,231,255,.42);transform:translateY(-1px)}
+.fn.on{background:rgba(70,231,255,.09);border-color:rgba(70,231,255,.5)}
+.fn small{display:block;color:#51687c;font-size:8px}.fn b{display:block;margin-top:8px;font-size:12px}.fn span{display:block;margin-top:4px;color:#647b90;font-size:9px}
+.system-state{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.sstate{padding:11px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.015)}
+.sstate small{display:block;color:#4e6579;font-size:8px}.sstate b{display:block;margin-top:4px;color:var(--cyan);font:750 10px ui-monospace,Consolas,monospace}
+
+/* INTECAP */
+.institution{text-align:center}
+.intecap-giant{font-size:clamp(64px,13vw,168px);font-weight:950;letter-spacing:-.055em;color:transparent;-webkit-text-stroke:1px rgba(70,231,255,.28);
+  text-shadow:0 0 70px rgba(70,231,255,.07);line-height:.9;margin-bottom:24px}
+.institution .section-title,.institution .lead{margin-left:auto;margin-right:auto}
+.tags{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:28px}
+.tags span{border:1px solid var(--line);border-radius:999px;padding:8px 13px;color:#6f8598;font-size:9px;letter-spacing:.09em}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:44px}
+.member{min-height:190px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;transform-style:preserve-3d;transition:transform .15s,border-color .2s;overflow:hidden}
+.member::before{content:"";position:absolute;inset:0;background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(79,124,255,.11),transparent 65%);opacity:0;transition:.2s}
+.member:hover::before{opacity:1}.member small,.member b,.member span{position:relative}
+.member small{color:var(--cyan);font:800 9px ui-monospace,Consolas,monospace}.member b{font-size:17px;line-height:1.2}.member span{color:#6e8599;font-size:10px;line-height:1.55}
+.member.primary{border-color:rgba(70,231,255,.35);background:linear-gradient(145deg,rgba(17,40,59,.85),rgba(5,13,23,.72))}
+
+/* FOOTER / UTILITIES */
+footer{padding:56px 20px;border-top:1px solid var(--line);text-align:center;color:#475d70;font:9px ui-monospace,Consolas,monospace;letter-spacing:.12em}
+.flash{position:fixed;inset:0;pointer-events:none;z-index:500;opacity:0;box-shadow:inset 0 0 160px rgba(255,79,104,.68)}
+.flash.on{animation:emFlash .9s infinite}@keyframes emFlash{50%{opacity:.95}}
+.toast{position:fixed;left:50%;bottom:24px;z-index:600;transform:translate(-50%,18px);padding:10px 14px;border:1px solid var(--line);border-radius:999px;
+  background:rgba(3,8,15,.94);backdrop-filter:blur(14px);color:#8fa7ba;font:10px ui-monospace,Consolas,monospace;opacity:0;pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.conn-banner{position:fixed;top:70px;left:50%;z-index:95;transform:translate(-50%,-10px);padding:8px 13px;border-radius:999px;
+  border:1px solid rgba(255,192,90,.28);background:rgba(16,11,3,.86);color:var(--amber);font:9px ui-monospace,Consolas,monospace;letter-spacing:.05em;opacity:0;transition:.25s;pointer-events:none}
+.conn-banner.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:1000px){
+  .navlinks{display:none}.hero-grid,.tech-grid,.telemetry-grid,.control-grid{grid-template-columns:1fr}.hero-visual{min-height:440px}
+  .system-grid{grid-template-columns:repeat(2,1fr)}.team-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:680px){
+  .wrap{width:min(100% - 28px,1200px)}section{padding:78px 0}.conn{display:none}.hero{padding-top:96px}.hero-grid{gap:28px}
+  .hero h1{font-size:clamp(43px,14vw,68px);white-space:nowrap;letter-spacing:-.065em}.hero-sub{font-size:14px}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}.hero-visual{min-height:330px}.holo-ring{width:270px;height:270px;margin:-135px}.car3d-wrap{transform:translate(-50%,-50%) scale(.78) rotateX(-16deg) rotateY(28deg)}
+  .system-grid,.team-grid{grid-template-columns:1fr}.discipline{grid-template-columns:42px 1fr}.discipline p{grid-column:2}.process{grid-template-columns:1fr}.process div:not(:last-child)::after{display:none}
+  .core-stage{min-height:370px}.cube{width:150px;height:150px}.cf-front{transform:translateZ(75px)}.cf-back{transform:rotateY(180deg) translateZ(75px)}
+  .cf-left{transform:rotateY(-90deg) translateZ(75px)}.cf-right{transform:rotateY(90deg) translateZ(75px)}.cf-top{transform:rotateX(90deg) translateZ(75px)}.cf-bottom{transform:rotateX(-90deg) translateZ(75px)}
+  .core-orbit{width:250px;height:250px}.function-grid{grid-template-columns:1fr}.system-state{grid-template-columns:repeat(3,1fr)}
+  .control-card,.functions-card,.radar-card,.metrics-card{padding:18px}.section-title{font-size:34px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+
+
+/* ==========================================================
+   TEMA CLARO ROBO-COC — FONDO DE CARROS ROBÓTICOS
+   Se agrega al final para conservar todos los efectos 3D.
+========================================================== */
+:root{
+  --bg:#eef9ff;
+  --bg2:#dff3ff;
+  --panel:rgba(255,255,255,.78);
+  --panel2:rgba(242,250,255,.92);
+  --line:rgba(28,101,154,.18);
+  --cyan:#00aeea;
+  --blue:#2563eb;
+  --ice:#10283b;
+  --muted:#557286;
+  --amber:#d98b00;
+  --red:#e9415a;
+  --green:#0baf73;
+  --shadow:0 24px 70px rgba(41,101,143,.14);
+}
+
+body{
+  color:var(--ice);
+  background:
+    radial-gradient(900px 620px at 8% -8%,rgba(0,174,234,.18),transparent 62%),
+    radial-gradient(850px 620px at 100% 20%,rgba(37,99,235,.13),transparent 62%),
+    radial-gradient(700px 500px at 50% 100%,rgba(125,211,252,.16),transparent 66%),
+    linear-gradient(180deg,#f9fdff 0%,#eef9ff 42%,#e8f6ff 100%);
+}
+
+/* Rejilla técnica clara */
+body::before{
+  opacity:.40;
+  background-image:
+    linear-gradient(rgba(25,107,163,.075) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(25,107,163,.075) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.75) 70%,transparent 100%);
+}
+
+/* Patrón de carros robóticos hecho en SVG, sin imágenes externas */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  opacity:.105;
+  background-image:url("data:image/svg+xml,%3Csvg width='520' height='320' viewBox='0 0 520 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%230b6fa8' stroke-width='2' opacity='.82'%3E%3Cg transform='translate(48 48) rotate(-8 92 56)'%3E%3Crect x='28' y='18' width='128' height='76' rx='18'/%3E%3Crect x='60' y='34' width='64' height='40' rx='8'/%3E%3Ccircle cx='72' cy='54' r='7'/%3E%3Ccircle cx='112' cy='54' r='7'/%3E%3Cpath d='M20 32h-12v20h12M20 60h-12v20h12M164 32h12v20h-12M164 60h12v20h-12M92 18V5m0 89v13M52 18L42 5m90 13l10-13M52 94l-10 13m90-13l10 13'/%3E%3Cpath d='M72 77h40M78 84h28'/%3E%3C/g%3E%3Cg transform='translate(308 186) rotate(9 82 50)'%3E%3Crect x='22' y='14' width='120' height='72' rx='16'/%3E%3Crect x='52' y='29' width='60' height='38' rx='7'/%3E%3Ccircle cx='67' cy='48' r='6'/%3E%3Ccircle cx='97' cy='48' r='6'/%3E%3Cpath d='M15 27H4v18h11M15 56H4v18h11M149 27h11v18h-11M149 56h11v18h-11M82 14V2m0 84v12'/%3E%3C/g%3E%3Cg opacity='.55'%3E%3Cpath d='M216 52h72M252 16v72M220 238h74M257 202v74' stroke-dasharray='7 7'/%3E%3Ccircle cx='252' cy='52' r='24'/%3E%3Ccircle cx='257' cy='238' r='22'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:520px 320px;
+  filter:drop-shadow(0 7px 16px rgba(36,107,154,.08));
+}
+
+canvas#network{opacity:.28}
+.noise{opacity:.012}
+
+.glass{
+  background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(231,246,255,.76));
+  border-color:rgba(28,101,154,.16);
+  box-shadow:0 22px 65px rgba(44,111,156,.13);
+  backdrop-filter:blur(20px) saturate(1.15);
+}
+
+.boot{
+  background:
+    radial-gradient(circle at 50% 35%,rgba(0,174,234,.17),transparent 34%),
+    linear-gradient(180deg,#fbfeff,#eaf8ff);
+}
+.boot-line{background:#d4eaf7}
+.boot-status{color:#66859a}
+
+.nav.scrolled{
+  background:rgba(247,252,255,.82);
+  backdrop-filter:blur(22px) saturate(1.25);
+  border-color:rgba(28,101,154,.14);
+  box-shadow:0 10px 40px rgba(31,103,151,.08);
+}
+.navlinks{color:#55768b}
+.navlinks a:hover,.navlinks a.active{color:#0e3148;background:rgba(0,174,234,.08)}
+.conn{color:#648499}
+
+.section-title span{color:#6c8799}
+.hero-sub{color:#58778c}
+.btn{background:rgba(255,255,255,.68);color:#173448;border-color:rgba(31,103,151,.16);box-shadow:0 8px 24px rgba(30,111,165,.06)}
+.btn:hover{background:#fff;border-color:rgba(0,174,234,.52);box-shadow:0 14px 34px rgba(0,174,234,.12)}
+.btn.primary{color:#fff;background:linear-gradient(135deg,#00bfea,#3267f2);box-shadow:0 16px 35px rgba(37,99,235,.20)}
+
+.hstat{background:rgba(255,255,255,.70);border-color:rgba(28,101,154,.15);box-shadow:0 10px 28px rgba(41,101,143,.07)}
+.hstat small{color:#6d899b}.hstat b{color:#183c53}
+
+.holo-shell{
+  background:
+    radial-gradient(circle at 50% 44%,rgba(0,174,234,.16),transparent 42%),
+    linear-gradient(145deg,rgba(255,255,255,.88),rgba(223,243,255,.76));
+  box-shadow:0 34px 90px rgba(42,115,163,.16),inset 0 0 55px rgba(0,174,234,.06);
+}
+.holo-shell::before{opacity:.45}
+.car-body{background:linear-gradient(155deg,rgba(239,250,255,.98),rgba(200,233,250,.98));box-shadow:inset 0 0 40px rgba(0,174,234,.12),0 18px 40px rgba(40,114,161,.18)}
+.car-body::before{background:linear-gradient(180deg,rgba(207,238,252,.95),rgba(244,252,255,.98))}
+.wheel{background:#29465a;border-color:#79a7c4;box-shadow:0 0 15px rgba(37,99,235,.20)}
+.headlight{background:#bcd5e5}
+.holo-data{color:#66869b}
+
+.system-card{background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(234,247,255,.76));box-shadow:0 16px 42px rgba(43,105,145,.09)}
+.system-card .num{color:rgba(18,88,137,.07)}
+.discipline .idx{color:#66879a}
+.process{background:rgba(30,112,166,.14)}
+.process div{background:#f7fcff}
+.process small{color:#668397}
+
+.tech-cube .face,.cube .face{background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(215,241,255,.75))!important;border-color:rgba(0,174,234,.33)!important;color:#087baa!important;box-shadow:inset 0 0 34px rgba(0,174,234,.08)!important}
+.tech-icon{background:rgba(255,255,255,.55)}
+
+.panel-head{color:#65849a}
+.metric label{color:#57788d}
+.meter{background:#dbeefa}
+.tele-chip,.statusbox,.sstate{background:rgba(255,255,255,.58)}
+.tele-chip small,.statusbox small,.sstate small{color:#6b8799}
+
+.mini-car-stage{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(0,174,234,.12),transparent 58%),
+    linear-gradient(145deg,#fafdff,#eaf8ff);
+}
+.mini-car{background:#eaf8ff;box-shadow:0 0 24px rgba(37,99,235,.16)}
+.mini-car::before,.mini-car::after{background:#39596f;box-shadow:0 47px 0 #39596f}
+.mini-car .mh{background:#a8c8da}
+.pad-btn{background:#f6fbfe;color:#54768d;box-shadow:0 8px 22px rgba(42,109,153,.08)}
+.pad-btn:hover{color:#0d3851;background:#fff}
+.pad-btn.active{color:#fff;background:linear-gradient(135deg,#00bce8,#3470ee)}
+.pad-hint{color:#69889c}
+.range-head{color:#5b7a8f}
+.mode-row button{background:#f4faff;color:#58788c}
+.mode-row button.active{color:#fff}
+.fn{background:#f8fcff;color:#18384e;box-shadow:0 10px 28px rgba(42,105,146,.07)}
+.fn:hover{background:#fff}
+.fn.on{background:rgba(0,174,234,.10)}
+.fn small,.fn span{color:#69879a}
+
+.tags span{background:rgba(255,255,255,.50);color:#58788d}
+.member{background:linear-gradient(145deg,rgba(255,255,255,.90),rgba(234,247,255,.78));box-shadow:0 16px 40px rgba(42,103,143,.08)}
+.member span{color:#638297}
+.member.primary{background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(219,243,255,.88));border-color:rgba(0,174,234,.34)}
+footer{color:#68869a}
+
+.toast{background:rgba(251,254,255,.94);color:#466a80;border-color:rgba(28,101,154,.18);box-shadow:0 12px 36px rgba(43,107,149,.14)}
+.conn-banner{background:rgba(255,249,232,.94);color:#a86900;border-color:rgba(217,139,0,.24);box-shadow:0 12px 34px rgba(120,88,24,.10)}
+
+/* Mejor contraste para la marca gigante sobre fondo claro */
+.intecap-giant{-webkit-text-stroke:1.4px rgba(0,126,181,.30);text-shadow:0 18px 50px rgba(0,174,234,.08)}
+
+@media(max-width:720px){
+  body::after{background-size:390px 240px;opacity:.075}
+}
+
+
+/* ===== Integración real con el firmware ESP32 ===== */
+.statusbox b.warn{color:var(--amber)}
+.statusbox b.bad{color:var(--red)}
+.statusbox b.ok{color:#008b70}
+.metric.alert strong{color:var(--red)}
+.metric.alert .meter i{background:linear-gradient(90deg,#ff9c9c,var(--red));box-shadow:0 0 14px rgba(255,79,104,.28)}
+.metric.caution strong{color:#bb7200}
+.metric.caution .meter i{background:linear-gradient(90deg,#ffd479,var(--amber));box-shadow:0 0 14px rgba(255,192,90,.25)}
+.fn:disabled,.mode-row button:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.2)}
+.connection-note{font:750 10px ui-monospace,Consolas,monospace;color:#5d7b8f}
+
+
+
+/* ==========================================================
+   AJUSTE FINAL RESPONSIVE — CELULAR / TABLET
+========================================================== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-x:none}
+button,a,input{touch-action:manipulation}
+
+@media(max-width:680px){
+  .nav{
+    padding:12px max(14px,env(safe-area-inset-right)) 12px max(14px,env(safe-area-inset-left));
+    min-height:62px;
+  }
+  .brand{font-size:13px;letter-spacing:.08em}
+  .brand-dot{width:8px;height:8px}
+  .scroll-progress{top:61px}
+  .hero{min-height:auto;padding-top:94px;padding-bottom:54px}
+  .hero-grid{grid-template-columns:minmax(0,1fr);width:100%}
+  .hero-copy,.hero-visual,.control-card,.functions-card,.radar-card,.metrics-card{min-width:0}
+  .kicker,.eyebrow{font-size:9px;letter-spacing:.13em}
+  .hero h1{
+    width:100%;max-width:100%;font-size:clamp(38px,13.2vw,64px);
+    line-height:.92;letter-spacing:-.07em;white-space:nowrap;
+  }
+  .hero-sub{font-size:14px;line-height:1.65;margin-top:20px}
+  .hero-actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:24px}
+  .hero-actions .btn{width:100%;min-height:48px;justify-content:center;text-align:center}
+  .hero-stats{gap:8px;margin-top:20px}
+  .hstat{padding:12px 10px;min-width:0}
+  .hstat small{font-size:7px}.hstat b{font-size:10px;overflow-wrap:anywhere}
+  .hero-visual{min-height:300px;margin-top:2px}
+  .holo-shell{border-radius:22px;overflow:hidden}
+  .holo-ring{width:248px;height:248px;margin:-124px}
+  .car3d-wrap{transform:translate(-50%,-50%) scale(.70) rotateX(-16deg) rotateY(28deg)!important}
+  .holo-data{font-size:8px;bottom:12px;left:14px;right:14px;text-align:center}
+  section{padding:70px 0}
+  .section-title{font-size:clamp(30px,9vw,38px);line-height:1.04}
+  .lead{font-size:14px;line-height:1.7}
+  .system-grid,.team-grid{gap:10px;margin-top:32px}
+  .system-card,.member{padding:18px;min-height:auto}
+  .discipline{gap:14px;padding:22px 0}.discipline h3{font-size:18px}.discipline p{font-size:13px}
+  .process{margin-top:30px}.process div{padding:18px}
+  .tech-grid,.telemetry-grid,.control-grid{gap:12px;margin-top:32px}
+  .core-stage{min-height:315px}
+  .cube{width:132px;height:132px}
+  .cf-front{transform:translateZ(66px)}.cf-back{transform:rotateY(180deg) translateZ(66px)}
+  .cf-left{transform:rotateY(-90deg) translateZ(66px)}.cf-right{transform:rotateY(90deg) translateZ(66px)}
+  .cf-top{transform:rotateX(90deg) translateZ(66px)}.cf-bottom{transform:rotateX(-90deg) translateZ(66px)}
+  .core-orbit{width:218px;height:218px}
+  .control-card,.functions-card,.radar-card,.metrics-card{padding:16px;border-radius:18px}
+  .panel-head{font-size:9px;margin-bottom:14px}
+  .status-row{grid-template-columns:1fr 1fr;gap:8px}
+  .statusbox{padding:11px 9px;min-width:0}.statusbox small{font-size:7px}.statusbox b{font-size:9px;overflow-wrap:anywhere}
+  .mini-car-stage{height:112px;margin:16px 0}
+  .pad{width:216px;height:216px;margin:4px auto 12px}
+  .pad-btn{width:64px;height:64px;min-height:64px;font-size:19px;border-radius:14px}
+  .pad-up{left:76px}.pad-left{top:76px}.pad-stop{top:76px;left:76px}.pad-right{top:76px}.pad-down{left:76px}
+  .pad-hint{font-size:8px;line-height:1.45}
+  .range-row{margin-top:22px}.range-head{font-size:9px}
+  input[type=range]{min-height:32px}
+  .mode-row{gap:7px;margin-top:18px}.mode-row button{min-height:46px;font-size:9px}
+  .estop{min-height:54px;font-size:11px;margin-top:14px}
+  .function-grid{gap:8px;margin-top:15px}
+  .fn{min-height:78px;padding:13px}.fn small{font-size:7px}.fn b{font-size:12px}.fn span{font-size:8px}
+  .system-state{gap:6px;margin-top:12px}.sstate{padding:10px 7px;min-width:0}.sstate small{font-size:7px}.sstate b{font-size:9px;overflow-wrap:anywhere}
+  .radar-wrap{max-width:280px;margin:auto}
+  .metric{padding:14px 0}.metric label{font-size:9px}.metric strong{font-size:19px}
+  .tele-chips{grid-template-columns:1fr 1fr;gap:7px}.tele-chip{padding:10px}.tele-chip small{font-size:7px}.tele-chip b{font-size:10px}
+  .intecap-giant{font-size:clamp(48px,18vw,82px);letter-spacing:-.06em}
+  .tags{gap:7px}.tags span{font-size:8px;padding:7px 10px}
+  .member b{font-size:16px}.member span{font-size:9px}
+  .conn-banner{top:68px;max-width:calc(100% - 24px);width:max-content;text-align:center;white-space:normal;font-size:8px}
+  .toast{bottom:calc(16px + env(safe-area-inset-bottom));max-width:calc(100% - 24px);white-space:normal;text-align:center}
+  footer{padding:40px 18px calc(40px + env(safe-area-inset-bottom));line-height:1.7}
+}
+
+@media(max-width:390px){
+  .wrap{width:calc(100% - 22px)}
+  .hero h1{font-size:clamp(36px,12.7vw,50px)}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .hero-visual{min-height:276px}
+  .holo-ring{width:224px;height:224px;margin:-112px}
+  .car3d-wrap{transform:translate(-50%,-50%) scale(.62) rotateX(-16deg) rotateY(28deg)!important}
+  .status-row{grid-template-columns:1fr}
+  .system-state{grid-template-columns:1fr 1fr 1fr}
+  .pad{transform:scale(.92);margin-top:-5px;margin-bottom:-2px}
+}
+
+@media(max-height:520px) and (orientation:landscape){
+  .hero{padding-top:84px;min-height:auto}
+  .hero-grid{grid-template-columns:1.1fr .9fr;gap:18px}
+  .hero-visual{min-height:280px}
+  .hero-sub{font-size:13px}
+}
+
+@media(hover:none),(pointer:coarse){
+  [data-tilt]{transform:none!important}
+  .system-card:hover,.member:hover{transform:none}
+  .btn:hover,.fn:hover,.pad-btn:hover{transform:none}
+}
+
+</style>
 </head>
-<body data-version="5.3">
-  <!-- ROBO-COC V5.3 · INTECAP CENTRAL · BUILD GITHUB -->
+<body>
+<div class="boot" id="boot">
+  <div class="boot-inner">
+    <div class="boot-mark">INTECAP // MECATRÓNICA // 2026</div>
+    <div class="boot-title">ROBO<span>-COC</span></div>
+    <div class="boot-line"><i></i></div>
+    <div class="boot-status"><span>INICIALIZANDO SISTEMAS</span><span>ESP32 / WEB / CONTROL</span></div>
+  </div>
+</div>
 
-  <div id="cursor"></div>
-  <div id="cursorTrail"></div>
-  <div class="noise"></div>
+<canvas id="network"></canvas>
+<div class="noise"></div>
+<div class="flash" id="flash"></div>
+<div class="toast" id="toast">LISTO</div>
+<div class="conn-banner" id="connBanner">Buscando ESP32 en la red ROBO-COC…</div>
+<div class="scroll-progress" id="scrollProgress"></div>
 
-  <aside class="side-rail">
-    <div class="rail-logo">
-      <span>RC</span>
+<nav class="nav" id="nav">
+  <a href="#inicio" class="brand"><span class="dot" id="brandDot"></span>INTECAP</a>
+  <div class="navlinks" id="navlinks">
+    <a href="#inicio">01 INICIO</a>
+    <a href="#proyecto">02 PROYECTO</a>
+    <a href="#mecatronica">03 MECATRÓNICA</a>
+    <a href="#tecnologia">04 TECNOLOGÍA</a>
+    <a href="#telemetria">05 TELEMETRÍA</a>
+    <a href="#control">06 CONTROL</a>
+    <a href="#equipo">07 EQUIPO</a>
+  </div>
+  <div class="conn">ESP32 · <b id="navState">BUSCANDO</b></div>
+</nav>
+
+<header class="hero" id="inicio">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <div class="hero-kicker">PROYECTO DE MECATRÓNICA · INTECAP · 2026</div>
+      <h1>ROBO<span>-COC</span></h1>
+      <p class="hero-sub">Plataforma robótica móvil de nivel técnico con control inalámbrico, telemetría en vivo, navegación asistida por ultrasonido y un sistema integral de seguridad, operación y conducción basado en ESP32.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#control">ABRIR CENTRO DE CONTROL</a>
+        <a class="btn" href="#mecatronica">EXPLORAR EL PROYECTO</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><small>CONTROLADOR</small><b>ESP32</b></div>
+        <div class="hstat"><small>TRACCIÓN</small><b>4 × DC</b></div>
+        <div class="hstat"><small>DRIVERS</small><b>2 × L298N</b></div>
+        <div class="hstat"><small>COMUNICACIÓN</small><b>Wi-Fi</b></div>
+      </div>
     </div>
 
-    <div class="rail-line"></div>
-
-    <nav class="rail-nav">
-      <a href="#home" data-label="INICIO">01</a>
-      <a href="#identity" data-label="PROYECTO">02</a>
-      <a href="#mecatronica" data-label="MECATRÓNICA">03</a>
-      <a href="#blueprint" data-label="ARQUITECTURA">04</a>
-      <a href="#telemetry" data-label="SENSORES">05</a>
-      <a href="#command" data-label="CONTROL">06</a>
-      <a href="#team" data-label="EQUIPO">07</a>
-    </nav>
-
-    <div class="rail-status">
-      <i id="railDot"></i>
-      <span id="railStatusText">DESCONECTADO</span>
+    <div class="hero-visual reveal" id="heroVisual">
+      <div class="holo-shell">
+        <div class="holo-ring"></div>
+        <div class="car3d-wrap" id="car3dWrap">
+          <div class="car3d">
+            <div class="car-body"></div>
+            <div class="wheel w1"></div><div class="wheel w2"></div><div class="wheel w3"></div><div class="wheel w4"></div>
+            <div class="headlight hl1" id="heroHL1"></div><div class="headlight hl2" id="heroHL2"></div>
+          </div>
+        </div>
+        <div class="holo-data hd1">RED<b>ROBO-COC</b></div>
+        <div class="holo-data hd2">CONTROLADOR<b>ESP32</b></div>
+        <div class="holo-data hd3">IP LOCAL<b>192.168.4.1</b></div>
+        <div class="holo-data hd4">ESTADO<b id="heroStatus">INICIALIZANDO</b></div>
+      </div>
     </div>
-  </aside>
+  </div>
+</header>
 
-  <header class="top-status">
-    <div class="system-name intecap-brand">
-      <span class="intecap-main">INTECAP</span>
-      <small>PROYECTO DE MECATRÓNICA · ROBO-COC · 2026</small>
+<section id="proyecto">
+  <div class="wrap">
+    <div class="eyebrow reveal">02 // IDENTIDAD DEL SISTEMA</div>
+    <h2 class="section-title reveal">Un vehículo. <span>Una plataforma completa.</span></h2>
+    <p class="lead reveal">ROBO-COC significa Control, Operación y Conducción. El proyecto integra estructura mecánica, potencia, sensores, programación, automatización e interfaz web en una sola plataforma capaz de responder a comandos y a su entorno.</p>
+
+    <div class="system-grid">
+      <article class="system-card glass reveal" data-tilt><small>NÚCLEO</small><h3>ESP32</h3><p>Servidor web, control lógico, comunicaciones, lectura de sensores y administración de actuadores.</p><div class="num">01</div></article>
+      <article class="system-card glass reveal" data-tilt><small>MOVIMIENTO</small><h3>4 motores DC</h3><p>Tracción diferencial con control independiente de dirección y potencia mediante dos L298N.</p><div class="num">04</div></article>
+      <article class="system-card glass reveal" data-tilt><small>PERCEPCIÓN</small><h3>2 ultrasonidos</h3><p>Lectura frontal y trasera para detectar obstáculos, mostrar telemetría y apoyar el modo automático.</p><div class="num">02</div></article>
+      <article class="system-card glass reveal" data-tilt><small>CONTROL</small><h3>Interfaz Wi-Fi</h3><p>Operación desde computadora o teléfono con controles táctiles, teclado, estado y seguridad en tiempo real.</p><div class="num">AP</div></article>
+    </div>
+  </div>
+</section>
+
+<section id="mecatronica">
+  <div class="wrap">
+    <div class="eyebrow reveal">03 // MECATRÓNICA APLICADA · INTECAP</div>
+    <h2 class="section-title reveal">La ingeniería <span>detrás de ROBO-COC.</span></h2>
+    <p class="lead reveal">El proyecto es mecatrónico porque cada disciplina aporta una función específica y todas trabajan como un único sistema: percibir, procesar, decidir y ejecutar.</p>
+
+    <div class="disciplines reveal">
+      <div class="discipline"><div class="idx">01</div><h3>Mecánica<span>ESTRUCTURA + MOVIMIENTO</span></h3><p>Chasis, montaje, ruedas, distribución de masa y transmisión del movimiento mediante cuatro motores de corriente directa.</p></div>
+      <div class="discipline"><div class="idx">02</div><h3>Electrónica<span>SENSORES + ACTUADORES</span></h3><p>ESP32, drivers L298N, HC-SR04, iluminación, direccionales, bocina, alimentación y cableado forman la capa física de control.</p></div>
+      <div class="discipline"><div class="idx">03</div><h3>Programación<span>WEB + FIRMWARE</span></h3><p>El software interpreta órdenes de la interfaz, procesa información, administra estados y comunica el navegador con el microcontrolador.</p></div>
+      <div class="discipline"><div class="idx">04</div><h3>Automatización<span>DECISIÓN + RESPUESTA</span></h3><p>El PWM regula la potencia y el modo automático puede usar distancias ultrasónicas para responder ante obstáculos.</p></div>
     </div>
 
-    <div class="system-meta">
-      <div><span>CONTROLADOR</span><strong>ESP32</strong></div>
-      <div><span>RED</span><strong>ROBO-COC</strong></div>
-      <div><span>IP</span><strong>192.168.4.1</strong></div>
+    <div class="process reveal">
+      <div><small>ENTRADA</small><b>SENSORES / USUARIO</b></div>
+      <div><small>PROCESAMIENTO</small><b>ESP32 / LÓGICA</b></div>
+      <div><small>SALIDA</small><b>MOTORES / LUCES / BOCINA</b></div>
     </div>
-  </header>
+  </div>
+</section>
 
-  <main>
-
-    <!-- HOME -->
-    <section id="home" class="screen hero">
-      <div class="hero-bg"></div>
-
-      <div class="hero-left">
-        <div class="intecap-presenta reveal">
-          <span>INTECAP</span>
-          <small>PRESENTA · PROYECTO DE MECATRÓNICA · 2026</small>
-        </div>
-
-        <div class="hero-lockup">
-          <div class="hero-institution">INTECAP</div>
-          <span class="hero-mini">PROYECTO DE MECATRÓNICA</span>
-          <h1>
-            <span class="robo-word">ROBO-</span><span class="coc-word">COC</span>
-          </h1>
-        </div>
-
-        <p class="hero-copy reveal">
-          Plataforma robótica móvil con control inalámbrico, telemetría,
-          navegación automática y sistema de seguridad integrado.
-        </p>
-
-        <div class="hero-cta reveal">
-          <a href="#command" class="cta-main">INICIAR CONTROL</a>
-          <a href="#blueprint" class="cta-alt">VER SISTEMA</a>
+<section id="tecnologia">
+  <div class="wrap">
+    <div class="eyebrow reveal">04 // ARQUITECTURA Y TECNOLOGÍA</div>
+    <h2 class="section-title reveal">Un núcleo digital. <span>Múltiples subsistemas.</span></h2>
+    <div class="tech-grid">
+      <div class="core-stage glass reveal">
+        <div class="core-orbit"></div>
+        <div class="cube">
+          <div class="cube-face cf-front">ESP32</div><div class="cube-face cf-back">Wi-Fi</div>
+          <div class="cube-face cf-left">L298N</div><div class="cube-face cf-right">HC-SR04</div>
+          <div class="cube-face cf-top">CONTROL</div><div class="cube-face cf-bottom">ROBO-COC</div>
         </div>
       </div>
+      <div class="tech-list">
+        <div class="tech-item glass reveal"><div class="tech-icon">CPU</div><div><h4>ESP32 · Control central</h4><p>Ejecuta el firmware, sirve la interfaz, recibe comandos, procesa sensores y gobierna los sistemas del vehículo.</p></div></div>
+        <div class="tech-item glass reveal"><div class="tech-icon">DRV</div><div><h4>2 × L298N · Potencia</h4><p>Permiten invertir el giro y administrar los motores para avance, retroceso y giro diferencial.</p></div></div>
+        <div class="tech-item glass reveal"><div class="tech-icon">US</div><div><h4>HC-SR04 · Percepción</h4><p>Los sensores frontal y trasero miden distancia y alimentan la telemetría del sistema.</p></div></div>
+        <div class="tech-item glass reveal"><div class="tech-icon">WEB</div><div><h4>Interfaz responsive · Operación</h4><p>Control táctil y por teclado, selección de modo, velocidad, luces, señales, freno y emergencia.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <div class="hero-right">
-        <div class="vehicle-stage" id="vehicleStage">
-          <div class="stage-ring r1"></div>
-          <div class="stage-ring r2"></div>
-          <div class="stage-ring r3"></div>
-
-          <div class="scan-beam"></div>
-
-          <div class="vehicle-iso" id="vehicleIso">
-            <div class="vehicle-platform">
-              <div class="deck-line dl1"></div>
-              <div class="deck-line dl2"></div>
-              <div class="deck-line dl3"></div>
-
-              <div class="module esp">ESP32</div>
-              <div class="module l298 left">L298N</div>
-              <div class="module l298 right">L298N</div>
-
-              <div class="sensor-node front"></div>
-              <div class="sensor-node rear"></div>
-
-              <div class="wheel wa"></div>
-              <div class="wheel wb"></div>
-              <div class="wheel wc"></div>
-              <div class="wheel wd"></div>
-            </div>
-          </div>
-
-          <div class="stage-tag tag-1"><span>01</span><b>ESP32</b></div>
-          <div class="stage-tag tag-2"><span>02</span><b>4x MOTOR DC</b></div>
-          <div class="stage-tag tag-3"><span>03</span><b>2x HC-SR04</b></div>
-          <div class="stage-tag tag-4"><span>04</span><b>PUNTO DE ACCESO Wi-Fi</b></div>
+<section id="telemetria">
+  <div class="wrap">
+    <div class="eyebrow reveal">05 // TELEMETRÍA</div>
+    <h2 class="section-title reveal">Datos del vehículo <span>en tiempo real.</span></h2>
+    <div class="telemetry-grid">
+      <div class="radar-card glass reveal">
+        <div class="panel-head"><span>RADAR // ULTRASÓNICO</span><span class="live" id="radarState">DEMO</span></div>
+        <canvas id="radar" width="360" height="360"></canvas>
+      </div>
+      <div class="metrics-card glass reveal">
+        <div class="panel-head"><span>BUS DE TELEMETRÍA</span><span id="pollText">350–700 ms</span></div>
+        <div class="metrics">
+          <div class="metric" id="frontMetric"><div class="metric-top"><label>DISTANCIA FRONTAL</label><strong id="frontVal">-- cm</strong></div><div class="meter"><i id="frontBar"></i></div></div>
+          <div class="metric" id="rearMetric"><div class="metric-top"><label>DISTANCIA TRASERA</label><strong id="rearVal">-- cm</strong></div><div class="meter"><i id="rearBar"></i></div></div>
+          <div class="metric"><div class="metric-top"><label>POTENCIA PWM</label><strong id="powerVal">70%</strong></div><div class="meter"><i id="powerBar" style="width:70%"></i></div></div>
         </div>
-
-        <div class="hero-data">
-          <div><span>MODO</span><strong id="heroMode">MANUAL</strong></div>
-          <div><span>VELOCIDAD</span><strong id="heroSpeed">70%</strong></div>
-          <div><span>FRONTAL</span><strong id="heroFront">-- cm</strong></div>
-          <div><span>TRASERO</span><strong id="heroRear">-- cm</strong></div>
+        <div class="tele-bottom">
+          <div class="tele-chip"><small>MODO</small><b id="modeChip">MANUAL</b></div>
+          <div class="tele-chip"><small>LUCES</small><b id="lightsChip">OFF</b></div>
+          <div class="tele-chip"><small>SEÑAL</small><b id="signalChip">OFF</b></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div class="scroll-mark">
-        <span>DESLIZA</span>
-        <i></i>
-      </div>
-    </section>
-
-    <!-- IDENTITY -->
-    <section id="identity" class="screen identity">
-      <div class="identity-title">
-        <span>02 // PROYECTO DE MECATRÓNICA · INTECAP</span>
-        <h2>
-          UNA MÁQUINA.
-          <em>VARIOS SISTEMAS.</em>
-        </h2>
-      </div>
-
-      <div class="identity-grid">
-        <article class="identity-card large reveal">
-          <span>NÚCLEO</span>
-          <h3>ESP32</h3>
-          <p>Servidor web, control lógico, lectura de sensores y gestión de actuadores.</p>
-          <div class="chip-graphic">
-            <i></i><i></i><i></i><i></i>
-            <b>ESP32</b>
-            <i></i><i></i><i></i><i></i>
-          </div>
-        </article>
-
-        <article class="identity-card reveal">
-          <span>CONDUCCIÓN</span>
-          <h3>4 MOTORES</h3>
-          <p>Tracción diferencial controlada por dos L298N.</p>
-          <strong>04</strong>
-        </article>
-
-        <article class="identity-card reveal">
-          <span>SENSORES</span>
-          <h3>2 SENSORES</h3>
-          <p>Lectura ultrasónica frontal y trasera.</p>
-          <strong>02</strong>
-        </article>
-
-        <article class="identity-card reveal">
-          <span>CONEXIÓN</span>
-          <h3>Wi-Fi</h3>
-          <p>Conexión directa al punto de acceso del vehículo.</p>
-          <strong>Wi-Fi</strong>
-        </article>
-
-        <article class="identity-card reveal">
-          <span>SEGURIDAD</span>
-          <h3>SEGURIDAD</h3>
-          <p>Freno, emergencia, luces, señalización y bocina.</p>
-          <strong>ACTIVA</strong>
-        </article>
-      </div>
-    </section>
-
-
-    <!-- MECATRÓNICA -->
-    <section id="mecatronica" class="screen mechatronics">
-      <div class="mecha-head">
-        <span>03 // MECATRÓNICA APLICADA · INTECAP</span>
-        <h2>
-          LA INTEGRACIÓN
-          <em>DEL PROYECTO.</em>
-        </h2>
-        <p>
-          ROBO-COC es un sistema mecatrónico porque combina mecánica, electrónica,
-          programación, control y automatización para que el vehículo pueda percibir
-          su entorno, tomar decisiones y ejecutar movimientos.
-        </p>
-      </div>
-
-      <div class="mecha-system">
-        <div class="mecha-center">
-          <div class="mecha-orbit orbit-one"></div>
-          <div class="mecha-orbit orbit-two"></div>
-          <div class="mecha-core">
-            <small>SISTEMA</small>
-            <strong>ROBO-COC</strong>
-            <span>MECATRÓNICA</span>
-          </div>
+<section id="control">
+  <div class="wrap">
+    <div class="eyebrow reveal">06 // CENTRO DE CONTROL</div>
+    <h2 class="section-title reveal">Operación <span>en tiempo real.</span></h2>
+    <div class="control-grid">
+      <div class="control-card glass reveal">
+        <div class="control-status">
+          <div class="statusbox"><small>ESTADO DEL ESP32</small><b id="espState">BUSCANDO...</b></div>
+          <div class="statusbox"><small>CONDUCCIÓN</small><b id="driveState">DETENIDO</b></div>
+          <div class="statusbox"><small>ENLACE DE CONTROL</small><b id="linkState">192.168.4.1</b></div>
+          <div class="statusbox"><small>LATENCIA / STATUS</small><b id="latencyState">-- ms</b></div>
         </div>
-
-        <article class="mecha-card mechanical reveal">
-          <span>01</span>
-          <h3>MECÁNICA</h3>
-          <p>
-            Estructura del vehículo, montaje, ruedas, distribución de componentes
-            y transmisión del movimiento mediante los cuatro motores DC.
-          </p>
-          <strong>ESTRUCTURA + MOVIMIENTO</strong>
-        </article>
-
-        <article class="mecha-card electronic reveal">
-          <span>02</span>
-          <h3>ELECTRÓNICA</h3>
-          <p>
-            ESP32, drivers L298N, sensores HC-SR04, luces, direccionales,
-            bocina y conexiones eléctricas forman el sistema electrónico.
-          </p>
-          <strong>SENSORES + ACTUADORES</strong>
-        </article>
-
-        <article class="mecha-card programming reveal">
-          <span>03</span>
-          <h3>PROGRAMACIÓN</h3>
-          <p>
-            El software interpreta comandos de la página web, controla entradas
-            y salidas, procesa lecturas y ejecuta las funciones del vehículo.
-          </p>
-          <strong>ESP32 + INTERFAZ WEB</strong>
-        </article>
-
-        <article class="mecha-card control reveal">
-          <span>04</span>
-          <h3>CONTROL Y AUTOMATIZACIÓN</h3>
-          <p>
-            El PWM regula la velocidad y el modo automático utiliza las distancias
-            de los sensores para avanzar, retroceder o girar ante obstáculos.
-          </p>
-          <strong>DECISIÓN + RESPUESTA</strong>
-        </article>
-      </div>
-
-      <div class="mecha-flow reveal">
-        <div>
-          <span>ENTRADA</span>
-          <strong>SENSORES / USUARIO</strong>
+        <div class="mini-car-stage"><div class="mini-car" id="miniCar"><span class="mh mhl" id="miniHL1"></span><span class="mh mhr" id="miniHL2"></span></div></div>
+        <div class="pad" id="pad">
+          <button class="pad-btn pu" data-dir="F" aria-label="Avanzar">▲</button>
+          <button class="pad-btn pl" data-dir="L" aria-label="Izquierda">◀</button>
+          <button class="pad-btn ps" data-dir="S" aria-label="Detener">■</button>
+          <button class="pad-btn pr" data-dir="R" aria-label="Derecha">▶</button>
+          <button class="pad-btn pd" data-dir="B" aria-label="Retroceder">▼</button>
         </div>
-        <i></i>
-        <div>
-          <span>PROCESAMIENTO</span>
-          <strong>ESP32</strong>
-        </div>
-        <i></i>
-        <div>
-          <span>SALIDA</span>
-          <strong>MOTORES / LUCES / BOCINA</strong>
-        </div>
-      </div>
-
-      <div class="mecha-summary reveal">
-        <span>¿POR QUÉ ES MECATRÓNICA?</span>
-        <p>
-          Porque ninguna parte trabaja de forma aislada: los sensores obtienen información,
-          el ESP32 la procesa mediante software y los actuadores producen una respuesta física.
-          Esa integración entre sistemas mecánicos, electrónicos y de control es la base de ROBO-COC.
-        </p>
-      </div>
-    </section>
-
-    <!-- BLUEPRINT -->
-    <section id="blueprint" class="screen blueprint">
-      <div class="blueprint-head">
-        <div>
-          <span>04 // ARQUITECTURA</span>
-          <h2>PLANO TÉCNICO</h2>
-        </div>
-        <p id="blueprintCaption">ESP32 // CONTROLADOR PRINCIPAL</p>
-      </div>
-
-      <div class="blueprint-stage">
-        <div class="bp-grid"></div>
-
-        <div class="bp-car">
-          <div class="bp-body">
-            <div class="bp-core" id="bpCore">ESP32</div>
-            <div class="bp-module bp-front">HC-SR04</div>
-            <div class="bp-module bp-rear">HC-SR04</div>
-            <div class="bp-module bp-left">L298N</div>
-            <div class="bp-module bp-right">L298N</div>
-
-            <div class="bp-wheel b1"></div>
-            <div class="bp-wheel b2"></div>
-            <div class="bp-wheel b3"></div>
-            <div class="bp-wheel b4"></div>
-          </div>
-
-          <div class="bp-line line-front"></div>
-          <div class="bp-line line-rear"></div>
-          <div class="bp-line line-left"></div>
-          <div class="bp-line line-right"></div>
-        </div>
-
-        <div class="bp-callout c-front">
-          <span>SENSOR FRONTAL</span>
-          <strong id="bpFront">-- cm</strong>
-        </div>
-
-        <div class="bp-callout c-rear">
-          <span>SENSOR TRASERO</span>
-          <strong id="bpRear">-- cm</strong>
-        </div>
-
-        <div class="bp-callout c-drive">
-          <span>SISTEMA DE TRACCIÓN</span>
-          <strong>4x DC</strong>
-        </div>
-
-        <div class="bp-callout c-link">
-          <span>RED</span>
-          <strong>PUNTO DE ACCESO Wi-Fi</strong>
-        </div>
-      </div>
-
-      <div class="blueprint-steps">
-        <button class="bp-step active" data-system="core">ESP32</button>
-        <button class="bp-step" data-system="drive">TRACCIÓN</button>
-        <button class="bp-step" data-system="sense">SENSORES</button>
-        <button class="bp-step" data-system="safe">SEGURIDAD</button>
-      </div>
-    </section>
-
-    <!-- TELEMETRY -->
-    <section id="telemetry" class="screen telemetry">
-      <div class="telemetry-title">
-        <span>05 // TELEMETRÍA</span>
-        <h2>DATOS<br><em>EN VIVO.</em></h2>
-      </div>
-
-      <div class="telemetry-layout">
-        <div class="radar-panel reveal">
-          <div class="panel-head">
-            <span>RADAR // EN VIVO</span>
-            <strong id="radarConnection">ESPERANDO</strong>
-          </div>
-          <canvas id="radarCanvas"></canvas>
-        </div>
-
-        <div class="metric-stack">
-          <article class="metric-card reveal">
-            <span>DISTANCIA FRONTAL</span>
-            <strong id="frontMetric">--</strong>
-            <small>CM</small>
-            <div class="metric-bar"><i id="frontBar"></i></div>
-          </article>
-
-          <article class="metric-card reveal">
-            <span>DISTANCIA TRASERA</span>
-            <strong id="rearMetric">--</strong>
-            <small>CM</small>
-            <div class="metric-bar"><i id="rearBar"></i></div>
-          </article>
-
-          <article class="metric-card reveal">
-            <span>POTENCIA DE MOTORES</span>
-            <strong id="speedMetric">70</strong>
-            <small>%</small>
-            <div class="metric-bar"><i id="speedBar"></i></div>
-          </article>
-
-          <article class="metric-card reveal">
-            <span>MODO</span>
-            <strong id="modeMetric">MANUAL</strong>
-            <small>CONDUCCIÓN</small>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- COMMAND CENTER -->
-    <section id="command" class="screen command">
-      <div class="command-title">
-        <div>
-          <span>06 // CENTRO DE CONTROL</span>
-          <h2>CONTROL<br><em>EN TIEMPO REAL.</em></h2>
-        </div>
-
-        <div class="connection-state">
-          <i id="commandDot"></i>
-          <div>
-            <span>ESTADO DEL ESP32</span>
-            <strong id="commandConnection">DESCONECTADO</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="cockpit">
-        <section class="cockpit-drive">
-          <div class="cockpit-head">
-            <span>CONDUCCIÓN</span>
-            <strong id="driveState">DETENIDO</strong>
-          </div>
-
-          <div class="steering-zone">
-            <div class="steering-ring"></div>
-            <div class="steering-ring inner"></div>
-
-            <button class="drive-control forward" data-command="forward">▲</button>
-            <button class="drive-control left" data-command="left">◀</button>
-            <button class="drive-control stop" data-command="stop">■</button>
-            <button class="drive-control right" data-command="right">▶</button>
-            <button class="drive-control back" data-command="back">▼</button>
-          </div>
-
-          <div class="keyboard-note">WASD // FLECHAS // ESPACIO = DETENER</div>
-        </section>
-
-        <section class="cockpit-functions">
-          <div class="cockpit-head">
-            <span>SISTEMAS DEL VEHÍCULO</span>
-            <strong>06 FUNCIONES</strong>
-          </div>
-
-          <div class="function-grid">
-            <button class="function-btn" data-action="lights"><span>01</span><b>LUCES</b><small>ACTIVAR / APAGAR</small></button>
-            <button class="function-btn" data-action="horn"><span>02</span><b>BOCINA</b><small>MANTENER</small></button>
-            <button class="function-btn" data-action="leftSignal"><span>03</span><b>DIRECCIONAL IZQ.</b><small>ACTIVAR / APAGAR</small></button>
-            <button class="function-btn" data-action="rightSignal"><span>04</span><b>DIRECCIONAL DER.</b><small>ACTIVAR / APAGAR</small></button>
-            <button class="function-btn warning" data-action="hazard"><span>05</span><b>INTERMITENTES</b><small>ACTIVAR / APAGAR</small></button>
-            <button class="function-btn danger" data-action="brake"><span>06</span><b>FRENO</b><small>MANTENER</small></button>
-          </div>
-        </section>
-
-        <aside class="cockpit-data">
-          <div class="cockpit-head">
-            <span>ESTADO</span>
-            <strong>EN VIVO</strong>
-          </div>
-
-          <div class="data-row"><span>FRONTAL</span><strong id="miniFront">-- cm</strong></div>
-          <div class="data-row"><span>TRASERO</span><strong id="miniRear">-- cm</strong></div>
-          <div class="data-row"><span>LUCES</span><strong id="miniLights">OFF</strong></div>
-          <div class="data-row"><span>SEÑAL</span><strong id="miniSignal">OFF</strong></div>
-          <div class="data-row"><span>MODO</span><strong id="miniMode">MANUAL</strong></div>
-          <div class="data-row"><span>POTENCIA</span><strong id="miniSpeed">70%</strong></div>
-        </aside>
-      </div>
-
-      <div class="command-bottom">
-        <div class="power-control">
-          <div class="power-head">
-            <span>POTENCIA DE MOTORES</span>
-            <strong id="speedValue">70%</strong>
-          </div>
+        <div class="pad-hint">WASD · FLECHAS · ESPACIO = DETENER</div>
+        <div class="range-wrap">
+          <div class="range-head"><span>POTENCIA DE MOTORES</span><b id="speedLabel">70%</b></div>
           <input id="speedRange" type="range" min="0" max="100" value="70">
         </div>
-
-        <div class="mode-switch">
-          <button id="manualMode" class="active">MANUAL</button>
-          <button id="autoMode">AUTOMÁTICO</button>
-        </div>
-
-        <button id="emergency" class="emergency-control">
-          <span>EMERGENCIA</span>
-          <strong>DETENER</strong>
-        </button>
+        <div class="mode-row"><button class="active" data-mode="manual">MANUAL</button><button data-mode="auto">AUTOMÁTICO</button></div>
+        <button class="estop" id="estop">EMERGENCIA · DETENER</button>
       </div>
-    </section>
 
-
-    <section class="intecap-section">
-      <div class="intecap-watermark">INTECAP</div>
-
-      <div class="intecap-content reveal">
-        <span>INSTITUCIÓN</span>
-        <h2>INTECAP</h2>
-        <p>
-          ROBO-COC se desarrolla como proyecto de Mecatrónica en INTECAP,
-          integrando conocimientos de mecánica, electrónica, programación,
-          automatización y control en una aplicación funcional.
-        </p>
-
-        <div class="intecap-tags">
-          <span>MECATRÓNICA</span>
-          <span>TECNOLOGÍA</span>
-          <span>FORMACIÓN TÉCNICA</span>
-          <span>INNOVACIÓN</span>
+      <div class="functions-card glass reveal">
+        <div class="panel-head"><span>SISTEMAS DEL VEHÍCULO</span><span>06 FUNCIONES</span></div>
+        <p class="lead" style="font-size:13px;margin-top:0">Compatible con el firmware cargado en tu ESP32. Si abres esta página desde Live Server, se comunica con <b>192.168.4.1</b>; si la sirves desde el propio ESP32, usa automáticamente el mismo origen. La telemetría confirma el estado real del vehículo.</p>
+        <div class="function-grid">
+          <button class="fn" id="lightsBtn"><small>01</small><b>LUCES</b><span>ACTIVAR / APAGAR</span></button>
+          <button class="fn" id="hornBtn"><small>02</small><b>BOCINA</b><span>MANTENER</span></button>
+          <button class="fn" id="leftBtn"><small>03</small><b>DIRECCIONAL IZQ.</b><span>ACTIVAR / APAGAR</span></button>
+          <button class="fn" id="rightBtn"><small>04</small><b>DIRECCIONAL DER.</b><span>ACTIVAR / APAGAR</span></button>
+          <button class="fn" id="hazardBtn"><small>05</small><b>INTERMITENTES</b><span>ACTIVAR / APAGAR</span></button>
+          <button class="fn" id="brakeBtn"><small>06</small><b>FRENO</b><span>MANTENER</span></button>
+        </div>
+        <div class="system-state">
+          <div class="sstate"><small>LUCES</small><b id="lightsState">OFF</b></div>
+          <div class="sstate"><small>SEÑAL</small><b id="signalState">OFF</b></div>
+          <div class="sstate"><small>MODO</small><b id="modeState">MANUAL</b></div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- TEAM -->
-    <section id="team" class="screen team">
-      <div class="team-head">
-        <span>07 // EQUIPO</span>
-        <h2>CREADO<br><em>POR NOSOTROS.</em></h2>
-      </div>
+<section class="institution">
+  <div class="wrap">
+    <div class="intecap-giant reveal">INTECAP</div>
+    <div class="eyebrow reveal">FORMACIÓN TÉCNICA · TECNOLOGÍA · INNOVACIÓN</div>
+    <h2 class="section-title reveal">Mecatrónica aplicada <span>a un sistema real.</span></h2>
+    <p class="lead reveal">ROBO-COC se desarrolla como proyecto de Mecatrónica en INTECAP, integrando conocimientos técnicos de mecánica, electrónica, programación, automatización y control en una plataforma funcional.</p>
+    <div class="tags reveal"><span>MECATRÓNICA</span><span>ESP32</span><span>AUTOMATIZACIÓN</span><span>CONTROL WEB</span><span>SENSORES</span><span>ROBÓTICA MÓVIL</span></div>
+  </div>
+</section>
 
-      <div class="team-grid">
-        <article><span>01</span><strong>LUIS LÓPEZ</strong><small>DESARROLLO DE SOFTWARE</small></article>
-        <article><span>02</span><strong>JOSUE BOECKMANN</strong><small>DESARROLLO DE SOFTWARE</small></article>
-        <article><span>03</span><strong>IGNACIO MIRANDA</strong><small>HARDWARE Y MONTAJE</small></article>
-        <article><span>04</span><strong>GILSON TERRAZA</strong><small>HARDWARE Y MONTAJE</small></article>
-        <article><span>05</span><strong>JULIO ROLDAN</strong><small>DOCUMENTACIÓN TÉCNICA</small></article>
-        <article><span>06</span><strong>AARON CASTAÑON</strong><small>DOCUMENTACIÓN TÉCNICA</small></article>
-        <article><span>07</span><strong>ROBERTO COC</strong><small>DOCUMENTACIÓN TÉCNICA</small></article>
-      </div>
-    </section>
+<section id="equipo">
+  <div class="wrap">
+    <div class="eyebrow reveal">07 // EQUIPO</div>
+    <h2 class="section-title reveal">Diseño, desarrollo <span>y construcción.</span></h2>
+    <div class="team-grid">
+      <article class="member glass primary reveal" data-tilt><small>01 // SOFTWARE</small><b>LUIS LÓPEZ</b><span>DESARROLLADOR DE SOFTWARE</span></article>
+      <article class="member glass reveal" data-tilt><small>02 // SOFTWARE</small><b>JOSUE BOECKMANN</b><span>DESARROLLADOR DE SOFTWARE</span></article>
+      <article class="member glass reveal" data-tilt><small>03 // HARDWARE</small><b>IGNACIO MIRANDA</b><span>TÉCNICO EN HARDWARE Y MONTAJE</span></article>
+      <article class="member glass reveal" data-tilt><small>04 // HARDWARE</small><b>GILSON TERRAZA</b><span>TÉCNICO EN HARDWARE Y MONTAJE</span></article>
+      <article class="member glass reveal" data-tilt><small>05 // DOCUMENTACIÓN</small><b>JULIO ROLDÁN</b><span>DOCUMENTADOR TÉCNICO</span></article>
+      <article class="member glass reveal" data-tilt><small>06 // DOCUMENTACIÓN</small><b>AARÓN CASTAÑÓN</b><span>DOCUMENTADOR TÉCNICO</span></article>
+      <article class="member glass reveal" data-tilt><small>07 // DOCUMENTACIÓN</small><b>ROBERTO COC</b><span>DOCUMENTADOR TÉCNICO</span></article>
+    </div>
+  </div>
+</section>
 
-    <section class="final">
-      <span>INTECAP // MECATRÓNICA // 2026</span>
-      <h2>INTECAP</h2>
-      <p>ROBO-COC // CONTROL // OPERACIÓN // CONDUCCIÓN</p>
-    </section>
-  </main>
+<footer>INTECAP // MECATRÓNICA // ROBO-COC // CONTROL · OPERACIÓN · CONDUCCIÓN // 2026</footer>
 
-  <script src="script-v53.js?v=53"></script>
+<script>
+"use strict";
+
+/* ==========================================================
+   ROBO-COC WEB PRO — compatible con el firmware cargado
+   Firmware: ESP32 AP 192.168.4.1
+   SSID: ROBO-COC
+   ========================================================== */
+
+const ESP32_HOST = "192.168.4.1";
+const RUNNING_ON_ESP32 = location.hostname === ESP32_HOST;
+
+const CONFIG = {
+  ESP32_URL: "http://" + ESP32_HOST,
+  BASE_URL: RUNNING_ON_ESP32 ? "" : "http://" + ESP32_HOST,
+  POLL_MS: 500,
+  HOLD_MS: 250,
+  TIMEOUT_MS: 1200,
+  FAILS_TO_DEMO: 4
+};
+
+const state = {
+  front: -1,
+  rear: -1,
+  speed: 70,
+  mode: "manual",
+  lights: false,
+  signal: "off",
+  emergency: false,
+  drive: "S",
+  connected: false,
+  demo: false
+};
+
+const $ = id => document.getElementById(id);
+
+const el = {
+  boot: $("boot"), nav: $("nav"), scrollProgress: $("scrollProgress"), brandDot: $("brandDot"),
+  navState: $("navState"), heroStatus: $("heroStatus"), connBanner: $("connBanner"),
+  espState: $("espState"), driveState: $("driveState"), linkState: $("linkState"), latencyState: $("latencyState"),
+  radarState: $("radarState"), frontVal: $("frontVal"), rearVal: $("rearVal"), powerVal: $("powerVal"),
+  frontBar: $("frontBar"), rearBar: $("rearBar"), powerBar: $("powerBar"), frontMetric: $("frontMetric"), rearMetric: $("rearMetric"),
+  modeChip: $("modeChip"), lightsChip: $("lightsChip"), signalChip: $("signalChip"), speedRange: $("speedRange"), speedLabel: $("speedLabel"),
+  lightsBtn: $("lightsBtn"), hornBtn: $("hornBtn"), leftBtn: $("leftBtn"), rightBtn: $("rightBtn"), hazardBtn: $("hazardBtn"), brakeBtn: $("brakeBtn"),
+  lightsState: $("lightsState"), signalState: $("signalState"), modeState: $("modeState"), estop: $("estop"), flash: $("flash"),
+  heroHL1: $("heroHL1"), heroHL2: $("heroHL2"), miniHL1: $("miniHL1"), miniHL2: $("miniHL2"), miniCar: $("miniCar"), toast: $("toast"),
+  heroVisual: $("heroVisual"), car3dWrap: $("car3dWrap"), radar: $("radar")
+};
+
+let failCount = 0;
+let demoTimer = null;
+let holdTimer = null;
+let speedTimer = null;
+let toastTimer = null;
+let hornAudio = null;
+let radarAngle = 0;
+let lastStatusLatency = null;
+
+const clamp = (v,min,max) => Math.min(max,Math.max(min,Number(v)||0));
+const validDistance = v => Number.isFinite(Number(v)) && Number(v) >= 0;
+const endpoint = path => CONFIG.BASE_URL + path;
+
+function toast(text){
+  el.toast.textContent = text;
+  el.toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.toast.classList.remove("show"),1500);
+}
+
+/* ---------- RED ---------- */
+async function fetchWithTimeout(url, options={}){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), CONFIG.TIMEOUT_MS);
+  try{
+    return await fetch(url, {...options, signal: controller.signal, cache:"no-store"});
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/* /status SI tiene CORS en tu firmware, por eso puede leerse desde Live Server. */
+async function apiJSON(path){
+  const response = await fetchWithTimeout(endpoint(path), {method:"GET", mode:"cors"});
+  if(!response.ok) throw new Error("HTTP " + response.status);
+  return response.json();
+}
+
+/*
+  Los endpoints de control del firmware no incluyen CORS.
+  - Si la web viene del ESP32: petición normal y podemos leer la respuesta.
+  - Si la web viene de Live Server: enviamos GET no-cors. El navegador entrega
+    la orden al ESP32 aunque la respuesta sea opaca; /status confirma el resultado.
+*/
+async function sendControl(path, {wantText=false}={}){
+  const url = endpoint(path);
+  if(RUNNING_ON_ESP32){
+    const response = await fetchWithTimeout(url, {method:"GET"});
+    if(!response.ok) throw new Error("HTTP " + response.status);
+    return wantText ? response.text() : "OK";
+  }
+
+  await fetchWithTimeout(url, {method:"GET", mode:"no-cors"});
+  return null;
+}
+
+function setConnection(mode){
+  state.connected = mode === "connected";
+  state.demo = mode === "demo";
+
+  el.brandDot.classList.toggle("on", state.connected);
+  el.navState.classList.toggle("ok", state.connected);
+  el.espState.classList.remove("ok","warn","bad");
+
+  if(mode === "connected"){
+    el.navState.textContent = "CONECTADO";
+    el.heroStatus.textContent = "ONLINE";
+    el.espState.textContent = "CONECTADO";
+    el.espState.classList.add("ok");
+    el.radarState.textContent = "EN VIVO";
+    el.connBanner.classList.remove("show");
+  } else if(mode === "demo"){
+    el.navState.textContent = "MODO DEMO";
+    el.heroStatus.textContent = "SIMULACIÓN";
+    el.espState.textContent = "SIN RESPUESTA";
+    el.espState.classList.add("bad");
+    el.radarState.textContent = "DEMO";
+    el.connBanner.textContent = "ESP32 no detectado · conecta tu equipo a Wi-Fi ROBO-COC";
+    el.connBanner.classList.add("show");
+  } else {
+    el.navState.textContent = "BUSCANDO";
+    el.heroStatus.textContent = "BUSCANDO";
+    el.espState.textContent = "BUSCANDO...";
+    el.espState.classList.add("warn");
+    el.radarState.textContent = "ESPERANDO";
+    el.connBanner.textContent = "Buscando ESP32 en 192.168.4.1 · red ROBO-COC";
+    el.connBanner.classList.add("show");
+  }
+
+  el.linkState.textContent = RUNNING_ON_ESP32 ? "DIRECTO / ESP32" : "LIVE SERVER → ESP32";
+  el.latencyState.textContent = lastStatusLatency === null ? "-- ms" : Math.round(lastStatusLatency) + " ms";
+}
+
+function setSensorClass(metric, value){
+  metric.classList.remove("alert","caution");
+  if(!validDistance(value)) return;
+  if(Number(value) <= 20) metric.classList.add("alert");
+  else if(Number(value) <= 30) metric.classList.add("caution");
+}
+
+function render(){
+  const fOK = validDistance(state.front);
+  const rOK = validDistance(state.rear);
+  const f = fOK ? clamp(state.front,0,200) : null;
+  const r = rOK ? clamp(state.rear,0,200) : null;
+  const s = clamp(state.speed,0,100);
+
+  el.frontVal.textContent = fOK ? Math.round(f) + " cm" : "-- cm";
+  el.rearVal.textContent = rOK ? Math.round(r) + " cm" : "-- cm";
+  el.powerVal.textContent = Math.round(s) + "%";
+  el.frontBar.style.width = fOK ? (f/200*100) + "%" : "0%";
+  el.rearBar.style.width = rOK ? (r/200*100) + "%" : "0%";
+  el.powerBar.style.width = s + "%";
+  el.speedLabel.textContent = Math.round(s) + "%";
+  el.speedRange.value = Math.round(s);
+
+  setSensorClass(el.frontMetric,state.front);
+  setSensorClass(el.rearMetric,state.rear);
+
+  el.modeChip.textContent = state.mode === "auto" ? "AUTOMÁTICO" : "MANUAL";
+  el.modeState.textContent = state.mode === "auto" ? "AUTOMÁTICO" : "MANUAL";
+  document.querySelectorAll("[data-mode]").forEach(b=>{
+    b.classList.toggle("active", b.dataset.mode === state.mode);
+    b.setAttribute("aria-pressed", b.dataset.mode === state.mode ? "true" : "false");
+  });
+
+  el.lightsState.textContent = state.lights ? "ON" : "OFF";
+  el.lightsChip.textContent = state.lights ? "ON" : "OFF";
+  el.lightsBtn.classList.toggle("on",state.lights);
+  el.lightsBtn.setAttribute("aria-pressed",state.lights?"true":"false");
+  [el.heroHL1,el.heroHL2,el.miniHL1,el.miniHL2].forEach(x=>x.classList.toggle("on",state.lights));
+
+  const sigName = {off:"OFF",left:"IZQUIERDA",right:"DERECHA",hazard:"INTERMITENTES"}[state.signal] || "OFF";
+  el.signalState.textContent = sigName;
+  el.signalChip.textContent = sigName;
+  el.leftBtn.classList.toggle("on",state.signal === "left");
+  el.rightBtn.classList.toggle("on",state.signal === "right");
+  el.hazardBtn.classList.toggle("on",state.signal === "hazard");
+  el.leftBtn.setAttribute("aria-pressed",state.signal === "left"?"true":"false");
+  el.rightBtn.setAttribute("aria-pressed",state.signal === "right"?"true":"false");
+  el.hazardBtn.setAttribute("aria-pressed",state.signal === "hazard"?"true":"false");
+
+  const driveName = {F:"AVANZANDO",B:"RETROCEDIENDO",L:"GIRANDO IZQ.",R:"GIRANDO DER.",S:"DETENIDO",BR:"FRENANDO"}[state.drive] || "DETENIDO";
+  el.driveState.textContent = driveName;
+  document.querySelectorAll("[data-dir]").forEach(b=>b.classList.toggle("active",b.dataset.dir === state.drive));
+
+  let dy=0,rot=0;
+  if(state.drive === "F") dy=-9;
+  if(state.drive === "B") dy=9;
+  if(state.drive === "L") rot=-10;
+  if(state.drive === "R") rot=10;
+  el.miniCar.style.transform = `translate(0,${dy}px) rotate(${rot}deg)`;
+
+  el.estop.classList.toggle("active",state.emergency);
+  el.flash.classList.toggle("on",state.emergency);
+  el.estop.textContent = state.emergency ? "EMERGENCIA ACTIVA · LIBERAR" : "EMERGENCIA · DETENER";
+
+  const locked = state.mode === "auto" || state.emergency;
+  document.querySelectorAll(".pad-btn:not(.ps)").forEach(b=>b.disabled=locked);
+}
+
+/* ---------- TELEMETRÍA REAL ---------- */
+async function pollStatus(){
+  const started = performance.now();
+  try{
+    const d = await apiJSON("/status");
+    lastStatusLatency = performance.now() - started;
+
+    state.front = Number.isFinite(Number(d.front)) ? Number(d.front) : -1;
+    state.rear = Number.isFinite(Number(d.rear)) ? Number(d.rear) : -1;
+    if(Number.isFinite(Number(d.speed))) state.speed = Number(d.speed);
+    state.mode = (d.mode === "automatico" || d.mode === "auto") ? "auto" : "manual";
+    state.lights = !!d.lights;
+    state.emergency = !!d.emergency;
+    state.signal = typeof d.signal === "string" ? d.signal : "off";
+
+    failCount = 0;
+    setConnection("connected");
+    stopDemo();
+    render();
+  } catch(error){
+    lastStatusLatency = null;
+    failCount++;
+    if(failCount >= CONFIG.FAILS_TO_DEMO){
+      setConnection("demo");
+      startDemo();
+    } else {
+      setConnection("connecting");
+    }
+  }
+}
+
+function startDemo(){
+  if(demoTimer) return;
+  if(!validDistance(state.front)) state.front = 120;
+  if(!validDistance(state.rear)) state.rear = 95;
+  demoTimer = setInterval(()=>{
+    if(!state.demo) return;
+    state.front = clamp(state.front + (Math.random()-.5)*18,8,190);
+    state.rear = clamp(state.rear + (Math.random()-.5)*16,8,190);
+    render();
+  },850);
+}
+
+function stopDemo(){
+  if(demoTimer){clearInterval(demoTimer);demoTimer=null;}
+  state.demo=false;
+}
+
+/* ---------- MOVIMIENTO ---------- */
+function sendDrive(dir){
+  if(state.mode === "auto" || state.emergency) return;
+  state.drive = dir;
+  render();
+  sendControl("/cmd?m=" + encodeURIComponent(dir)).catch(()=>{});
+}
+
+function startDrive(dir){
+  clearInterval(holdTimer);
+  sendDrive(dir);
+  holdTimer = setInterval(()=>sendDrive(dir),CONFIG.HOLD_MS);
+}
+
+function stopDrive(){
+  clearInterval(holdTimer);
+  holdTimer=null;
+  state.drive="S";
+  render();
+  sendControl("/cmd?m=S").catch(()=>{});
+}
+
+document.querySelectorAll("[data-dir]").forEach(btn=>{
+  const dir=btn.dataset.dir;
+  if(dir === "S"){
+    btn.addEventListener("click",stopDrive);
+  } else {
+    btn.addEventListener("pointerdown",e=>{e.preventDefault();startDrive(dir);});
+    ["pointerup","pointerleave","pointercancel"].forEach(ev=>btn.addEventListener(ev,stopDrive));
+  }
+});
+
+/* ---------- TECLADO ---------- */
+const keyMap={w:"F",arrowup:"F",s:"B",arrowdown:"B",a:"L",arrowleft:"L",d:"R",arrowright:"R"};
+const pressed=new Set();
+addEventListener("keydown",e=>{
+  if(e.key === " ") {e.preventDefault();stopDrive();return;}
+  const k=e.key.toLowerCase(),dir=keyMap[k];
+  if(!dir || pressed.has(k)) return;
+  e.preventDefault();pressed.add(k);startDrive(dir);
+});
+addEventListener("keyup",e=>{
+  const k=e.key.toLowerCase();
+  if(!keyMap[k]) return;
+  pressed.delete(k);
+  if(!pressed.size) stopDrive();
+});
+
+/* ---------- VELOCIDAD ---------- */
+el.speedRange.addEventListener("input",()=>{
+  state.speed=Number(el.speedRange.value);
+  render();
+  clearTimeout(speedTimer);
+  speedTimer=setTimeout(()=>sendControl("/speed?v="+state.speed).catch(()=>{}),130);
+});
+
+/* ---------- MODO ---------- */
+document.querySelectorAll("[data-mode]").forEach(btn=>btn.addEventListener("click",()=>{
+  const nextMode=btn.dataset.mode;
+  if(nextMode === "auto") stopDrive();
+  state.mode=nextMode;
+  render();
+  sendControl("/mode?m="+state.mode).catch(()=>{});
+  toast(state.mode === "auto" ? "MODO AUTOMÁTICO" : "MODO MANUAL");
+}));
+
+/* ---------- LUCES ---------- */
+el.lightsBtn.addEventListener("click",async()=>{
+  /* El firmware alterna las luces cada vez que recibe /light. */
+  state.lights=!state.lights;
+  render();
+  try{
+    const text=await sendControl("/light?toggle=1",{wantText:true});
+    if(typeof text === "string"){
+      const t=text.trim().toUpperCase();
+      if(t === "ON" || t === "OFF") state.lights=t === "ON";
+    }
+  }catch(e){}
+  render();
+});
+
+/* ---------- DIRECCIONALES ---------- */
+function setSignal(sig){
+  state.signal = state.signal === sig ? "off" : sig;
+  render();
+  sendControl("/signal?s="+state.signal).catch(()=>{});
+}
+el.leftBtn.addEventListener("click",()=>setSignal("left"));
+el.rightBtn.addEventListener("click",()=>setSignal("right"));
+el.hazardBtn.addEventListener("click",()=>setSignal("hazard"));
+
+/* ---------- BOCINA ---------- */
+function hornSound(on){
+  try{
+    if(on){
+      if(hornAudio) return;
+      const C=window.AudioContext||window.webkitAudioContext;
+      if(!C) return;
+      const ctx=new C(),osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.type="square";osc.frequency.value=420;gain.gain.value=.028;
+      osc.connect(gain);gain.connect(ctx.destination);osc.start();
+      hornAudio={ctx,osc,gain};
+    }else if(hornAudio){
+      hornAudio.osc.stop();hornAudio.ctx.close();hornAudio=null;
+    }
+  }catch(e){}
+}
+function setHorn(on){
+  el.hornBtn.classList.toggle("on",on);
+  hornSound(on);
+  sendControl("/horn?state="+(on?"on":"off")).catch(()=>{});
+}
+el.hornBtn.addEventListener("pointerdown",()=>setHorn(true));
+["pointerup","pointerleave","pointercancel"].forEach(ev=>el.hornBtn.addEventListener(ev,()=>setHorn(false)));
+
+/* ---------- FRENO ---------- */
+function setBrake(on){
+  el.brakeBtn.classList.toggle("on",on);
+  state.drive=on?"BR":"S";
+  render();
+  sendControl("/cmd?m="+(on?"BR":"S")).catch(()=>{});
+}
+el.brakeBtn.addEventListener("pointerdown",()=>setBrake(true));
+["pointerup","pointerleave","pointercancel"].forEach(ev=>el.brakeBtn.addEventListener(ev,()=>setBrake(false)));
+
+/* ---------- EMERGENCIA ---------- */
+el.estop.addEventListener("click",()=>{
+  const next=!state.emergency;
+  if(next) stopDrive();
+  state.emergency=next;
+  state.drive="S";
+  state.signal=next?"hazard":"off";
+  render();
+  sendControl("/emergency?state="+(next?"on":"off")).catch(()=>{});
+  toast(next?"EMERGENCIA ACTIVADA":"EMERGENCIA LIBERADA");
+});
+
+/* Seguridad del navegador: al perder foco dejamos de mandar movimiento, bocina o freno. */
+addEventListener("blur",()=>{
+  pressed.clear();
+  if(state.drive !== "S") stopDrive();
+  setHorn(false);
+  setBrake(false);
+});
+
+/* ---------- RADAR ---------- */
+const rctx=el.radar.getContext("2d");
+function fitRadar(){
+  const size=Math.max(240,Math.min(360,el.radar.clientWidth||360)),dpr=Math.min(2,devicePixelRatio||1);
+  el.radar.width=size*dpr;el.radar.height=size*dpr;rctx.setTransform(dpr,0,0,dpr,0,0);el.radar.dataset.cssSize=size;
+}
+function drawRadar(){
+  const size=Number(el.radar.dataset.cssSize)||360,c=size/2,R=c-10;
+  rctx.clearRect(0,0,size,size);
+  rctx.lineWidth=1;rctx.strokeStyle="rgba(0,174,234,.15)";
+  for(let i=1;i<=4;i++){rctx.beginPath();rctx.arc(c,c,R*i/4,0,Math.PI*2);rctx.stroke();}
+  rctx.beginPath();rctx.moveTo(c-R,c);rctx.lineTo(c+R,c);rctx.moveTo(c,c-R);rctx.lineTo(c,c+R);rctx.stroke();
+  const grad=rctx.createRadialGradient(c,c,0,c,c,R);grad.addColorStop(0,"rgba(0,174,234,.15)");grad.addColorStop(1,"rgba(0,174,234,0)");
+  rctx.beginPath();rctx.moveTo(c,c);rctx.arc(c,c,R,radarAngle-.55,radarAngle);rctx.closePath();rctx.fillStyle=grad;rctx.fill();
+  rctx.beginPath();rctx.moveTo(c,c);rctx.lineTo(c+R*Math.cos(radarAngle),c+R*Math.sin(radarAngle));rctx.strokeStyle="rgba(0,174,234,.88)";rctx.stroke();
+  plot(c,c,R,-Math.PI/2,state.front,"#00aeea");
+  plot(c,c,R, Math.PI/2,state.rear,"#e89a00");
+  radarAngle+=.018;requestAnimationFrame(drawRadar);
+}
+function plot(cx,cy,R,a,dist,color){
+  if(!validDistance(dist)) return;
+  const d=clamp(dist,4,200),rr=d/200*R,x=cx+rr*Math.cos(a),y=cy+rr*Math.sin(a);
+  rctx.beginPath();rctx.arc(x,y,4.5,0,Math.PI*2);rctx.fillStyle=d<=20?"#ff4f68":color;
+  rctx.shadowBlur=14;rctx.shadowColor=rctx.fillStyle;rctx.fill();rctx.shadowBlur=0;
+}
+fitRadar();addEventListener("resize",fitRadar);drawRadar();
+
+/* ---------- FONDO TÉCNICO ---------- */
+const nc=$("network"),nctx=nc.getContext("2d");let nodes=[],nw=0,nh=0;
+function netResize(){
+  const dpr=Math.min(2,devicePixelRatio||1);nw=innerWidth;nh=innerHeight;nc.width=nw*dpr;nc.height=nh*dpr;nctx.setTransform(dpr,0,0,dpr,0,0);
+  const count=Math.min(72,Math.max(26,Math.floor(nw*nh/26000)));
+  nodes=Array.from({length:count},()=>({x:Math.random()*nw,y:Math.random()*nh,vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16}));
+}
+function netDraw(){
+  nctx.clearRect(0,0,nw,nh);
+  for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>nw)n.vx*=-1;if(n.y<0||n.y>nh)n.vy*=-1;}
+  for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
+    if(d<130){nctx.strokeStyle=`rgba(0,174,234,${.075*(1-d/130)})`;nctx.beginPath();nctx.moveTo(a.x,a.y);nctx.lineTo(b.x,b.y);nctx.stroke();}
+  }
+  nctx.fillStyle="rgba(0,174,234,.28)";
+  for(const n of nodes){nctx.beginPath();nctx.arc(n.x,n.y,1.2,0,Math.PI*2);nctx.fill();}
+  requestAnimationFrame(netDraw);
+}
+netResize();addEventListener("resize",netResize);netDraw();
+
+/* ---------- REVEAL / NAVEGACIÓN ---------- */
+const revealObs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");revealObs.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll(".reveal").forEach(x=>revealObs.observe(x));
+const navLinks=[...document.querySelectorAll("#navlinks a")];
+const navSections=navLinks.map(a=>document.querySelector(a.getAttribute("href")));
+addEventListener("scroll",()=>{
+  el.nav.classList.toggle("scrolled",scrollY>18);
+  const max=document.documentElement.scrollHeight-innerHeight;
+  el.scrollProgress.style.width=(max>0?scrollY/max*100:0)+"%";
+  let idx=0;navSections.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<160)idx=i;});
+  navLinks.forEach(a=>a.classList.remove("active"));if(navLinks[idx])navLinks[idx].classList.add("active");
+},{passive:true});
+
+/* ---------- EFECTOS 3D ---------- */
+const FINE_POINTER = matchMedia("(hover:hover) and (pointer:fine)").matches;
+if(FINE_POINTER){
+  document.querySelectorAll("[data-tilt]").forEach(card=>{
+    card.addEventListener("mousemove",e=>{
+      const r=card.getBoundingClientRect(),px=(e.clientX-r.left)/r.width,py=(e.clientY-r.top)/r.height;
+      card.style.transform=`perspective(800px) rotateX(${(py-.5)*-7}deg) rotateY(${(px-.5)*8}deg) translateY(-2px)`;
+      card.style.setProperty("--mx",px*100+"%");card.style.setProperty("--my",py*100+"%");
+    });
+    card.addEventListener("mouseleave",()=>card.style.transform="");
+  });
+  el.heroVisual.addEventListener("mousemove",e=>{
+    const r=el.heroVisual.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;
+    el.car3dWrap.style.transform=`translate(-50%,-50%) rotateX(${-16-py*12}deg) rotateY(${28+px*26}deg)`;
+  });
+  el.heroVisual.addEventListener("mouseleave",()=>el.car3dWrap.style.transform="");
+}
+
+/* ---------- INICIO ---------- */
+setTimeout(()=>el.boot.classList.add("hide"),1450);
+el.linkState.textContent=RUNNING_ON_ESP32?"DIRECTO / ESP32":"LIVE SERVER → ESP32";
+setConnection("connecting");
+render();
+pollStatus();
+setInterval(pollStatus,CONFIG.POLL_MS);
+</script>
 </body>
 </html>
